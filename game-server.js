@@ -3,7 +3,7 @@ import {randomBytes,randomInt} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {dirname,join} from 'node:path';
-import {attack,defense,evaluate,lineups,requiredCards,validateLineup,clamp} from './public/engine.js';
+import {attack,defense,evaluate,lineups,requiredCards,validateLineup,penaltyChance} from './public/engine.js';
 const root=dirname(fileURLToPath(import.meta.url));
 export const db=JSON.parse(await readFile(join(root,'data/players.json'),'utf8'));
 const byId=new Map(db.cards.map(c=>[c.id,c]));
@@ -100,8 +100,7 @@ export function penalty(r,idx,b,random=()=>randomInt(1000000)/1000000){
  }
  if(!r.players.every(x=>x.penalty))return;
  const a=r.players[shooter].penalty,d=r.players[1-shooter].penalty;
- const quality=.55*a.taker.stats.finishing+.45*a.taker.stats.composure,save=.55*d.keeper.stats.reflexes+.45*d.keeper.stats.gk_positioning;
- const chance=clamp(.76+(quality-save)/200-(a.aim===d.dive?.32:0),.25,.95),goal=random()<chance;
+ const chance=penaltyChance(a.taker,d.keeper,a.aim,d.dive),goal=random()<chance;
  if(goal)s.scores[shooter]++;
  s.attempts[shooter]++;s.used[shooter].push(a.taker.id);
  s.history.push({number:s.history.length+1,player:shooter,taker:a.taker.name,keeper:d.keeper.name,takerId:a.taker.id,keeperId:d.keeper.id,aim:a.aim,dive:d.dive,chance,goal});

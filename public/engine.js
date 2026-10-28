@@ -4,6 +4,13 @@ export const ATTACK_ROLES = ['Finisher', 'Creator', 'Runner'];
 export const DEFENSE_ROLES = ['Defender 1', 'Defender 2', 'Goalkeeper'];
 export const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
 const round = n => Math.round(n * 1000) / 1000;
+export function penaltyChance(taker,keeper,aim,dive) {
+  const quality=.55*taker.stats.finishing+.45*taker.stats.composure;
+  const saving=.55*keeper.stats.reflexes+.45*keeper.stats.gk_positioning;
+  const advantage=(quality-saving)/200;
+  // Reading the direction wins the duel most of the time; stats still matter.
+  return aim===dive?clamp(.15+advantage,.05,.25):clamp(.76+advantage,.25,.95);
+}
 export const ABILITIES = {
   engine: {name:'Midfield engine', text:'Once per match: +2 attack as Runner with off-ball movement of at least 75.'},
   control: {name:'Elite close control', text:'Once per match: +3 matchup when marked and dribbling beats the marker’s average tackling and awareness.'},
