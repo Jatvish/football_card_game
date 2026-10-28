@@ -1,0 +1,23 @@
+name: Verify Stage 1
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check syntax
+        run: |
+          node --check server.js
+          node --check public/app.js
+      - name: Start server and verify health
+        run: |
+          npm start > server.log 2>&1 &
+          for i in $(seq 1 20); do curl -sf http://localhost:3000/health && break || sleep 1; done
+          curl -fsS http://localhost:3000/health | grep 'ok'
+          curl -fsS http://localhost:3000/ | grep 'FINAL WHISTLE'
