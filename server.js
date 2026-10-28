@@ -1,73 +1,121 @@
 import http from 'node:http';
-import { randomBytes } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
-
-const base = dirname(fileURLToPath(import.meta.url));
-const rooms = new Map();
-const port = Number(process.env.PORT || 3000);
-const cards = [
-['Messi','F',96,99,90,77,38],['Ronaldo','F',98,77,87,92,35],['Neymar','F',94,94,91,70,31],
-['Mbappé','F',95,83,99,79,38],['Haaland','F',98,64,90,98,40],['Salah','F',93,88,94,73,41],
-['De Bruyne','M',89,99,81,78,63],['Modrić','M',84,95,79,65,73],['Bellingham','M',89,89,85,84,81],
-['Pedri','M',78,94,84,61,72],['Kroos','M',79,97,63,72,70],['Bruno Fernandes','M',84,94,75,72,59],
-['Van Dijk','D',55,70,82,94,98],['Rúben Dias','D',43,75,70,91,96],['Rüdiger','D',50,69,88,92,92],
-['Saliba','D',47,79,85,89,94],['Hakimi','D',66,78,96,69,88],['Theo Hernández','D',68,75,96,88,85],
-['Alisson','G',15,40,64,88,97],['Courtois','G',13,37,45,98,98],['Ederson','G',12,80,61,86,94],['Donnarumma','G',11,35,47,96,97]
-].map(([name,pos,finish,create,pace,strength,defense],id)=>({id,name,pos,finish,create,pace,strength,defense}));
-const partners=[['Messi','Neymar'],['Messi','Mbappé'],['Ronaldo','Modrić'],['Haaland','De Bruyne'],['Salah','Van Dijk'],['Bellingham','Kroos'],['Mbappé','Hakimi']];
-function json(res,status,data){res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store','Access-Control-Allow-Origin':'*'});res.end(JSON.stringify(data))}
-function fail(res,status,error){json(res,status,{error})}
-function read(req){return new Promise((ok,err)=>{let s='';req.on('data',c=>{s+=c;if(s.length>12000)req.destroy()});req.on('end',()=>{try{ok(JSON.parse(s||'{}'))}catch{err(new Error('Invalid JSON'))}});req.on('error',err)})}
-function newToken(){return randomBytes(18).toString('hex')}
-function code(){let c;do{c=randomBytes(4).toString('hex').slice(0,6).toUpperCase()}while(rooms.has(c));return c}
-function player(name){return {name:String(name||'Player').trim().slice(0,24)||'Player',token:newToken(),uses:{},attack:null,defense:null,score:0}}
-function snapshot(room,idx){let p=room.players[idx],other=room.players[1-idx];return {code:room.code,players:room.players.map(x=>x?{name:x.name,score:x.score}:null),you:idx,stage:room.stage,turn:room.turn,attacker:room.turn%2,round:Math.floor(room.turn/2)+1,totalTurns:12,submitted:{attack:!!p.attack,defense:!!p.defense},opponentSubmitted:{attack:!!other?.attack,defense:!!other?.defense},uses:p.uses,last:room.last,history:room.history,winner:room.stage==='ended'?(room.players[0].score===room.players[1].score?'draw':room.players[0].score>room.players[1].score?0:1):null,cards}}
-function publicRoom(room,token){let idx=room.players.findIndex(x=>x?.token===token);if(idx<0)throw Error('Invalid player token');return snapshot(room,idx)}
-function validatePick(ids,count,positions,p){if(!Array.isArray(ids)||ids.length!==count||new Set(ids).size!==count)throw Error('Select '+count+' different cards');for(let i=0;i<ids.length;i++){let id=ids[i];if(!Number.isInteger(id)||!cards[id])throw Error('Invalid card');if(positions[i]&&!positions[i].includes(cards[id].pos))throw Error('Wrong position for slot '+(i+1));if((p.uses[id]||0)>=3)throw Error(cards[id].name+' has no uses remaining')}}
-function partnership(ids){let names=ids.map(i=>cards[i].name);return Math.min(12,partners.filter(pair=>pair.every(n=>names.includes(n))).length*6)}
-function resolve(room){let attacker=room.turn%2,defender=1-attacker,a=room.players[attacker],d=room.players[defender];if(!a.attack||!d.defense)return;
-let A=a.attack.map(i=>cards[i]),D=d.defense.map(i=>cards[i]);
-let chemistry=partnership(a.attack),attack=A[0].finish*.48+A[1].create*.34+A[2].pace*.18+chemistry;
-let defense=D[0].defense*.34+D[1].defense*.32+D[2].defense*.34;
-let matchup=(A[0].strength-(D[0].strength+D[1].strength)/2)*.10;
-let threshold=Math.max(9,Math.min(91,50+(attack-defense)*1.2+matchup));
-let roll=Math.random()*100,goal=roll<threshold;
-if(goal)a.score++;
-for(let id of a.attack)a.uses[id]=(a.uses[id]||0)+1;
-for(let id of d.defense)d.uses[id]=(d.uses[id]||0)+1;
-room.last={number:room.turn+1,attacker,goal,chance:Math.round(threshold),roll:Math.round(roll),chemistry,attack:Math.round(attack),defense:Math.round(defense),namesA:A.map(c=>c.name),namesD:D.map(c=>c.name)};
-room.history.push(room.last);a.attack=null;d.defense=null;room.turn++;if(room.turn>=12)room.stage='ended'}
-setInterval(()=>{let now=Date.now();for(let [c,r] of rooms)if(now-r.lastSeen>2*60*60*1000)rooms.delete(c)},60*1000).unref();
-const server=http.createServer(async(req,res)=>{
-try{
-const path=new URL(req.url,'http://localhost').pathname;
-if(path==='/health')return json(res,200,{ok:true,rooms:rooms.size});
-if(path==='/api/cards')return json(res,200,{cards});
-if(path==='/api/create'&&req.method==='POST'){let b=await read(req),c=code(),p=player(b.name),room={code:c,players:[p,null],stage:'lobby',turn:0,last:null,history:[],lastSeen:Date.now()};rooms.set(c,room);return json(res,200,{code:c,token:p.token,state:snapshot(room,0)})}
-if(path==='/api/join'&&req.method==='POST'){let b=await read(req),c=String(b.code||'').toUpperCase().trim(),room=rooms.get(c);if(!room)return fail(res,404,'Room not found');if(room.players[1])return fail(res,409,'Room is full');let p=player(b.name);room.players[1]=p;room.stage='playing';room.lastSeen=Date.now();return json(res,200,{code:c,token:p.token,state:snapshot(room,1)})}
-if(path.startsWith('/api/')){
-let b=req.method==='POST'?await read(req):Object.fromEntries(new URL(req.url,'http://localhost').searchParams);
-let room=rooms.get(String(b.code||'').toUpperCase());if(!room)return fail(res,404,'Room not found or expired');
-let idx=room.players.findIndex(p=>p?.token===b.token);if(idx<0)return fail(res,403,'Invalid player token');room.lastSeen=Date.now();
-if(path==='/api/state')return json(res,200,snapshot(room,idx));
-if(path==='/api/play'&&req.method==='POST'){
-if(room.stage!=='playing')return fail(res,409,'Match has not started or is finished');
-let attacking=idx===room.turn%2,kind=attacking?'attack':'defense',p=room.players[idx];
-if(p[kind])return fail(res,409,'You already submitted this turn');
-let ids=b.ids;
-validatePick(ids,3,attacking?[['F'],['M'],['F','M']]:[['D'],['D'],['G']],p);
-p[kind]=ids;resolve(room);return json(res,200,snapshot(room,idx))
+import {randomBytes} from 'node:crypto';
+import {readFile} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+import {dirname,join} from 'node:path';
+const root=dirname(fileURLToPath(import.meta.url));
+const db=JSON.parse(await readFile(join(root,'data','players.json'),'utf8'));
+const cards=db.cards, byId=new Map(cards.map(c=>[c.id,c])),rooms=new Map();
+const port=Number(process.env.PORT||3000),CAP=3,MAX_TURNS=12;
+const rnd=n=>randomBytes(4).readUInt32BE()%n;
+const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+const pair=(a,b)=>db.chemistry[[a,b].sort().join(':')]||0;
+const sum=(arr)=>arr.reduce((a,b)=>a+b,0);
+const pick=(arr,n)=>{const pool=[...arr],out=[];while(out.length<n)out.push(pool.splice(rnd(pool.length),1)[0]);return out};
+const requirements={F:3,M:3,D:4,G:2};
+const attackRoles=['Finisher','Creator','Runner'];
+function roleScore(c,i){
+ const s=c.stats;
+ const raw=i===0?.45*s.finishing+.25*s.attacking_positioning+.2*s.composure+.1*s.pace:i===1?.35*s.passing+.3*s.vision+.2*s.dribbling+.15*s.control:.4*s.pace+.3*s.dribbling+.2*s.off_ball+.1*s.physicality;
+ const p=c.position;
+ const bonus=i===0?(['ST','CF'].includes(p)?2:['CAM','CM'].includes(p)?-2:p==='CDM'?-3:0):i===1?(['ST','CF'].includes(p)?-2:['CAM','CM'].includes(p)?2:p==='CDM'?1:0):(['LW','RW'].includes(p)?2:p==='CDM'?-2:0);
+ return raw+bonus;
 }
-if(path==='/api/rematch'&&req.method==='POST'){
-if(room.stage!=='ended')return fail(res,409,'Finish the match first');
-room.stage='playing';room.turn=0;room.history=[];room.last=null;for(let p of room.players){p.uses={};p.attack=null;p.defense=null;p.score=0}return json(res,200,snapshot(room,idx))
+function dScore(c){let s=c.stats;return .3*s.pace+.25*s.tackling+.25*s.marking+.2*s.awareness}
+function gScore(c){let s=c.stats;return .4*s.reflexes+.25*s.gk_positioning+.2*s.one_on_one+.15*s.handling}
+function formation(a){let positions=a.map(c=>c.position);if(new Set(positions).size===1)return -3;let natural=([a[0].position,a[1].position,a[2].position]);return (['ST','CF'].includes(natural[0])&&['CAM','CM'].includes(natural[1])&&['LW','RW'].includes(natural[2]))?3:0}
+function attack(a){let chemistry=Math.min(4,pair(a[0].id,a[1].id)+pair(a[0].id,a[2].id)+pair(a[1].id,a[2].id));let shape=formation(a);return {value:.4*roleScore(a[0],0)+.35*roleScore(a[1],1)+.25*roleScore(a[2],2)+chemistry+shape,chemistry,shape}}
+function defense(d){let chemistry=Math.min(2,pair(d[0].id,d[1].id)),shape=d[0].position!==d[1].position?2:0;return {value:.275*dScore(d[0])+.275*dScore(d[1])+.45*gScore(d[2])+chemistry+shape,chemistry,shape}}
+function markerScore(a,d,role){
+ const x=a.stats,y=d.stats;
+ const raw=role===0?.3*(x.finishing-y.tackling)+.25*(x.dribbling-y.marking)+.2*(x.physicality-y.strength)+.25*(x.off_ball-y.awareness):role===1?.25*(x.passing-y.awareness)+.25*(x.vision-y.marking)+.3*(x.dribbling-y.tackling)+.2*(x.control-y.awareness):.4*(x.pace-y.pace)+.2*(x.dribbling-y.tackling)+.25*(x.off_ball-y.awareness)+.15*(x.physicality-y.strength);
+ return clamp(raw/10,-3,3);
 }
-return fail(res,404,'Unknown action');
+function evaluate(a,d,marks){let A=attack(a),D=defense(d),matchup=clamp(markerScore(a[marks[0]],d[0],marks[0])+markerScore(a[marks[1]],d[1],marks[1]),-6,6);let margin=A.value-D.value+matchup;return {goal:margin>0,margin:+margin.toFixed(3),attack:+A.value.toFixed(3),defense:+D.value.toFixed(3),matchup:+matchup.toFixed(3),attackChem:A.chemistry,defChem:D.chemistry,attackShape:A.shape,defShape:D.shape}}
+function squadStrength(squad){return sum(squad.map(c=>c.ovr))}
+function draft(){
+ // Position-balanced drafts; choose from a shared pool without duplication.
+ // Each category is dealt into two 12-card squads with a bounded total OVR gap.
+ let best=null;
+ for(let t=0;t<3500;t++){
+  let available=[...cards],squads=[[],[]];
+  for(const [cat,n] of Object.entries(requirements)){
+   let pool=available.filter(c=>c.category===cat);
+   let selected=pick(pool,n*2);
+   for(let i=0;i<n;i++){squads[0].push(selected[i]);squads[1].push(selected[i+n])}
+   available=available.filter(c=>!selected.some(x=>x.id===c.id));
+  }
+  let diff=Math.abs(squadStrength(squads[0])-squadStrength(squads[1]));
+  let groupDiff=sum(Object.keys(requirements).map(cat=>Math.abs(sum(squads[0].filter(c=>c.category===cat).map(c=>c.ovr))-sum(squads[1].filter(c=>c.category===cat).map(c=>c.ovr)))));
+  let penalty=diff+groupDiff*.5;
+  if(!best||penalty<best.penalty)best={squads,penalty,diff};
+  if(diff<=6&&groupDiff<=14)break;
+ }
+ return best.squads.map(s=>s.map(c=>c.id));
 }
-if(req.method!=='GET')return fail(res,405,'Method not allowed');
-let file=path==='/'?'index.html':path.replace(/^\//,'');if(!['index.html','app.js','styles.css','favicon.svg'].includes(file))return fail(res,404,'Not found');
-let data=await readFile(join(base,'public',file));let type=file.endsWith('.js')?'application/javascript':file.endsWith('.css')?'text/css':file.endsWith('.svg')?'image/svg+xml':'text/html';
-res.writeHead(200,{'Content-Type':type,'Cache-Control':'no-cache'});res.end(data)
-}catch(e){fail(res,400,e.message||'Unexpected error')}});server.listen(port,'0.0.0.0',()=>console.log('Football card game listening on '+port));
+function newToken(){return randomBytes(20).toString('hex')}
+function code(){let s;do{s=randomBytes(4).toString('hex').slice(0,6).toUpperCase()}while(rooms.has(s));return s}
+function player(name){return {name:String(name||'Player').trim().slice(0,24)||'Player',token:newToken(),uses:{},attack:null,defense:null,marks:null,score:0,rematch:false}}
+function snapshot(room,idx){
+ let p=room.players[idx],other=room.players[1-idx],attacker=(room.first+room.turn)%2;
+ return {code:room.code,players:room.players.map(x=>x?{name:x.name,score:x.score,rematch:x.rematch}:null),you:idx,stage:room.stage,turn:room.turn,attacker,round:Math.floor(room.turn/2)+1,totalTurns:MAX_TURNS,phase:room.phase,submitted:{attack:!!p.attack,defense:!!p.defense,marks:!!p.marks},opponentSubmitted:{attack:!!other?.attack,defense:!!other?.defense,marks:!!other?.marks},uses:p.uses,last:room.last,history:room.history,winner:room.stage==='ended'?(room.players[0].score===room.players[1].score?'draw':room.players[0].score>room.players[1].score?0:1):null,cards:p.squad.map(id=>byId.get(id)),revealed:room.phase==='marking'?{attack:room.players[attacker].attack.map(id=>byId.get(id)),defense:room.players[1-attacker].defense.map(id=>byId.get(id))}:null,remainingPool:cards.length-24}
+}
+function validate(ids,category,p){
+ if(!Array.isArray(ids)||ids.length!==3||new Set(ids).size!==3)throw Error('Select three distinct cards');
+ for(let i=0;i<3;i++){let id=ids[i],c=byId.get(id);if(!c||!p.squad.includes(id))throw Error('Card is not in your squad');if((p.uses[id]||0)>=CAP)throw Error(c.name+' has no uses remaining');if(category==='attack'?!['F','M'].includes(c.category):(i===2?c.category!=='G':c.category!=='D'))throw Error('Wrong card category for this role')}
+}
+function resolve(room){
+ const ai=(room.first+room.turn)%2,di=1-ai,a=room.players[ai],d=room.players[di];
+ if(!a.attack||!d.defense||!d.marks)return;
+ let A=a.attack.map(id=>byId.get(id)),D=d.defense.map(id=>byId.get(id));
+ let e=evaluate(A,D,d.marks);
+ if(e.goal)a.score++;
+ for(let id of a.attack)a.uses[id]=(a.uses[id]||0)+1;
+ for(let id of d.defense)d.uses[id]=(d.uses[id]||0)+1;
+ room.last={number:room.turn+1,attacker:ai,...e,namesA:A.map(c=>c.name),namesD:D.map(c=>c.name),marks:d.marks};
+ room.history.push(room.last);a.attack=null;d.defense=null;d.marks=null;room.turn++;room.phase='select';
+ if(room.turn===MAX_TURNS){room.stage='ended';for(let p of room.players){if(p.squad.some(id=>p.uses[id]!==3))throw Error('Internal use-count mismatch')}}
+}
+function json(res,status,data){res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data))}
+function read(req){return new Promise((ok,err)=>{let s='';req.on('data',c=>{s+=c;if(s.length>20000){req.destroy();err(Error('Request too large'))}});req.on('end',()=>{try{ok(JSON.parse(s||'{}'))}catch{err(Error('Invalid JSON'))}});req.on('error',err)})}
+setInterval(()=>{for(let [c,r] of rooms)if(Date.now()-r.lastSeen>7200000)rooms.delete(c)},60000).unref();
+http.createServer(async(req,res)=>{try{
+ const path=new URL(req.url,'http://localhost').pathname;
+ if(path==='/health')return json(res,200,{ok:true,cards:cards.length,rooms:rooms.size});
+ if(path==='/api/cards')return json(res,200,{cards,notice:db.notice});
+ if(path==='/api/create'&&req.method==='POST'){let b=await read(req),c=code(),p=player(b.name),room={code:c,players:[p,null],squads:draft(),stage:'lobby',phase:'select',first:rnd(2),turn:0,last:null,history:[],lastSeen:Date.now()};p.squad=room.squads[0];rooms.set(c,room);return json(res,200,{code:c,token:p.token,state:snapshot(room,0)})}
+ if(path==='/api/join'&&req.method==='POST'){let b=await read(req),room=rooms.get(String(b.code||'').trim().toUpperCase());if(!room)return json(res,404,{error:'Room not found'});if(room.players[1])return json(res,409,{error:'Room full'});let p=player(b.name);p.squad=room.squads[1];room.players[1]=p;room.stage='playing';return json(res,200,{code:room.code,token:p.token,state:snapshot(room,1)})}
+ if(path.startsWith('/api/')){
+  let b=req.method==='POST'?await read(req):Object.fromEntries(new URL(req.url,'http://localhost').searchParams);
+  let room=rooms.get(String(b.code||'').toUpperCase());if(!room)return json(res,404,{error:'Room not found or expired'});
+  let idx=room.players.findIndex(p=>p?.token===b.token);if(idx<0)return json(res,403,{error:'Invalid player token'});room.lastSeen=Date.now();
+  if(path==='/api/state')return json(res,200,snapshot(room,idx));
+  if(path==='/api/play'&&req.method==='POST'){
+   if(room.stage!=='playing'||room.phase!=='select')return json(res,409,{error:'Not in card selection phase'});
+   let attacking=idx===(room.first+room.turn)%2,kind=attacking?'attack':'defense',p=room.players[idx];
+   if(p[kind])return json(res,409,{error:'Already submitted'});
+   validate(b.ids,kind,p);p[kind]=b.ids;
+   let ai=(room.first+room.turn)%2;
+   if(room.players[ai].attack&&room.players[1-ai].defense)room.phase='marking';
+   return json(res,200,snapshot(room,idx));
+  }
+  if(path==='/api/mark'&&req.method==='POST'){
+   if(room.stage!=='playing'||room.phase!=='marking'||idx===(room.first+room.turn)%2)return json(res,409,{error:'Not your marking phase'});
+   if(!Array.isArray(b.marks)||b.marks.length!==2||b.marks.some(x=>!Number.isInteger(x)||x<0||x>2)||b.marks[0]===b.marks[1])return json(res,400,{error:'Assign the two defenders to different attackers'});
+   room.players[idx].marks=b.marks;resolve(room);return json(res,200,snapshot(room,idx));
+  }
+  if(path==='/api/rematch'&&req.method==='POST'){
+   if(room.stage!=='ended')return json(res,409,{error:'Finish the match first'});
+   room.players[idx].rematch=true;
+   if(room.players.every(p=>p.rematch)){
+    room.squads=draft();room.first=1-room.first;room.turn=0;room.stage='playing';room.phase='select';room.history=[];room.last=null;
+    room.players.forEach((p,i)=>{p.squad=room.squads[i];p.uses={};p.attack=null;p.defense=null;p.marks=null;p.score=0;p.rematch=false});
+   }
+   return json(res,200,snapshot(room,idx));
+  }
+  return json(res,404,{error:'Unknown action'});
+ }
+ if(req.method!=='GET')return json(res,405,{error:'Method not allowed'});
+ const file=path==='/'?'index.html':path.slice(1);if(!['index.html','app.js','styles.css'].includes(file))return json(res,404,{error:'Not found'});
+ const body=await readFile(join(root,'public',file));res.writeHead(200,{'Content-Type':file.endsWith('.js')?'application/javascript':file.endsWith('.css')?'text/css','Cache-Control':'no-cache'});res.end(body);
+}catch(e){json(res,400,{error:e.message||'Unexpected error'})}}).listen(port,'0.0.0.0',()=>console.log('Football game v1 listening on '+port));
