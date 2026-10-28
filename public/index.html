@@ -1,1 +1,125 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07131c"><title>Final Whistle · Football Card Game</title><link rel="stylesheet" href="/styles.css"></head><body><header><h1>⚽ FINAL WHISTLE</h1><span class="tag">ONLINE 1V1 • BALANCE ALPHA</span></header><main class="container"><section id="home"><div class="panel hero"><div class="eyebrow">Football strategy card game</div><h2>Build your legacy.</h2><p class="muted">50 peak-version players • balanced 12-card squads • deterministic tactics • 12 possessions</p></div><div class="panel"><h3>Your player name</h3><input id="name" placeholder="Your nickname" maxlength="24" value="Player"></div><div class="two"><div class="panel"><h3>Create private match</h3><p class="muted">Get 12 cards from the 50-player pool and invite a friend.</p><button id="create" class="btn">Create room →</button></div><div class="panel"><h3>Join a friend</h3><input id="joinCode" maxlength="6" placeholder="6-character code"><button id="join" class="btn">Join match →</button></div></div><div class="panel muted">Prototype ratings and chemistry are provisional. Each player receives 3 forwards, 3 midfielders, 4 defenders and 2 goalkeepers; each card has exactly 3 uses.</div></section><section id="game" hidden><div class="roomMeta"><span>ROOM <b id="roomCode"></b></span><b id="round"></b><button class="outline" id="leave">Leave</button></div><div class="panel"><div id="score" class="score"></div></div><div id="lobby" class="panel" hidden><h2>Waiting for your rival</h2><p>Give your friend this room code:</p><div id="lobbyCode" class="code"></div><p>Or share an invitation link:</p><input id="invite" readonly><button class="outline" id="copy">Copy invitation link</button></div><div id="play" hidden><div id="selection"><div class="panel"><h2 id="roleTitle"></h2><p id="instructions" class="muted"></p><div id="slots" class="slotgrid"></div><button class="btn" id="submit">Lock in selection</button></div><div class="panel"><h3>Your 12-card squad</h3><p class="muted">Select in role order. Each card has 3 uses per match.</p><div id="cards" class="cards"></div></div></div><div id="markPanel" class="panel" hidden></div><div class="panel"><h3>Match timeline</h3><div id="history"></div></div></div><div id="ended" class="panel" hidden><div class="eyebrow">Full time</div><h2 id="outcome"></h2><button class="btn" id="rematch">Request rematch</button><h3>Match history</h3><div id="historyEnd"></div></div></section></main><div id="message" hidden></div><script type="module" src="/app.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101715">
+<title>Final Whistle · The tactical card game</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="masthead">
+<a class="brand" href="/" aria-label="Final Whistle home">
+<span class="brandmark">FW</span>
+<span>FINAL<br>WHISTLE<span class="brand-dot">.</span>
+</span>
+</a>
+<nav aria-label="Main navigation">
+<button class="quiet" id="libraryButton">Player collection</button>
+<button class="quiet" id="rulesButton">How to play</button>
+<span class="live">
+<i>
+</i> ONLINE 1V1</span>
+</nav>
+</header>
+<main>
+<section id="home">
+<div class="hero">
+<div class="hero-copy">
+<p class="eyebrow">THE BEAUTIFUL GAME. A DIFFERENT PLAYBOOK.</p>
+<h1>Great players.<br>
+<em>Better decisions.</em>
+</h1>
+<p class="lede">Twelve cards. Six chances to score. Build the right trio, read your rival, and make every legend count.</p>
+<div class="hero-facts">
+<span>
+<b>50</b> peak player cards</span>
+<span>
+<b>3</b> uses per card</span>
+<span>
+<b>1</b> tactical duel</span>
+</div>
+</div>
+<div class="hero-art" aria-label="A tactical football pitch">
+<div class="pitch-line">
+</div>
+<div class="hero-card back">
+<span>96 <small>CM</small>
+</span>
+<strong>THE<br>CREATOR</strong>
+<div>VISION · PASSING · CONTROL</div>
+</div>
+<div class="hero-card front">
+<span>98 <small>ST</small>
+</span>
+<strong>THE<br>FINISHER</strong>
+<div>COMPOSURE WINS GAMES.</div>
+<b>★ ★ ★</b>
+</div>
+<span class="art-caption">YOUR SQUAD. YOUR CALL.</span>
+</div>
+</div>
+<div class="start-panel">
+<div class="identity">
+<p class="eyebrow">ENTER THE DUGOUT</p>
+<label for="name">Manager name</label>
+<input id="name" maxlength="24" placeholder="Your nickname" value="Manager">
+<small>No account needed. Just football.</small>
+</div>
+<div class="start-option">
+<span class="step">01 / CHALLENGE A FRIEND</span>
+<h2>Make it personal.</h2>
+<p>Create a private room and share the invitation.</p>
+<button class="primary" id="create">Create match <span>↗</span>
+</button>
+</div>
+<div class="start-option">
+<span class="step">02 / JOIN THE MATCH</span>
+<label for="joinCode" class="join-label">Have a room code?</label>
+<div class="join-row">
+<input id="joinCode" maxlength="6" placeholder="ABC123" autocomplete="off">
+<button class="primary" id="join">Join →</button>
+</div>
+<button class="text-button" id="practice">Or warm up against Coach AI →</button>
+</div>
+</div>
+<div class="principles">
+<article>
+<span>01</span>
+<h3>Chemistry is earned.</h3>
+<p>Real shared playing history creates links. Wearing the same shirt in different eras does not.</p>
+</article>
+<article>
+<span>02</span>
+<h3>Every role matters.</h3>
+<p>A finisher, creator and runner face two markers and a keeper. Find the space they leave behind.</p>
+</article>
+<article>
+<span>03</span>
+<h3>Legends have limits.</h3>
+<p>Three uses. One special ability. Decide when your best cards can make the difference.</p>
+</article>
+</div>
+</section>
+<section id="match" hidden>
+</section>
+<footer>
+<span>FINAL WHISTLE / INDEPENDENT FAN GAME</span>
+<span>Illustrative ratings · No official affiliation</span>
+</footer>
+</main>
+<dialog id="detail">
+<div class="dialog-head">
+<span class="eyebrow" id="dialogTitle">PLAYER FILE</span>
+<button class="quiet" id="closeDialog" aria-label="Close dialog">Close ✕</button>
+</div>
+<div id="dialogBody">
+</div>
+</dialog>
+<div id="toast" role="status" aria-live="polite" hidden>
+</div>
+<div id="connection" role="status" hidden>Connection interrupted. Retrying — your match session is saved.</div>
+<script type="module" src="/app.js">
+</script>
+</body>
+</html>

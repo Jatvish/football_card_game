@@ -1,52 +1,125 @@
+import {ABILITIES,ATTACK_ROLES,DEFENSE_ROLES,attack,defense,roleScore,dScore,gScore,lineups,validateLineup,evaluate,chemistryLinks} from './engine.js';
 const $=id=>document.getElementById(id);
-let code='',token='',state=null,chosen=[],marks=[],lastKey='';
-const esc=s=>String(s).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
-async function api(route,data){let r=await fetch('/api/'+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});let j=await r.json();if(!r.ok)throw Error(j.error||'Network error');return j}
-function notice(m){$('message').textContent=m;$('message').hidden=false;setTimeout(()=>$('message').hidden=true,4000)}
-function session(j){code=j.code;token=j.token;localStorage.setItem('football-room',JSON.stringify({code,token}));state=j.state;chosen=[];marks=[];lastKey='';render();location.hash=code}
-async function poll(){if(!code||!token)return;try{let next=await api('state',{code,token});let key=next.turn+':'+next.phase+':'+next.stage;if(lastKey&&lastKey!==key){chosen=[];marks=[]}lastKey=key;state=next;render()}catch(e){notice(e.message);code='';token='';state=null;localStorage.removeItem('football-room');render()}}
-function card(c,disabled=false,selected=false){let used=state.uses[c.id]||0,s=c.stats,stat=c.category==='G'?'REF '+s.reflexes:c.category==='D'?'TAC '+s.tackling:c.category==='M'?'PAS '+s.passing:'FIN '+s.finishing;return '<button class="card '+(selected?'selected':'')+'" data-card="'+c.id+'" '+(disabled?'disabled':'')+'><span class="pos">'+c.position+' · '+c.category+' · OVR '+c.ovr+'</span><strong>'+esc(c.name)+'</strong><span class="stats">'+stat+' · PAC '+s.pace+' · '+esc(c.peak)+'</span><span class="uses">'+(3-used)+'/3 uses remaining</span></button>'}
-function history(){if(!state.history.length)return '<p class="muted">No possessions played yet.</p>';return [...state.history].reverse().map(h=>'<div class="event"><b>'+(h.goal?'⚽ GOAL':'🛡 DEFENDED')+'</b> · Possession '+h.number+' · '+esc(state.players[h.attacker].name)+'<small>Margin '+h.margin+' · Attack '+h.attack+' · Defense '+h.defense+' · Matchup '+h.matchup+' · Chemistry '+h.attackChem+'/'+h.defChem+'</small></div>').join('')}
-function render(){
- $('home').hidden=!!state;$('game').hidden=!state;if(!state)return;
- $('roomCode').textContent=state.code;$('invite').value=location.origin+'/?room='+encodeURIComponent(state.code);
- $('round').textContent=state.stage==='ended'?'FULL TIME':state.stage==='lobby'?'LOBBY':'POSSESSION '+(state.turn+1)+' / 12';
- let p=state.players;$('score').innerHTML='<span>'+esc(p[0].name)+' <b>'+p[0].score+'</b></span><span class="vs">VS</span><span><b>'+(p[1]?.score??'–')+'</b> '+esc(p[1]?.name||'Waiting...')+'</span>';
- $('lobby').hidden=state.stage!=='lobby';$('play').hidden=state.stage!=='playing';$('ended').hidden=state.stage!=='ended';
- if(state.stage==='lobby'){$('lobbyCode').textContent=state.code;return}
- if(state.stage==='ended'){$('outcome').textContent=state.winner==='draw'?'DRAW':state.winner===state.you?'YOU WIN!':'OPPONENT WINS';$('historyEnd').innerHTML=history();$('rematch').textContent=p[state.you].rematch?'Waiting for opponent to accept…':'Request rematch';$('rematch').disabled=p[state.you].rematch;return}
- $('history').innerHTML=history();
- let attacking=state.attacker===state.you,marking=state.phase==='marking';
- $('selection').hidden=marking;$('markPanel').hidden=!marking;
- if(marking){
-  let revealed=state.revealed;
-  if(attacking){$('markPanel').innerHTML='<h2>Opponent is assigning markers</h2><p class="muted">Both teams are revealed. Wait for the defender to choose who to mark.</p>'+lineup(revealed.attack,'Your attack')+lineup(revealed.defense,'Opponent defense',true);return}
-  $('markPanel').innerHTML='<h2>Assign your markers</h2><p class="muted">Choose which attacker Defender 1 and Defender 2 will mark. They must mark different attackers. The third attacker stays unmarked.</p>'+lineup(revealed.defense,'Your defense',true)+'<div class="slotgrid">'+[0,1].map(i=>'<div class="slot"><small>'+esc(revealed.defense[i].name)+' marks</small><select id="mark'+i+'"><option value="">Choose attacker</option>'+revealed.attack.map((c,j)=>'<option value="'+j+'" '+(marks[i]===j?'selected':'')+'>'+esc(c.name)+' — '+['Finisher','Creator','Runner'][j]+'</option>').join('')+'</select></div>').join('')+'</div><button class="btn" id="confirmMarks">Confirm marking</button>';
-  for(let i=0;i<2;i++)$('mark'+i).onchange=e=>marks[i]=e.target.value===''?null:Number(e.target.value);
-  $('confirmMarks').onclick=async()=>{try{if(marks.length!==2||marks[0]===marks[1]||marks.some(x=>!Number.isInteger(x)))throw Error('Mark two different attackers');state=await api('mark',{code,token,marks});marks=[];render()}catch(e){notice(e.message)}};
-  return;
- }
- let slots=attacking?['Finisher','Creator','Runner']:['Defender 1','Defender 2','Goalkeeper'];
- let submitted=attacking?state.submitted.attack:state.submitted.defense;
- $('roleTitle').textContent=attacking?'⚡ Your attack':'🛡 Your defense';
- $('instructions').textContent=submitted?'Your selection is locked. Waiting for your opponent.':attacking?'Select any 3 forwards or midfielders, assigning them to Finisher, Creator and Runner.':'Select 2 defenders, then 1 goalkeeper.';
- $('slots').innerHTML=slots.map((slot,i)=>'<div class="slot '+(chosen[i]?'filled':'')+'"><small>'+slot+'</small><strong>'+(chosen[i]?esc(state.cards.find(c=>c.id===chosen[i])?.name||''):'Choose card')+'</strong></div>').join('');
- $('submit').disabled=submitted||chosen.length!==3;$('submit').textContent=submitted?'✓ Locked — waiting':'Lock in selection';
- $('cards').innerHTML=state.cards.filter(c=>attacking?['F','M'].includes(c.category):['D','G'].includes(c.category)).map(c=>card(c,submitted||(state.uses[c.id]||0)>=3,chosen.includes(c.id))).join('');
- document.querySelectorAll('[data-card]').forEach(b=>b.onclick=()=>{
-  let id=b.dataset.card,c=state.cards.find(x=>x.id===id);
-  if(chosen.includes(id)){chosen=chosen.filter(x=>x!==id)}
-  else{if(chosen.length===3)return notice('Remove a card first');if(!attacking&&((chosen.length===2&&c.category!=='G')||(chosen.length<2&&c.category!=='D')))return notice(chosen.length===2?'Choose a goalkeeper':'Choose a defender');chosen.push(id)}
-  render();
- });
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>Number(n).toFixed(1), signed=n=>(n>0?'+':'')+fmt(n);
+let db={cards:[],chemistry:{}},state=null,code='',token='',chosen=[null,null,null],activated=[],slot=0,marks=[0,1],busy=false,polling=false,lastSerialized='',lastPhase='',toastTimer,epoch=0,penaltyDraft={};
+const storage={get(){try{return JSON.parse(sessionStorage.getItem('final-whistle')||'null')}catch{return null}},save(){try{sessionStorage.setItem('final-whistle',JSON.stringify({code,token}))}catch{}},clear(){try{sessionStorage.removeItem('final-whistle')}catch{}}};
+function toast(message){clearTimeout(toastTimer);$('toast').textContent=message;$('toast').hidden=false;toastTimer=setTimeout(()=>$('toast').hidden=true,6500)}
+async function api(route,data={}){
+ const r=await fetch('/api/'+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data),signal:AbortSignal.timeout(15000)});
+ let j;try{j=await r.json()}catch{throw Error('The game server is waking up. Please try again shortly.')}
+ if(!r.ok){const e=Error(j.error||'Request failed');e.status=r.status;throw e}return j;
 }
-function lineup(arr,label,defensive=false){return '<h3>'+label+'</h3><div class="slotgrid">'+arr.map((c,i)=>'<div class="slot"><small>'+(defensive?['Defender 1','Defender 2','Goalkeeper'][i]:['Finisher','Creator','Runner'][i])+'</small><strong>'+esc(c.name)+'</strong><small>'+c.position+' · OVR '+c.ovr+'</small></div>').join('')+'</div>'}
-$('create').onclick=async()=>{try{session(await api('create',{name:$('name').value}))}catch(e){notice(e.message)}};
-$('join').onclick=async()=>{try{session(await api('join',{name:$('name').value,code:$('joinCode').value.trim().toUpperCase()}))}catch(e){notice(e.message)}};
-$('submit').onclick=async()=>{try{state=await api('play',{code,token,ids:chosen});chosen=[];render()}catch(e){notice(e.message)}};
-$('rematch').onclick=async()=>{try{state=await api('rematch',{code,token});render()}catch(e){notice(e.message)}};
-$('copy').onclick=async()=>{try{await navigator.clipboard.writeText($('invite').value);notice('Link copied')}catch{notice('Copy the link manually')}};
-$('leave').onclick=()=>{if(confirm('Leave this room?')){localStorage.removeItem('football-room');code='';token='';state=null;chosen=[];render()}};
+function receive(next){
+ const phase=[next.match,next.turn,next.phase,next.stage,next.shootout?.round].join(':');
+ if(phase!==lastPhase){chosen=[null,null,null];activated=[];slot=0;marks=[0,1];lastPhase=phase;penaltyDraft={}}
+ const serialized=JSON.stringify(next);state=next;
+ if(serialized!==lastSerialized){lastSerialized=serialized;render()}
+}
+async function poll(){
+ if(!code||!token||busy||polling)return;polling=true;const currentToken=token,currentEpoch=epoch;
+ try{const next=await api('state',{code,token});if(token!==currentToken||currentEpoch!==epoch)return;$('connection').hidden=true;receive(next)}
+ catch(e){if(token!==currentToken||currentEpoch!==epoch)return;if(e.status===403||e.status===404){leave();toast(e.message)}else $('connection').hidden=false}
+ finally{polling=false}
+}
+async function action(route,data={}){
+ if(busy)return;epoch++;busy=true;render();
+ try{const next=await api(route,{code,token,match:state.match,turn:state.turn,...data});receive(next)}
+ catch(e){toast(e.message);lastSerialized=''}finally{busy=false;render();poll()}
+}
+async function start(practice=false,join=false){
+ if(busy)return;busy=true;document.querySelectorAll('#home button').forEach(b=>b.disabled=true);
+ try{const j=await api(join?'join':'create',{name:$('name').value,practice,code:$('joinCode').value.trim().toUpperCase()});code=j.code;token=j.token;storage.save();receive(j.state)}
+ catch(e){toast(e.message)}finally{busy=false;document.querySelectorAll('#home button').forEach(b=>b.disabled=false);if(state)render()}
+}
+function leave(){epoch++;code='';token='';state=null;lastSerialized='';lastPhase='';storage.clear();$('connection').hidden=true;render()}
+const roleNames=()=>state.attacker===state.you?ATTACK_ROLES:DEFENSE_ROLES;
+const ownPlayer=()=>({cards:state.cards,uses:state.uses});
+function card(c,collection=false){
+ const used=collection?0:state?.uses[c.id]||0,selected=!collection&&chosen.includes(c.id),must=!collection&&state?.required.includes(c.id);
+ const relevant=c.category==='G'?[['REF',c.stats.reflexes],['POS',c.stats.gk_positioning],['1V1',c.stats.one_on_one]]:c.category==='D'?[['PAC',c.stats.pace],['TAC',c.stats.tackling],['AWR',c.stats.awareness]]:[['FIN',c.stats.finishing],['PAS',c.stats.passing],['PAC',c.stats.pace]];
+ const initials=c.name.split(/[\s-]+/).filter(Boolean).map(x=>x[0]).slice(0,2).join('');
+ return `<article class="player-card ${c.category} ${selected?'selected':''} ${used===3?'exhausted':''}"><button class="card-select" data-action="${collection?'info':'choose'}" data-id="${c.id}" aria-label="${collection?'Inspect':'Select'} ${esc(c.name)}" ${!collection&&(state.submitted||used===3||busy)?'disabled':''}><div class="card-top"><span class="rating">${c.ovr}<small>${c.position}</small></span><span class="monogram" aria-hidden="true">${esc(initials)}</span></div>${must?'<span class="must">REQUIRED NOW</span>':''}<strong class="card-name">${esc(c.name)}</strong><span class="card-meta">${esc(c.nation)} / ${esc(c.peak)}</span><div class="mini-stats">${relevant.map(([k,v])=>`<span><b>${v}</b> ${k}</span>`).join('')}</div><div class="charges">${[0,1,2].map(i=>`<span class="charge ${i<3-used?'on':''}"></span>`).join('')}<em>${3-used}/3 uses</em></div></button><div class="card-bottom"><button data-action="info" data-id="${c.id}">${esc(ABILITIES[c.ability].name)} ↗</button><span class="muted" aria-label="${!collection&&state?.spent.includes(c.id)?'Ability spent':'Ability available'}">${!collection&&state?.spent.includes(c.id)?'○':'✦'}</span></div></article>`;
+}
+function linksHTML(links){return links.map(l=>`<div class="links"><b>+${l.value}</b> ${esc(l.a)} + ${esc(l.b)}<br><small>${esc(l.reason)}</small></div>`).join('')}
+function metrics(a,d,m){return `<div class="metrics"><div class="metric"><small>ATTACK</small><b>${fmt(a)}</b></div><div class="metric"><small>DEFENCE</small><b>${fmt(d)}</b></div><div class="metric"><small>MATCHUP</small><b>${signed(m)}</b></div></div>`}
+function breakdown(h){return `${metrics(h.attack,h.defense,h.matchup)}<div class="math-row"><span>Weighted role stats / defensive stats</span><b>${fmt(h.attackBase)} / ${fmt(h.defenseBase)}</b></div><div class="math-row"><span>Chemistry · attack / defence</span><b>+${h.attackChem} / +${h.defChem}</b></div><div class="math-row"><span>Formation / defensive shape</span><b>${signed(h.attackShape)} / +${h.defShape}</b></div><div class="math-row"><span>Ability bonus · attack / defence</span><b>+${h.attackAbility} / +${h.defenseAbility}</b></div>${h.duels.map(d=>`<div class="math-row"><span>${esc(d.defender)} → ${esc(d.attacker)} (${d.role})</span><b>${signed(d.value)}</b></div>`).join('')}<div class="math-row"><span>Finisher vs goalkeeper matchup</span><b>${signed(h.keeperMatchup)}</b></div><div class="math-row"><span>Ability matchup bonus (total matchup capped ±6)</span><b>+${h.matchupAbility}</b></div><div class="math-row"><span>Attack − defence + matchup</span><b>${signed(h.margin)}</b></div>${h.abilities.map(a=>`<p class="section-note">✦ ${esc(a.player)} · ${esc(a.name)}: ${a.triggered?'+'+a.value+' '+a.target:'condition not met'} (ability consumed).</p>`).join('')}`}
+function history(){return `<aside><div class="panel"><p class="eyebrow">MATCH JOURNAL</p><h3>Every decision counts.</h3><div class="timeline">${state.history.length?[...state.history].reverse().map(h=>`<details class="event"><summary><b class="${h.goal?'goal':'save'}">${h.goal?'GOAL':'SAVED'}</b> · ${String(h.number).padStart(2,'0')}<br>${esc(state.players[h.attacker].name)} attacks · ${signed(h.margin)}</summary><p>${h.attackCards.map(c=>esc(c.name)).join(' / ')}<br>vs ${h.defenseCards.map(c=>esc(c.name)).join(' / ')}</p>${breakdown(h)}</details>`).join(''):'<p>Your match story starts with the first possession.</p>'}</div></div><div class="panel"><p class="eyebrow">THE SMALL PRINT</p><p>Lineups stay hidden until both managers lock in. Abilities are spent when activated, even if their trigger fails.</p><p>Required cards keep your squad playable all the way to full time.</p><button class="text-button" data-action="squad">Inspect full squad →</button></div></aside>`}
+function lineupView(cards,roles){return `<div class="slots">${cards.map((c,i)=>`<button class="slot filled" data-action="info" data-id="${c.id}"><small>${roles[i]}</small><strong>${esc(c.name)}</strong><span class="slot-score">${c.position} · ${c.ovr} OVR ↗</span></button>`).join('')}</div>`}
+function selection(){
+ const attacking=state.you===state.attacker,kind=attacking?'attack':'defense',roles=roleNames(),locked=state.submitted;
+ const ids=locked?state.ownLineup:chosen,cs=ids.map(id=>state.cards.find(c=>c.id===id));
+ let preview=null,error='';if(cs.every(Boolean)){preview=(attacking?attack:defense)(cs,db.chemistry);try{validateLineup(ownPlayer(),ids,kind)}catch(e){error=e.message}}
+ return `<div class="panel"><div class="panel-title"><h2>${attacking?'Build your attack.':'Hold your ground.'}</h2><span class="badge">${attacking?'ATTACKING':'DEFENDING'}</span></div><p>${locked?'Lineup locked. Waiting for the other manager.':attacking?'Choose a role on the pitch, then a player below. Each role rewards different attributes.':'Choose two defenders and a goalkeeper. You assign their markers after both lineups are revealed.'}</p><div class="pitch"><div class="slots">${roles.map((name,i)=>`<button class="slot ${slot===i&&!locked?'active':''} ${cs[i]?'filled':''}" data-action="slot" data-slot="${i}" ${locked||busy?'disabled':''}><small>${i+1} / ${name}</small><strong>${cs[i]?esc(cs[i].name):'Choose player'}</strong><span class="slot-score">${cs[i]?fmt(attacking?roleScore(cs[i],i):i===2?gScore(cs[i]):dScore(cs[i]))+' role score':'+'}</span></button>`).join('')}</div></div>${!locked&&state.required.length?`<div class="callout">Must play now: ${state.required.map(id=>esc(state.cards.find(c=>c.id===id).name)).join(', ')}. These cards need every remaining turn to finish their uses.</div>`:''}${preview?`<div class="math-row"><span>Lineup strength before matchups and abilities</span><b>${fmt(preview.value)}</b></div><div class="math-row"><span>Weighted stats + chemistry + shape</span><b>${fmt(preview.base)} + ${preview.chemistry} ${signed(preview.shape)}</b></div><details><summary class="section-note">View chemistry links</summary>${linksHTML(preview.links)}</details>`:''}${error?`<div class="callout">${esc(error)}</div>`:''}${!locked?`<div class="ability-picks">${cs.filter(Boolean).map(c=>`<label title="${esc(ABILITIES[c.ability].text)}"><input type="checkbox" data-ability="${c.id}" ${activated.includes(c.id)?'checked':''} ${state.spent.includes(c.id)?'disabled':''}>${esc(c.name.split(' ').at(-1))} · ${state.spent.includes(c.id)?'ability spent':esc(ABILITIES[c.ability].name)}</label>`).join('')}</div><p class="section-note">Optional: activate selected abilities now. Tap any card’s ability name for its trigger. One activation per card per match.</p>`:''}<div class="actions"><button class="secondary" data-action="suggest" ${locked||busy?'disabled':''}>Suggest lineup</button><button class="quiet" data-action="clear" ${locked||busy?'disabled':''}>Clear</button><button class="primary" data-action="lock" ${locked||busy||!cs.every(Boolean)||error?'disabled':''}>${locked?'Locked · waiting':busy?'Sending…':'Lock in lineup →'}</button></div></div><section class="panel"><div class="panel-title"><h3>${attacking?'Your attacking pool':'Your defensive pool'}</h3><small>${locked?'Opponent '+(state.opponentSubmitted?'ready':'choosing'):'Assigning: '+roles[slot]}</small></div><div class="cards">${state.cards.filter(c=>attacking?['F','M'].includes(c.category):['D','G'].includes(c.category)).map(c=>card(c)).join('')}</div><p class="section-note">Choose a role, then a card. Picking its current card removes it; picking another selected card swaps their roles.</p></section>`;
+}
+function marking(){
+ const {attack:a,defense:d,activated:active}=state.revealed,defending=state.you!==state.attacker;
+ const preview=defending&&marks[0]!==marks[1]?evaluate(a,d,marks,db.chemistry,active):null;
+ return `<div class="panel"><p class="eyebrow">LINEUPS REVEALED</p><h2>${defending?'Choose your battles.':'The defence is reading your attack.'}</h2><p>${defending?'Assign each defender to a different attacker. The third attacker goes unmarked. Inspect any revealed card to compare attributes.':'Your opponent is choosing two markers. Your unmarked player still contributes their full role score.'}</p><h3>Attack</h3><div class="pitch">${lineupView(a,ATTACK_ROLES)}</div><h3>Defence</h3>${lineupView(d,DEFENSE_ROLES)}${defending?`<div class="marking-grid">${d.slice(0,2).map((c,i)=>`<label>${esc(c.name)} marks<select id="mark${i}" data-marker="${i}">${a.map((x,j)=>`<option value="${j}" ${marks[i]===j?'selected':''}>${ATTACK_ROLES[j]} · ${esc(x.name)}</option>`).join('')}</select></label>`).join('')}</div>${preview?`<div class="callout">Projected outcome: ${preview.goal?'GOAL':'DEFENCE HOLDS'} · margin ${signed(preview.margin)}. The same calculation resolves the possession.</div>`:'<div class="callout">Choose two different attackers.</div>'}<button class="primary" data-action="mark" ${!preview||busy?'disabled':''}>Confirm markers & resolve →</button>`:'<p class="callout">Waiting for the defending manager…</p>'}</div>`;
+}
+function result(){const h=state.last;return `<div class="panel"><p class="eyebrow">POSSESSION ${h.number} / RESOLVED</p><h2 class="result-title ${h.goal?'':'save'}">${h.goal?'Back of the net.':'Defence holds.'}</h2><p>${esc(state.players[h.attacker].name)} ${h.goal?'scores':'is denied'}. ${h.goal?'A positive margin wins the attack.':'A zero or negative margin favours the defence.'}</p>${lineupView(h.attackCards,ATTACK_ROLES)}<div class="math-row"><span>Defended by</span><b>${h.defenseCards.map(c=>esc(c.name)).join(' / ')}</b></div>${breakdown(h)}<div class="actions"><small>${state.players[1-state.you].ready?'Opponent ready.':'Waiting for opponent to review.'}</small><button class="primary" data-action="next" ${state.players[state.you].ready||busy?'disabled':''}>${state.players[state.you].ready?'Ready · waiting':state.turn===12?'Continue to full time →':'Next possession →'}</button></div></div>`}
+function penaltyHistory(){return state.shootout.history.map((shots,i)=>`<div class="penalty-row"><b>ROUND ${i+1}</b>${shots.map(s=>`<div><span class="${s.goal?'goal':'save'}">${s.goal?'● GOAL':'○ SAVED'}</span> · ${esc(s.taker)} vs ${esc(s.keeper)}<br><small>Shot ${s.aim} / dive ${s.dive} · ${(s.chance*100).toFixed(0)}% goal probability</small></div>`).join('')}</div>`).join('')}
+function shootout(){const s=state.shootout;return `<div class="panel"><p class="eyebrow">LEVEL AT FULL TIME</p><h2>${s.round>5?'Sudden death.':'Penalty shootout.'}</h2><div class="penalty-score">${s.scores.join(' : ')}</div><p>Round ${s.round}. Choose your taker, shot direction, keeper and dive. Both sides commit in secret, then a pair of penalties resolves. First five rounds, then sudden death. Normal uses are suspended; rotate through all six takers before reusing one.</p>${s.submitted?'<div class="callout">Choices locked. Waiting for the other manager.</div>':`<div class="penalty-form"><label>Penalty taker<select id="taker">${state.cards.filter(c=>['F','M'].includes(c.category)&&!s.used.includes(c.id)).map(c=>`<option value="${c.id}">${esc(c.name)} · FIN ${c.stats.finishing}</option>`).join('')}</select></label><label>Goalkeeper<select id="keeper">${state.cards.filter(c=>c.category==='G').map(c=>`<option value="${c.id}">${esc(c.name)} · REF ${c.stats.reflexes}</option>`).join('')}</select></label><label>Shot direction<select id="aim"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></label><label>Dive direction<select id="dive"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></label></div><p class="section-note">Shootouts include chance: finishing and composure face reflexes and positioning. A matching dive lowers the goal probability by 32 percentage points.</p><button class="primary" data-action="penalty" ${busy?'disabled':''}>Lock penalty choices →</button>`}${penaltyHistory()}</div>`}
+function ended(){return `<div class="panel"><p class="eyebrow">FINAL WHISTLE</p><h2 class="result-title">${state.winner===state.you?'Victory is yours.':'A lesson for next time.'}</h2><p>${esc(state.players[state.winner].name)} wins ${state.players.map(p=>p.score).join('–')}${state.shootout?' ('+state.shootout.scores.join('–')+' on penalties)':''}. Every card used exactly three times.</p><div class="actions"><button class="primary" data-action="rematch" ${state.players[state.you].rematch||busy?'disabled':''}>${state.players[state.you].rematch?'Rematch requested · waiting':'Fresh squads. Play again →'}</button><button class="secondary" data-action="home">Back to dugout</button></div>${state.shootout?penaltyHistory():''}</div>`}
+function render(){
+ $('home').hidden=!!state;$('match').hidden=!state;if(!state)return;
+ const p=state.players,phase=state.stage==='lobby'?'WAITING FOR RIVAL':state.stage==='ended'?'FULL TIME':state.stage==='shootout'?'PENALTIES':`POSSESSION ${Math.min(12,state.turn+(state.phase==='result'?0:1))} / 12`;
+ const scoreboard=`<div class="matchbar"><span>${p.some(x=>x?.bot)?'PRACTICE':'PRIVATE ROOM'} <strong>${state.code}</strong></span><span>${phase}</span><button class="quiet" data-action="leave">Leave match ↗</button></div><div class="scoreboard"><div class="team">${esc(p[0].name)}${state.you===0?' <small>YOU</small>':'<small>RIVAL</small>'}</div><div class="scoreline">${p[0].score} : ${p[1]?.score??0}<small>${state.stage==='lobby'?'THE STAGE IS SET':p[state.first]?.name===undefined?'':esc(p[state.first].name)+' WON THE COIN TOSS'}</small></div><div class="team">${esc(p[1]?.name||'Your rival')}${state.you===1?'<small>YOU</small>':'<small>'+ (p[1]?.bot?'PRACTICE OPPONENT':'RIVAL')+'</small>'}</div></div><div class="progress" aria-label="${state.turn} of 12 possessions completed">${Array.from({length:12},(_,i)=>`<span class="${i<state.turn?'done':i===state.turn?'current':''}"></span>`).join('')}</div>`;
+ if(state.stage==='lobby'){
+  $('match').innerHTML=scoreboard+`<div class="panel lobby"><p class="eyebrow">YOUR SQUAD IS READY</p><h2>A worthy rival awaits.</h2><p>Share this code with a friend on another device or in another browser tab.</p><div class="room-code">${state.code}</div><div class="invite"><input id="invite" aria-label="Invitation link" readonly value="${esc(location.origin+'/?room='+state.code)}"><button class="secondary" data-action="copy">Copy invite</button></div><button class="text-button" data-action="squad">Inspect your 12-card squad →</button><p class="section-note">Rooms expire after two hours of inactivity. A server restart clears active matches.</p></div>`;return;
+ }
+ $('match').innerHTML=scoreboard+`<div class="match-layout"><div>${state.stage==='ended'?ended():state.stage==='shootout'?shootout():state.phase==='result'?result():state.phase==='marking'?marking():selection()}</div>${history()}</div>`;
+ for(const [id,value] of Object.entries(penaltyDraft)){if($(id))$(id).value=value}
+}
+function openDialog(title,html){$('dialogTitle').textContent=title;$('dialogBody').innerHTML=html;if(!$('detail').open)$('detail').showModal()}
+function info(id){
+ const c=db.cards.find(c=>c.id===id);if(!c)return;
+ const stats=Object.entries(c.stats).filter(([k])=>c.category==='G'?['reflexes','gk_positioning','one_on_one','handling','passing','pace'].includes(k):!['reflexes','gk_positioning','one_on_one','handling'].includes(k));
+ const relevant=state?state.cards.filter(x=>x.id!==id):[];
+ const links=relevant.flatMap(x=>chemistryLinks([c,x],db.chemistry)).filter(x=>x.value);
+ openDialog('PLAYER FILE / '+c.position,`<div class="player-file">${card(c,true)}<div><p class="eyebrow">${esc(c.nation)} / PEAK ${esc(c.peak)}</p><h2>${esc(c.name)}</h2><span class="badge">${c.ovr} OVR · GAME DESIGN RATING</span><h3>✦ ${esc(ABILITIES[c.ability].name)}</h3><p class="section-note">${esc(ABILITIES[c.ability].text)} Activated before reveal; consumed even when the trigger fails.</p>${['F','M'].includes(c.category)?`<div class="math-row"><span>Finisher / Creator / Runner</span><b>${[0,1,2].map(i=>fmt(roleScore(c,i))).join(' / ')}</b></div>`:''}<div class="full-stats">${stats.map(([key,v])=>`<div class="math-row"><span>${key.replaceAll('_',' ')}</span><b>${v}</b></div>`).join('')}</div></div></div><h3>Shared-playing history in this collection</h3><p class="section-note">${c.connections.map(x=>esc(x.team)+' '+x.from+'–'+x.to).join(' · ')||'No curated windows yet.'}</p>${links.length?'<h3>Links with your squad</h3>'+linksHTML(links):''}<p class="section-note">${esc(db.notice)}</p>`);
+}
+function library(squad=false){
+ const cards=squad&&state?state.cards:db.cards;
+ openDialog(squad?'YOUR SQUAD / 12 CARDS':'PLAYER COLLECTION / '+db.cards.length+' CARDS',`<div class="library-tools"><input id="searchPlayers" aria-label="Search players" placeholder="Search player, nation or position"><select id="filterPlayers" aria-label="Filter position"><option value="all">All positions</option><option value="F">Forwards</option><option value="M">Midfielders</option><option value="D">Defenders</option><option value="G">Goalkeepers</option></select></div><p class="section-note">${esc(db.notice)}</p><div class="cards collection" id="collection"></div>`);
+ const update=()=>{const q=$('searchPlayers').value.toLowerCase(),cat=$('filterPlayers').value;const filtered=cards.filter(c=>(cat==='all'||c.category===cat)&&[c.name,c.nation,c.position].join(' ').toLowerCase().includes(q));$('collection').innerHTML=filtered.length?filtered.map(c=>card(c,true)).join(''):'<p>No players match that search.</p>'};
+ $('searchPlayers').oninput=update;$('filterPlayers').onchange=update;update();
+}
+function rules(){openDialog('THE PLAYBOOK',`<h2>Outthink the other manager.</h2><ol class="rule-list"><li><b>Balanced squads.</b> Each manager receives 3 forwards, 3 midfielders, 4 defenders and 2 goalkeepers. No duplicate players. A coin toss chooses who attacks first.</li><li><b>Twelve possessions.</b> Alternate six attacks and six defences. Every card has three uses, spent whether you score or save. Required cards must play now to prevent an impossible final turn.</li><li><b>Three attacking roles.</b> Finisher: 45% finishing, 25% positioning, 20% composure, 10% pace. Creator: 35% passing, 30% vision, 20% dribbling, 15% control. Runner: 40% pace, 30% dribbling, 20% off-ball, 10% physicality.</li><li><b>Natural roles and shape.</b> ST/CF gets +2 Finisher and −2 Creator; LW/RW +2 Runner; CAM/CM −2 Finisher and +2 Creator; CDM −3 Finisher, +1 Creator, −2 Runner. A natural striker–midfielder–winger trio in those roles gets +3 shape; three identical positions get −3.</li><li><b>Defend with two defenders and a keeper.</b> Defender stats: 30% pace, 25% tackling, 25% marking, 20% awareness. Keeper stats: 40% reflexes, 25% positioning, 20% one-on-one, 15% handling. A centre-back plus full-back gets +2 shape.</li><li><b>Chemistry.</b> Curated shared-playing links score +1 or +2. Three attacking pair links sum to at most +4; the defensive pair gets at most +2. Card peak years do not restrict career chemistry. Missing links give zero.</li><li><b>Mark after the reveal.</b> Each defender marks a different attacker; one stays unmarked. Role-specific stat differences, aerial and physical duels, and the keeper matchup produce a modifier capped at ±6.</li><li><b>One special ability per card.</b> Inspect its trigger and activate it before locking your lineup. An activation is spent even if the condition fails. Matchup abilities remain inside the ±6 cap.</li><li><b>A transparent outcome.</b> Attack = 40% Finisher + 35% Creator + 25% Runner + chemistry + shape + abilities. Defence = 27.5% each defender + 45% keeper + chemistry + shape + abilities. Attack − defence + matchup greater than zero scores. Ties favour defence. No random rolls during normal play.</li><li><b>Full time and penalties.</b> Most goals wins. A tie goes to five paired penalty rounds, with early clinching and sudden death. Each manager secretly chooses a taker, keeper, shot and dive. Penalties include chance; matching the dive lowers the chance by 32 percentage points. Use all six takers before reusing one. Normal uses and abilities do not apply.</li><li><b>Reconnect.</b> Reload this tab to resume. Temporary network failures retain your session. Rooms are held in server memory and expire after two inactive hours or a restart.</li></ol>`)}
+$('match').addEventListener('click',async e=>{
+ const b=e.target.closest('button[data-action]');if(!b||b.disabled)return;const a=b.dataset.action;
+ if(a==='info')return info(b.dataset.id);if(a==='squad')return library(true);
+ if(a==='home')return leave();if(a==='leave'){if(confirm('Leave this match? Your opponent will be left waiting.'))leave();return}
+ if(a==='copy'){try{await navigator.clipboard.writeText($('invite').value);toast('Invitation copied.')}catch{toast('Select and copy the invitation link.')}return}
+ if(a==='slot'){slot=Number(b.dataset.slot);render();return}
+ if(a==='clear'){chosen=[null,null,null];activated=[];slot=0;render();return}
+ if(a==='choose'){
+  const id=b.dataset.id,c=state.cards.find(c=>c.id===id),attacking=state.attacker===state.you;
+  if(!attacking&&((slot===2)!==(c.category==='G'))){slot=c.category==='G'?2:chosen[0]?1:0}
+  const previous=chosen.indexOf(id);
+  if(previous===slot)chosen[slot]=null;
+  else if(previous>=0){[chosen[slot],chosen[previous]]=[chosen[previous],chosen[slot]]}
+  else chosen[slot]=id;
+  activated=activated.filter(x=>chosen.includes(x));const empty=chosen.indexOf(null);if(empty>=0)slot=empty;render();return;
+ }
+ if(a==='suggest'){
+  const kind=state.attacker===state.you?'attack':'defense';const options=lineups(ownPlayer(),kind).sort((a,b)=>(kind==='attack'?attack:defense)(b,db.chemistry).value-(kind==='attack'?attack:defense)(a,db.chemistry).value);
+  chosen=options[0].map(c=>c.id);activated=[];render();return;
+ }
+ if(a==='lock')return action('play',{ids:chosen,activated});
+ if(a==='mark')return action('mark',{marks});
+ if(a==='next')return action('next');
+ if(a==='rematch')return action('rematch');
+ if(a==='penalty')return action('penalty',{round:state.shootout.round,taker:$('taker').value,keeper:$('keeper').value,aim:$('aim').value,dive:$('dive').value});
+});
+$('match').addEventListener('change',e=>{
+ if(['taker','keeper','aim','dive'].includes(e.target.id))penaltyDraft[e.target.id]=e.target.value;
+ if(e.target.dataset.ability){const id=e.target.dataset.ability;activated=e.target.checked?[...new Set([...activated,id])]:activated.filter(x=>x!==id)}
+ if(e.target.dataset.marker!==undefined){marks[Number(e.target.dataset.marker)]=Number(e.target.value);render()}
+});
+$('dialogBody').addEventListener('click',e=>{const b=e.target.closest('[data-action="info"]');if(b)info(b.dataset.id)});
+$('closeDialog').onclick=()=>$('detail').close();$('libraryButton').onclick=()=>library();$('rulesButton').onclick=rules;
+$('create').onclick=()=>start();$('join').onclick=()=>start(false,true);$('practice').onclick=()=>start(true);
 $('joinCode').value=new URLSearchParams(location.search).get('room')||'';
-try{let s=JSON.parse(localStorage.getItem('football-room')||'null');if(s?.code&&s?.token){code=s.code;token=s.token;poll()}}catch{}
-render();setInterval(poll,1500);
+try{const response=await fetch('/api/cards');if(!response.ok)throw Error('Cannot load the player collection. Reload to try again.');db=await response.json();const saved=storage.get();if(saved?.code&&saved?.token){code=saved.code;token=saved.token;await poll()}}catch(e){toast(e.message)}
+render();setInterval(poll,1800);
