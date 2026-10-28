@@ -250,3 +250,28 @@ footer{font-size:8px;line-height:1.6;flex-direction:column;gap:8px}
 .card-meta{font-size:9px}
 .slot-score{font-size:10px}
 }
+/* Player photos retain full card statistics underneath. */
+.card-select{padding:0;min-height:0}
+.card-portrait{height:190px;position:relative;overflow:hidden;background:linear-gradient(140deg,#455741,#18261d);isolation:isolate}
+.portrait-fallback{position:absolute;inset:0;display:grid;place-items:center;font:italic 62px Georgia,serif;color:#c9ddb482;z-index:-1}
+.card-portrait>img{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 12%}
+.card-portrait:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#101b17a1,transparent 48%),linear-gradient(0deg,#18261d65,transparent 40%);pointer-events:none}
+.card-top{position:absolute;inset:13px 13px auto;z-index:1}
+.rating{color:#fffde7;text-shadow:0 1px 8px #000c}
+.rating small{color:#fffde7}
+.card-body{padding:0 14px 15px}
+.card-name{margin:15px 0 7px;min-height:30px;line-height:1.15}
+.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 10px;margin:14px 0;color:#bbcab2}
+.mini-stats span{white-space:nowrap}
+.mini-stats b{display:inline-block;min-width:18px}
+.must{top:165px;right:8px;background:#172314dc;border:1px solid #a09b58;border-radius:4px;padding:4px 6px;z-index:2}
+.photo-credit{font-size:11px;color:var(--muted);line-height:1.8;margin-top:24px}
+.photo-credit a{color:var(--lime);text-decoration:underline}
+.penalty-duel{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:22px 0}
+.penalty-player{display:flex;gap:14px;align-items:center;text-align:left;padding:0;overflow:hidden;border:1px solid var(--line);background:#121e15;color:var(--text);border-radius:8px}
+.penalty-player img{height:120px;width:90px;object-fit:cover;object-position:50% 12%}
+.penalty-player small{display:block;font-size:9px;letter-spacing:1px;margin-bottom:8px}
+.penalty-player strong{font-size:14px}
+@media(max-width:760px){.card-select{padding:0}.card-portrait{height:165px}.card-body{padding:0 10px 12px}.must{top:140px}.mini-stats{gap:7px 6px}.card-name{font-size:13px}.penalty-player{flex-direction:column;align-items:stretch;gap:0}.penalty-player img{width:100%;height:160px}.penalty-player>span{padding:12px}.penalty-player strong{font-size:13px}}
+@media(max-width:480px){.card-portrait{height:170px}.card-select{padding:0;min-height:0}.card-body{padding:0 12px 14px}.mini-stats{gap:8px 6px}.card-name{font-size:14px}.must{top:145px;font-size:7px}.rating{font-size:27px}}
+@media(max-width:480px){.mini-stats{grid-template-columns:repeat(3,minmax(0,1fr));font-size:8px}.mini-stats span{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0}.mini-stats b{min-width:0;font-size:13px}}

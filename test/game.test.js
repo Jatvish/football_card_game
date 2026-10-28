@@ -1,6 +1,7 @@
 import test from 'node:test';
+import {readFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
-import {db,draft,newRoom,player,select,mark,advance,penalty,snapshot,runBot,createApp} from '../game-server.js';
+import {db,draft,newRoom,player,select,mark,advance,penalty,nextPenalty,startShootout,snapshot,runBot,createApp} from '../game-server.js';
 import {attack,defense,evaluate,roleScore,lineups,requiredCards,validateLineup} from '../public/engine.js';
 const card=id=>structuredClone(db.cards.find(c=>c.id===id));
 const sum=cs=>cs.reduce((s,c)=>s+c.ovr,0);
@@ -78,17 +79,62 @@ test('secrets stay hidden, abilities cannot be reused, marking is defender-only'
  assert.throws(()=>mark(r,ai,[0,1]));assert.throws(()=>mark(r,di,[1,1]));mark(r,di,[0,1]);
  ids.forEach(id=>assert.ok(r.players[ai].spent.includes(id)));
 });
-test('shootout clinches early, hides choices, rotates takers, and resolves sudden death',()=>{
- const r=two();r.stage='shootout';r.shootout={scores:[0,0],history:[],used:[[],[]]};
- const submit=(idx,random)=>{const p=r.players[idx];return penalty(r,idx,{taker:p.cards.find(c=>['F','M'].includes(c.category)&&!r.shootout.used[idx].includes(c.id)).id,keeper:p.cards.find(c=>c.category==='G').id,aim:'left',dive:'right'},random)};
- submit(0);assert.equal(snapshot(r,1).shootout.opponentSubmitted,true);assert.equal(JSON.stringify(snapshot(r,1)).includes('"aim"'),false);
- let sample=0;submit(1,()=>sample++%2===0?0:1);
- for(let i=0;i<2;i++){submit(0);let n=0;submit(1,()=>n++===0?0:1)}
- assert.equal(r.stage,'ended');assert.equal(r.winner,0);assert.equal(r.shootout.history.length,3);
- const t=two();t.stage='shootout';t.shootout={scores:[5,5],history:Array(5).fill([]),used:[[],[]]};
- for(let idx=0;idx<2;idx++){const p=t.players[idx];let n=0;penalty(t,idx,{taker:p.cards[0].id,keeper:p.cards.find(c=>c.category==='G').id,aim:'center',dive:'left'},()=>n++===0?0:1)}
- assert.equal(t.stage,'ended');assert.equal(t.winner,0);
+function shootoutRoom(){const r=two();r.first=0;startShootout(r);return r}
+function shotChoices(r,idx){
+ const p=r.players[idx],shooter=(r.shootout.first+r.shootout.history.length)%2;
+ return idx===shooter?{taker:p.cards.find(c=>['F','M'].includes(c.category)&&!r.shootout.used[idx].includes(c.id)).id,aim:'left'}:{keeper:p.cards.find(c=>c.category==='G').id,dive:'right'};
+}
+function kick(r,goal){penalty(r,0,shotChoices(r,0));penalty(r,1,shotChoices(r,1),()=>goal?0:1)}
+function nextKick(r){nextPenalty(r,0);nextPenalty(r,1)}
+
+test('penalties resolve one kick, keep choices hidden and swap shooter after result acknowledgement',()=>{
+ const r=shootoutRoom();
+ assert.equal(snapshot(r,0).shootout.shooter,0);
+ assert.throws(()=>penalty(r,0,{keeper:r.players[0].cards.find(c=>c.category==='G').id,dive:'left'}));
+ assert.throws(()=>penalty(r,1,{taker:r.players[1].cards[0].id,aim:'left'}));
+ penalty(r,0,shotChoices(r,0));
+ assert.equal(snapshot(r,1).shootout.opponentSubmitted,true);assert.equal(JSON.stringify(snapshot(r,1)).includes('"aim"'),false);
+ assert.throws(()=>penalty(r,0,shotChoices(r,0)),/locked/);
+ penalty(r,1,shotChoices(r,1),()=>0);
+ assert.equal(r.shootout.history.length,1);assert.deepEqual(r.shootout.attempts,[1,0]);assert.deepEqual(r.shootout.scores,[1,0]);
+ assert.equal(r.phase,'penalty-result');assert.throws(()=>penalty(r,0,shotChoices(r,0)));
+ nextPenalty(r,0);assert.equal(r.phase,'penalty-result');nextPenalty(r,1);
+ assert.equal(r.phase,'penalty');assert.equal(snapshot(r,0).shootout.shooter,1);
+ kick(r,false);assert.deepEqual(r.shootout.attempts,[1,1]);assert.equal(r.shootout.history.length,2);
 });
+
+test('five-penalty early clinching is correct with unequal attempts',()=>{
+ const r=shootoutRoom();
+ for(let i=0;i<6;i++){kick(r,i%2===0);if(i<5)nextKick(r)}
+ assert.equal(r.stage,'ended');assert.equal(r.winner,0);assert.deepEqual(r.shootout.attempts,[3,3]);assert.deepEqual(r.shootout.scores,[3,0]);
+});
+
+test('sudden death always gives the second shooter their reply and rotates six takers',()=>{
+ const r=shootoutRoom();
+ for(let i=0;i<10;i++){kick(r,true);nextKick(r)}
+ assert.equal(r.stage,'shootout');assert.deepEqual(r.shootout.scores,[5,5]);
+ assert.equal(r.shootout.used[0].length,5);
+ const oldId=r.shootout.used[0][0];assert.throws(()=>penalty(r,0,{taker:oldId,aim:'left'}),/unused/);
+ kick(r,true);assert.equal(r.stage,'shootout','cannot win before the opponent replies');assert.equal(r.shootout.used[0].length,0);
+ nextKick(r);kick(r,false);assert.equal(r.stage,'ended');assert.equal(r.winner,0);assert.deepEqual(r.shootout.attempts,[6,6]);
+});
+
+test('penalty-only practice starts directly in a shootout and AI handles only its current role',()=>{
+ const r=newRoom('Human',true,'penalties');assert.equal(r.stage,'shootout');assert.equal(r.turn,0);assert.equal(r.history.length,0);
+ runBot(r);assert.equal(!!r.players[1].penalty,true);
+ const shooter=r.shootout.first;
+ assert.deepEqual(Object.keys(r.players[1].penalty).sort(),shooter===1?['aim','taker']:['dive','keeper']);
+ penalty(r,0,shotChoices(r,0),()=>0);runBot(r);assert.equal(r.phase,'penalty-result');assert.equal(r.shootout.history.length,1);
+ nextPenalty(r,0);runBot(r);assert.equal(r.phase,'penalty');assert.equal(snapshot(r,0).shootout.shooter,1-shooter);
+});
+
+test('every player has a local WebP portrait and source/license credits',async()=>{
+ for(const c of db.cards){
+  assert.match(c.photo.src,/^\/players\/[A-Z][0-9]{2}\.webp$/);assert.match(c.photo.source,/^https:\/\/commons.wikimedia.org\//);assert.ok(c.photo.author);assert.ok(c.photo.license);
+  const bytes=await readFile(new URL('../public'+c.photo.src,import.meta.url));assert.equal(bytes.toString('ascii',0,4),'RIFF');assert.equal(bytes.toString('ascii',8,12),'WEBP');
+ }
+});
+
 test('practice opponent progresses through a full match',()=>{
  const r=newRoom('Human',true);runBot(r);
  while(r.stage==='playing'){
@@ -104,11 +150,11 @@ test('HTTP room lifecycle, authentication, stale actions, reconnect, and full tw
  const post=async(route,b)=>{const r=await fetch(base+'/api/'+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});return {status:r.status,body:await r.json()}};
  try{
   assert.equal((await fetch(base+'/health')).status,200);
-  const a=(await post('create',{name:'<script>alert(1)</script>'})).body,b=(await post('join',{code:a.code,name:'B'})).body;
+  const created=(await post('create',{name:'<script>alert(1)</script>'})).body,a={code:created.code,token:created.token},joined=(await post('join',{code:a.code,name:'B'})).body,b={code:joined.code,token:joined.token};
   assert.equal((await post('join',{code:a.code})).status,409);
   assert.equal((await post('state',{code:a.code,token:'bad'})).status,403);
   assert.equal((await post('play',{code:a.code,token:a.token,ids:[]})).status,409);
-  const actors=[a,b];let state=(await post('state',a)).body;
+  const actors=[a,b].map(({code,token})=>({code,token}));let state=(await post('state',actors[0])).body;
   for(let n=0;n<12;n++){
    const ai=state.attacker;
    for(const idx of [0,1]){
@@ -120,6 +166,36 @@ test('HTTP room lifecycle, authentication, stale actions, reconnect, and full tw
    for(const who of actors){response=await post('next',{...who,match:state.match,turn:state.turn});assert.equal(response.status,200);state=response.body}
   }
   assert.equal(state.turn,12);assert.equal(state.history.length,12);assert.ok(['ended','shootout'].includes(state.stage));
-  const restored=(await post('state',a)).body;assert.equal(restored.turn,12);
+  const restored=(await post('state',actors[0])).body;assert.equal(restored.turn,12);
+ }finally{await new Promise(resolve=>server.close(resolve))}
+});
+
+test('HTTP penalty-only rooms join directly, reject stale kicks and retain mode for rematches',async()=>{
+ const server=createApp();await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+ const base='http://127.0.0.1:'+server.address().port;
+ const post=async(route,b)=>{const response=await fetch(base+'/api/'+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});return {status:response.status,body:await response.json()}};
+ try{
+  const a=(await post('create',{name:'A',mode:'penalties'})).body;assert.equal(a.state.stage,'lobby');
+  const b=(await post('join',{name:'B',code:a.code})).body;assert.equal(b.state.stage,'shootout');assert.equal(b.state.mode,'penalties');
+  const who=[a,b].map(({code,token})=>({code,token}));let state=b.state;let iterations=0;
+  while(state.stage!=='ended'){
+   assert.ok(++iterations<100,'shootout should end');
+   const initial=state.shootout.kick;
+   for(const idx of [0,1]){
+    const own=(await post('state',who[idx])).body,shooter=own.shootout.shooter;
+    const choices=idx===shooter?{taker:own.cards.find(c=>['F','M'].includes(c.category)&&!own.shootout.used.includes(c.id)).id,aim:'left'}:{keeper:own.cards.find(c=>c.category==='G').id,dive:'right'};
+    const result=await post('penalty',{...who[idx],match:own.match,turn:own.turn,kick:initial,...choices});assert.equal(result.status,200);state=result.body;
+   }
+   assert.equal(state.shootout.history.length,initial);
+   if(state.stage!=='ended'){
+    for(const idx of [0,1]){const result=await post('penalty-next',{...who[idx],match:state.match,turn:state.turn,kick:initial});assert.equal(result.status,200);state=result.body}
+    const stale=await post('penalty',{...who[0],match:state.match,turn:state.turn,kick:initial});assert.equal(stale.status,400);
+   }
+  }
+  const oldMatch=state.match;
+  for(const idx of [0,1]){const result=await post('rematch',{...who[idx],match:state.match,turn:state.turn});assert.equal(result.status,200);state=result.body}
+  assert.equal(state.mode,'penalties');assert.equal(state.stage,'shootout');assert.notEqual(state.match,oldMatch);assert.equal(state.shootout.history.length,0);
+  const image=await fetch(base+db.cards[0].photo.src);assert.equal(image.status,200);assert.equal(image.headers.get('content-type'),'image/webp');
+  assert.equal((await fetch(base+'/players/../server.js')).status,404);
  }finally{await new Promise(resolve=>server.close(resolve))}
 });
