@@ -20,9 +20,9 @@ function render(){
  $('selection').hidden=marking;$('markPanel').hidden=!marking;
  if(marking){
   let revealed=state.revealed;
-  if(attacking){$('markPanel').innerHTML='<h2>Opponent is assigning markers</h2><p class="muted">Both teams are revealed. Wait for the defender to choose who to mark.</p>'+lineup(revealed.attack,'Your attack')+lineup(revealed.defense,'Opponent defense');return}
-  $('markPanel').innerHTML='<h2>Assign your markers</h2><p class="muted">Choose which attacker Defender 1 and Defender 2 will mark. They must mark different attackers. The third attacker stays unmarked.</p>'+lineup(revealed.defense,'Your defense')+'<div class="slotgrid">'+[0,1].map(i=>'<div class="slot"><small>'+esc(revealed.defense[i].name)+' marks</small><select id="mark'+i+'"><option value="">Choose attacker</option>'+revealed.attack.map((c,j)=>'<option value="'+j+'" '+(marks[i]===j?'selected':'')+'>'+esc(c.name)+' — '+['Finisher','Creator','Runner'][j]+'</option>').join('')+'</select></div>').join('')+'</div><button class="btn" id="confirmMarks">Confirm marking</button>';
-  for(let i=0;i<2;i++)$('mark'+i).onchange=e=>marks[i]=Number(e.target.value);
+  if(attacking){$('markPanel').innerHTML='<h2>Opponent is assigning markers</h2><p class="muted">Both teams are revealed. Wait for the defender to choose who to mark.</p>'+lineup(revealed.attack,'Your attack')+lineup(revealed.defense,'Opponent defense',true);return}
+  $('markPanel').innerHTML='<h2>Assign your markers</h2><p class="muted">Choose which attacker Defender 1 and Defender 2 will mark. They must mark different attackers. The third attacker stays unmarked.</p>'+lineup(revealed.defense,'Your defense',true)+'<div class="slotgrid">'+[0,1].map(i=>'<div class="slot"><small>'+esc(revealed.defense[i].name)+' marks</small><select id="mark'+i+'"><option value="">Choose attacker</option>'+revealed.attack.map((c,j)=>'<option value="'+j+'" '+(marks[i]===j?'selected':'')+'>'+esc(c.name)+' — '+['Finisher','Creator','Runner'][j]+'</option>').join('')+'</select></div>').join('')+'</div><button class="btn" id="confirmMarks">Confirm marking</button>';
+  for(let i=0;i<2;i++)$('mark'+i).onchange=e=>marks[i]=e.target.value===''?null:Number(e.target.value);
   $('confirmMarks').onclick=async()=>{try{if(marks.length!==2||marks[0]===marks[1]||marks.some(x=>!Number.isInteger(x)))throw Error('Mark two different attackers');state=await api('mark',{code,token,marks});marks=[];render()}catch(e){notice(e.message)}};
   return;
  }
@@ -40,7 +40,7 @@ function render(){
   render();
  });
 }
-function lineup(arr,label){return '<h3>'+label+'</h3><div class="slotgrid">'+arr.map((c,i)=>'<div class="slot"><small>'+(['Finisher','Creator','Runner'][i])+'</small><strong>'+esc(c.name)+'</strong><small>'+c.position+' · OVR '+c.ovr+'</small></div>').join('')+'</div>'}
+function lineup(arr,label,defensive=false){return '<h3>'+label+'</h3><div class="slotgrid">'+arr.map((c,i)=>'<div class="slot"><small>'+(defensive?['Defender 1','Defender 2','Goalkeeper'][i]:['Finisher','Creator','Runner'][i])+'</small><strong>'+esc(c.name)+'</strong><small>'+c.position+' · OVR '+c.ovr+'</small></div>').join('')+'</div>'}
 $('create').onclick=async()=>{try{session(await api('create',{name:$('name').value}))}catch(e){notice(e.message)}};
 $('join').onclick=async()=>{try{session(await api('join',{name:$('name').value,code:$('joinCode').value.trim().toUpperCase()}))}catch(e){notice(e.message)}};
 $('submit').onclick=async()=>{try{state=await api('play',{code,token,ids:chosen});chosen=[];render()}catch(e){notice(e.message)}};
