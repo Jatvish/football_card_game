@@ -196,7 +196,7 @@ export function createApp(){
     runBot(r);return json(res,200,snapshot(r,idx));
    }
    if(req.method!=='GET'&&req.method!=='HEAD')return json(res,405,{error:'Method not allowed.'});
-   const file=path==='/'?'index.html':path.slice(1);const photo=/^players\/[A-Z][0-9]{2}\.webp$/.test(file);if(!photo&&!['index.html','app.js','engine.js','styles.css'].includes(file))return json(res,404,{error:'Not found.'});
+   const file=path==='/'?'index.html':path.slice(1);const photo=/^players\/[A-Z][0-9]{2}\.webp$/.test(file);if(!photo&&!['index.html','app.js','engine.js','replay.js','styles.css'].includes(file))return json(res,404,{error:'Not found.'});
    const bytes=await readFile(join(root,'public',file));res.writeHead(200,{'Content-Type':file.endsWith('.webp')?'image/webp':file.endsWith('.js')?'text/javascript; charset=utf-8':file.endsWith('.css')?'text/css; charset=utf-8':'text/html; charset=utf-8','Cache-Control':photo?'public, max-age=86400':'no-cache'});res.end(req.method==='HEAD'?undefined:bytes);
   }catch(e){if(!res.headersSent)json(res,400,{error:e instanceof SyntaxError?'Invalid JSON.':e.message});else res.end()}
  });server.on('close',()=>clearInterval(cleanup));return server;
