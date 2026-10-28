@@ -53,7 +53,16 @@
           "from": 2021,
           "to": 2023
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/A01.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Leo_Messi_Argentina_v_Egypt_7_July_2026-1.jpg",
+        "author": "Bryan Berlin / WikiPortraits",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Leo Messi Argentina v Egypt 7 July 2026-1"
+      }
     },
     {
       "id": "A02",
@@ -96,7 +105,16 @@
           "from": 2021,
           "to": 2023
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/A02.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Neymar_Junior_Brazil_V_Morocco_13_June_2026-40.jpg",
+        "author": "Bryan Berlin / WikiPortraits",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Neymar Junior Brazil V Morocco 13 June 2026-40"
+      }
     },
     {
       "id": "A03",
@@ -134,7 +152,16 @@
           "from": 2014,
           "to": 2015
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/A03.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Luis_Su%C3%A1rez_2026_(cropped).jpg",
+        "author": "The White House",
+        "license": "Public domain",
+        "licenseUrl": "",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Luis Suárez 2026 (cropped)"
+      }
     },
     {
       "id": "A04",
@@ -182,7 +209,16 @@
           "from": 2009,
           "to": 2010
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/A04.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Xavi_Hernandez_(31521652051).jpg",
+        "author": "Doha Stadium Plus Qatar from Doha, Qatar",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Xavi Hernandez (31521652051)"
+      }
     },
     {
       "id": "A05",
@@ -230,7 +266,16 @@
           "from": 2009,
           "to": 2010
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/A05.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Andr%C3%A9s_Iniesta_Argentina_v_Spain_19_July_2026-034_(cropped).jpg",
+        "author": "Bryan Berlin",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Andrés Iniesta Argentina v Spain 19 July 2026-034 (cropped)"
+      }
     },
     {
       "id": "A06",
@@ -273,7 +318,16 @@
           "from": 2009,
           "to": 2010
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/A06.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Sergio_Busquets_NYCFC_Miami_24_Sep_2025-020_(cropped).jpg",
+        "author": "Bryan Berlin",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Sergio Busquets NYCFC Miami 24 Sep 2025-020 (cropped)"
+      }
     },
     {
       "id": "A07",
@@ -316,7 +370,16 @@
           "from": 2009,
           "to": 2010
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/A07.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Gerard_Piqu%C3%A9_Euro_2012_vs_France_01.jpg",
+        "author": "Football.ua",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Gerard Piqué Euro 2012 vs France 01"
+      }
     },
     {
       "id": "A08",
@@ -354,7 +417,16 @@
           "from": 2014,
           "to": 2015
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/A08.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Javier_Mascherano_NE_Revolution_Inter_Miami_7.9.25-040_(cropped).jpg",
+        "author": "Bryan Berlin",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Javier Mascherano NE Revolution Inter Miami 7.9.25-040 (cropped)"
+      }
     },
     {
       "id": "A09",
@@ -397,7 +469,16 @@
           "from": 2009,
           "to": 2010
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/A09.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:07_07_2019_Final_da_Copa_Am%C3%A9rica_2019_(48226649586)_(cropped).jpg",
+        "author": "Palácio do Planalto from Brasilia, Brasil",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "07 07 2019 Final da Copa América 2019 (48226649586) (cropped)"
+      }
     },
     {
       "id": "A10",
@@ -435,7 +516,16 @@
           "from": 2014,
           "to": 2015
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/A10.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Jordi_Alba_NE_Revolution_Inter_Miami_7.9.25-047_(cropped).jpg",
+        "author": "Bryan Berlin",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Jordi Alba NE Revolution Inter Miami 7.9.25-047 (cropped)"
+      }
     },
     {
       "id": "A11",
@@ -473,7 +563,16 @@
           "from": 2014,
           "to": 2015
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/A11.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Marc-Andre_Ter_Stegen_ACCI_FCBARCELONA_Turisme_Catalunya_gira_pretemporada_CATPRESS.jpg",
+        "author": "Government of Catalonia",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Marc-Andre Ter Stegen ACCI FCBARCELONA Turisme Catalunya gira pretemporada CATPRESS"
+      }
     },
     {
       "id": "A12",
@@ -511,7 +610,16 @@
           "from": 2014,
           "to": 2015
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/A12.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Claudio_Bravo_Footballteam_of_Chile_-_Spain_vs._Chile,_10th_September_2013_(cropped).jpg",
+        "author": "Fanny Schertzer",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Claudio Bravo Footballteam of Chile - Spain vs. Chile, 10th September 2013 (cropped)"
+      }
     },
     {
       "id": "B01",
@@ -554,7 +662,16 @@
           "from": 2004,
           "to": 2009
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/B01.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Cristiano_Ronaldo_Croatia_v_Portugal_2_July_2026-075_(cropped).jpg",
+        "author": "Bryan Berlin / WikiPortraits",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Cristiano Ronaldo Croatia v Portugal 2 July 2026-075 (cropped)"
+      }
     },
     {
       "id": "B02",
@@ -592,7 +709,16 @@
           "from": 2016,
           "to": 2017
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/B02.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:2022_FIFA_World_Cup_United_States_1%E2%80%931_Wales_-_(32)_(cropped).jpg",
+        "author": "Tasnim News Agency",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "2022 FIFA World Cup United States 1–1 Wales - (32) (cropped)"
+      }
     },
     {
       "id": "B03",
@@ -630,7 +756,16 @@
           "from": 2016,
           "to": 2017
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/B03.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Karim_Benzema_vs._FC_Schalke_04_(16647992937).jpg",
+        "author": "Chris Deahr",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Karim Benzema vs. FC Schalke 04 (16647992937)"
+      }
     },
     {
       "id": "B04",
@@ -673,7 +808,16 @@
           "from": 2023,
           "to": 2024
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/B04.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Luka_Modric_Croatia_v_Portugal_2_July_2026-055.jpg",
+        "author": "Bryan Berlin / WikiPortraits",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Luka Modric Croatia v Portugal 2 July 2026-055"
+      }
     },
     {
       "id": "B05",
@@ -716,7 +860,16 @@
           "from": 2023,
           "to": 2024
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/B05.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Toni_Kroos_Real_Madrid_2021.jpg",
+        "author": "https://www.youtube.com/@realmadrid",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Toni Kroos Real Madrid 2021"
+      }
     },
     {
       "id": "B06",
@@ -754,7 +907,16 @@
           "from": 2016,
           "to": 2017
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/B06.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Casemiro_Brazil_V_Morocco_13_June_2026-76_(cropped).jpg",
+        "author": "Bryan Berlin / WikiPortraits",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Casemiro Brazil V Morocco 13 June 2026-76 (cropped)"
+      }
     },
     {
       "id": "B07",
@@ -797,7 +959,16 @@
           "from": 2021,
           "to": 2023
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/B07.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Sergio_Ramos_Interview_2021_(cropped).jpg",
+        "author": "Real Madrid",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Sergio Ramos Interview 2021 (cropped)"
+      }
     },
     {
       "id": "B08",
@@ -840,7 +1011,16 @@
           "from": 2016,
           "to": 2018
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/B08.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Liver-RM_(8)_(Varane).jpg",
+        "author": "Антон Зайцев",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Liver-RM (8) (Varane)"
+      }
     },
     {
       "id": "B09",
@@ -878,7 +1058,16 @@
           "from": 2016,
           "to": 2017
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/B09.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Marcelo_Vieira_in_2022.jpg",
+        "author": "Fotografías Archimadrid.es",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Marcelo Vieira in 2022"
+      }
     },
     {
       "id": "B10",
@@ -921,7 +1110,16 @@
           "from": 2023,
           "to": 2024
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/B10.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:UEFA_EURO_qualifiers_Sweden_vs_Spain_20191015_Dani_Carvajal_10_(cropped).jpg",
+        "author": "Rolandhino1",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "UEFA EURO qualifiers Sweden vs Spain 20191015 Dani Carvajal 10 (cropped)"
+      }
     },
     {
       "id": "B11",
@@ -964,7 +1162,16 @@
           "from": 2021,
           "to": 2023
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/B11.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Keylor_Navas_2018_(cropped).jpg",
+        "author": "Антон Зайцев",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Keylor Navas 2018 (cropped)"
+      }
     },
     {
       "id": "B12",
@@ -1002,7 +1209,16 @@
           "from": 2016,
           "to": 2017
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/B12.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Kiko_Casilla_2015_(cropped).jpg",
+        "author": "Giovanni Batista Rodriguez from España",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Kiko Casilla 2015 (cropped)"
+      }
     },
     {
       "id": "P01",
@@ -1045,7 +1261,16 @@
           "from": 2009,
           "to": 2010
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P01.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Thierry_Henry_(51649035951)_(cropped).jpg",
+        "author": "Web Summit",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Thierry Henry (51649035951) (cropped)"
+      }
     },
     {
       "id": "P02",
@@ -1083,7 +1308,16 @@
           "from": 2021,
           "to": 2023
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P02.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Kylian_Mbappe_France_v_Senegal_16_June_2026-391_(cropped).jpg",
+        "author": "Bryan Berlin / WikiPortraits",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Kylian Mbappe France v Senegal 16 June 2026-391 (cropped)"
+      }
     },
     {
       "id": "P03",
@@ -1121,7 +1355,16 @@
           "from": 2022,
           "to": 2023
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P03.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Erling_Haaland_Morocco_v_Norway_7_June_2026-51.jpg",
+        "author": "Bryan Berlin",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Erling Haaland Morocco v Norway 7 June 2026-51"
+      }
     },
     {
       "id": "P04",
@@ -1159,7 +1402,16 @@
           "from": 2018,
           "to": 2020
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P04.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Mohamed_Salah_Argentina_v_Egypt_7_July_2026-163_(cropped).jpg",
+        "author": "Bryan Berlin / WikiPortraits",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Mohamed Salah Argentina v Egypt 7 July 2026-163 (cropped)"
+      }
     },
     {
       "id": "P05",
@@ -1197,7 +1449,16 @@
           "from": 2014,
           "to": 2020
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P05.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Robert_Lewandowski_NYCFC_v_Chicago_25_July_2026-383.jpg",
+        "author": "Bryan Berlin",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Robert Lewandowski NYCFC v Chicago 25 July 2026-383"
+      }
     },
     {
       "id": "P06",
@@ -1235,7 +1496,16 @@
           "from": 2004,
           "to": 2009
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P06.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Wayne_Rooney_(50121495731)_(cropped).jpg",
+        "author": "All-Pro Reels from District of Columbia, USA",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Wayne Rooney (50121495731) (cropped)"
+      }
     },
     {
       "id": "P07",
@@ -1273,7 +1543,16 @@
           "from": 2007,
           "to": 2008
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P07.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Ronaldinho_in_2019.jpg",
+        "author": "Marcos Corrêa/PR",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Ronaldinho in 2019"
+      }
     },
     {
       "id": "P08",
@@ -1311,7 +1590,16 @@
           "from": 2009,
           "to": 2010
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P08.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Zlatan_Ibrahimovi%C4%87_nyc.jpg",
+        "author": "Colleen Sturtevant",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Zlatan Ibrahimović nyc"
+      }
     },
     {
       "id": "P09",
@@ -1349,7 +1637,16 @@
           "from": 2022,
           "to": 2023
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P09.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Kevin_De_Bruyne_USMNT_v_Belgium_Mar_28_2026-64_(cropped).jpg",
+        "author": "Bryan Berlin",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Kevin De Bruyne USMNT v Belgium Mar 28 2026-64 (cropped)"
+      }
     },
     {
       "id": "P10",
@@ -1381,7 +1678,16 @@
       },
       "nation": "France",
       "ability": "vision",
-      "connections": []
+      "connections": [],
+      "photo": {
+        "src": "/players/P10.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Zinedine_Zidane_by_Tasnim_03.jpg",
+        "author": "Tasnim News Agency",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Zinedine Zidane by Tasnim 03"
+      }
     },
     {
       "id": "P11",
@@ -1419,7 +1725,16 @@
           "from": 2023,
           "to": 2024
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P11.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Jude_Bellingham_England_v_Ghana_23_June_2026-061_(cropped).jpg",
+        "author": "Bryan Berlin / WikiPortraits",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Jude Bellingham England v Ghana 23 June 2026-061 (cropped)"
+      }
     },
     {
       "id": "P12",
@@ -1462,7 +1777,16 @@
           "from": 2016,
           "to": 2018
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P12.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Paul_Pogba_Cannes_2025.jpg",
+        "author": "Gil Zetbase",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Paul Pogba Cannes 2025"
+      }
     },
     {
       "id": "P13",
@@ -1500,7 +1824,16 @@
           "from": 2016,
           "to": 2018
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P13.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:N%27Golo_Kante_France_v_Senegal_16_June_2026-397.jpg",
+        "author": "Bryan Berlin / WikiPortraits",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "N'Golo Kante France v Senegal 16 June 2026-397"
+      }
     },
     {
       "id": "P14",
@@ -1532,7 +1865,16 @@
       },
       "nation": "England",
       "ability": "vision",
-      "connections": []
+      "connections": [],
+      "photo": {
+        "src": "/players/P14.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Steven_Gerrard_2018.jpg",
+        "author": "Эдгар Брещанов",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Steven Gerrard 2018"
+      }
     },
     {
       "id": "P15",
@@ -1570,7 +1912,16 @@
           "from": 2012,
           "to": 2015
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P15.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:20150616_-_Portugal_-_Italie_-_Gen%C3%A8ve_-_Andrea_Pirlo_(cropped).jpg",
+        "author": "Clément Bucco-Lechat",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "20150616 - Portugal - Italie - Genève - Andrea Pirlo (cropped)"
+      }
     },
     {
       "id": "P16",
@@ -1608,7 +1959,16 @@
           "from": 2018,
           "to": 2020
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P16.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:20160604_AUT_NED_8876_(cropped).jpg",
+        "author": "Ailura, CC BY-SA 3.0 AT",
+        "license": "CC BY-SA 3.0 at",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/at/deed.en",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "20160604 AUT NED 8876 (cropped)"
+      }
     },
     {
       "id": "P17",
@@ -1646,7 +2006,16 @@
           "from": 2022,
           "to": 2023
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P17.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Ruben_Dias_Croatia_v_Portugal_2_July_2026-228_(cropped).jpg",
+        "author": "Bryan Berlin",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Ruben Dias Croatia v Portugal 2 July 2026-228 (cropped)"
+      }
     },
     {
       "id": "P18",
@@ -1684,7 +2053,16 @@
           "from": 2022,
           "to": 2023
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P18.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Kyle_Walker.jpg",
+        "author": "Кирилл Венедиктов",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Kyle Walker"
+      }
     },
     {
       "id": "P19",
@@ -1722,7 +2100,16 @@
           "from": 2021,
           "to": 2023
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P19.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Achraf_Hakimi_Morocco_v_Norway_7_June_2026-32.jpg",
+        "author": "Bryan Berlin",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Achraf Hakimi Morocco v Norway 7 June 2026-32"
+      }
     },
     {
       "id": "P20",
@@ -1754,7 +2141,16 @@
       },
       "nation": "Italy",
       "ability": "leader",
-      "connections": []
+      "connections": [],
+      "photo": {
+        "src": "/players/P20.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Paolo_Maldini_AC_Milan_Technical_director_2018.jpg",
+        "author": "GOAL TV",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Paolo Maldini AC Milan Technical director 2018"
+      }
     },
     {
       "id": "P21",
@@ -1797,7 +2193,16 @@
           "from": 2009,
           "to": 2010
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P21.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Premios_Goya_2020_-_Carles_Pujol.jpg",
+        "author": "Pedro J Pacheco",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Premios Goya 2020 - Carles Pujol"
+      }
     },
     {
       "id": "P22",
@@ -1835,7 +2240,16 @@
           "from": 2018,
           "to": 2020
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P22.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Trent_Alexander-Arnold_2018_(cropped).jpg",
+        "author": "Антон Зайцев",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Trent Alexander-Arnold 2018 (cropped)"
+      }
     },
     {
       "id": "P23",
@@ -1873,7 +2287,16 @@
           "from": 2014,
           "to": 2020
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P23.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Manuel_Neuer_Ecuador_v_Germany_25_June_2026-148.jpg",
+        "author": "Bryan Berlin / WikiPortraits",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Manuel Neuer Ecuador v Germany 25 June 2026-148"
+      }
     },
     {
       "id": "P24",
@@ -1911,7 +2334,16 @@
           "from": 2012,
           "to": 2015
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P24.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Norway_Italy_-_June_2025_A_44_(Gianluigi_Buffon).jpg",
+        "author": "MichaelEmilio",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Norway Italy - June 2025 A 44 (Gianluigi Buffon)"
+      }
     },
     {
       "id": "P25",
@@ -1949,7 +2381,16 @@
           "from": 2023,
           "to": 2024
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P25.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Thibaut_Courtois_Belgium_v_USA_6_July_2026-076_(cropped).jpg",
+        "author": "Bryan Berlin",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Thibaut Courtois Belgium v USA 6 July 2026-076 (cropped)"
+      }
     },
     {
       "id": "P26",
@@ -1987,7 +2428,16 @@
           "from": 2018,
           "to": 2020
         }
-      ]
+      ],
+      "photo": {
+        "src": "/players/P26.webp",
+        "source": "https://commons.wikimedia.org/wiki/File:Alisson_Becker_Brazil_V_Morocco_13_June_2026-117_(cropped).jpg",
+        "author": "Bryan Berlin / WikiPortraits",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "changes": "Resized and converted to WebP; displayed with a crop.",
+        "title": "Alisson Becker Brazil V Morocco 13 June 2026-117 (cropped)"
+      }
     }
   ],
   "chemistry": {

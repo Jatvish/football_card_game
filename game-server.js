@@ -32,21 +32,28 @@ export function draft(){
  throw Error('Unable to deal a balanced squad. Please retry.');
 }
 export function player(name,bot=false){return {name:String(name||'Manager').trim().slice(0,24)||'Manager',token:token(),bot,cards:[],uses:{},spent:[],lineup:null,activated:[],score:0,ready:false,rematch:false,penalty:null}}
-export function newRoom(name,practice=false){
+export function newRoom(name,practice=false,mode='full'){
+ if(!['full','penalties'].includes(mode))throw Error('Choose a valid game mode.');
  const squads=draft(),players=[player(name),practice?player('Coach AI',true):null];
  players[0].cards=squads[0];if(players[1])players[1].cards=squads[1];
- return {code:randomBytes(3).toString('hex').toUpperCase(),match:token(),players,reserve:squads[1],first:randomInt(2),turn:0,stage:practice?'playing':'lobby',phase:'select',history:[],last:null,winner:null,shootout:null,lastSeen:Date.now()};
+ const room={mode,code:randomBytes(3).toString('hex').toUpperCase(),match:token(),players,reserve:squads[1],first:randomInt(2),turn:0,stage:practice?'playing':'lobby',phase:'select',history:[],last:null,winner:null,shootout:null,lastSeen:Date.now()};
+ if(practice&&mode==='penalties')startShootout(room);
+ return room;
+}
+export function startShootout(r){
+ r.stage='shootout';r.phase='penalty';r.shootout={first:r.first,scores:[0,0],attempts:[0,0],history:[],used:[[],[]]};
+ r.players.forEach(p=>{p.penalty=null;p.ready=false});
 }
 const attackingIndex=r=>(r.first+r.turn)%2;
 export function snapshot(r,idx){
  const p=r.players[idx],op=r.players[1-idx],ai=attackingIndex(r),kind=idx===ai?'attack':'defense';
- return {code:r.code,match:r.match,you:idx,turn:r.turn,stage:r.stage,phase:r.phase,attacker:ai,first:r.first,
+ return {mode:r.mode,code:r.code,match:r.match,you:idx,turn:r.turn,stage:r.stage,phase:r.phase,attacker:ai,first:r.first,
   players:r.players.map(x=>x?{name:x.name,score:x.score,ready:x.ready,rematch:x.rematch,bot:x.bot}:null),
   cards:p.cards,uses:p.uses,spent:p.spent,submitted:!!p.lineup,opponentSubmitted:!!op?.lineup,ownLineup:p.lineup,ownActivated:p.activated,
   required:r.stage==='playing'&&r.phase==='select'?requiredCards(p,kind):[],
   revealed:r.phase==='marking'?{attack:r.players[ai].lineup.map(id=>byId.get(id)),defense:r.players[1-ai].lineup.map(id=>byId.get(id)),activated:r.players.flatMap(p=>p.activated)}:null,
   history:r.history,last:r.last,winner:r.winner,
-  shootout:r.shootout?{round:r.shootout.history.length+1,scores:r.shootout.scores,history:r.shootout.history,submitted:!!p.penalty,opponentSubmitted:!!op.penalty,used:r.shootout.used[idx]}:null,
+  shootout:r.shootout?{round:Math.floor(r.shootout.history.length/2)+1,kick:r.shootout.history.length+(r.phase==='penalty-result'?0:1),shooter:(r.shootout.first+r.shootout.history.length)%2,attempts:r.shootout.attempts,scores:r.shootout.scores,history:r.shootout.history,submitted:!!p.penalty,opponentSubmitted:!!op.penalty,used:r.shootout.used[idx]}:null,
   squadTotals:r.players.map(x=>x?sum(x.cards):null)};
 }
 export function select(r,idx,b){
@@ -72,28 +79,43 @@ export function advance(r){
  r.players.forEach(p=>{p.lineup=null;p.activated=[];p.ready=false});
  if(r.turn===12){
   if(r.players.some(p=>p.cards.some(c=>p.uses[c.id]!==3)))throw Error('Roster accounting invariant failed.');
-  if(r.players[0].score===r.players[1].score){r.stage='shootout';r.phase='penalty';r.shootout={scores:[0,0],history:[],used:[[],[]]}}
+  if(r.players[0].score===r.players[1].score)startShootout(r);
   else {r.stage='ended';r.phase='ended';r.winner=r.players[0].score>r.players[1].score?0:1}
  }else r.phase='select';
 }
 export function penalty(r,idx,b,random=()=>randomInt(1000000)/1000000){
- if(r.stage!=='shootout')throw Error('No shootout in progress.');
- const p=r.players[idx],s=r.shootout;if(p.penalty)throw Error('Penalty is already locked.');
- const taker=p.cards.find(c=>c.id===b.taker&&['F','M'].includes(c.category)),keeper=p.cards.find(c=>c.id===b.keeper&&c.category==='G');
- if(!taker||!keeper||s.used[idx].includes(taker.id))throw Error('Choose an eligible unused taker and a goalkeeper.');
- if(!['left','center','right'].includes(b.aim)||!['left','center','right'].includes(b.dive))throw Error('Choose shot and dive directions.');
- p.penalty={taker,keeper,aim:b.aim,dive:b.dive};if(!r.players.every(x=>x.penalty))return;
- const shots=r.players.map((x,i)=>{
-  const a=x.penalty,d=r.players[1-i].penalty;
-  const quality=.55*a.taker.stats.finishing+.45*a.taker.stats.composure,save=.55*d.keeper.stats.reflexes+.45*d.keeper.stats.gk_positioning;
-  const chance=clamp(.76+(quality-save)/200-(a.aim===d.dive?.32:0),.25,.95),goal=random()<chance;
-  if(goal)s.scores[i]++;s.used[i].push(a.taker.id);
-  return {player:i,taker:a.taker.name,keeper:d.keeper.name,aim:a.aim,dive:d.dive,chance,goal};
- });
- s.history.push(shots);r.players.forEach(x=>x.penalty=null);
- const n=s.history.length,diff=Math.abs(s.scores[0]-s.scores[1]);
- if((n<5&&diff>5-n)||(n>=5&&diff>0)){r.stage='ended';r.phase='ended';r.winner=s.scores[0]>s.scores[1]?0:1}
- if(n%6===0)s.used=[[],[]];
+ if(r.stage!=='shootout'||r.phase!=='penalty')throw Error('No penalty selection in progress.');
+ const p=r.players[idx],s=r.shootout,shooter=(s.first+s.history.length)%2;
+ if(p.penalty)throw Error('Your penalty choice is already locked.');
+ if(idx===shooter){
+  const taker=p.cards.find(c=>c.id===b.taker&&['F','M'].includes(c.category));
+  if(!taker||s.used[idx].includes(taker.id))throw Error('Choose an eligible unused penalty taker.');
+  if(!['left','center','right'].includes(b.aim))throw Error('Choose a shot direction.');
+  p.penalty={taker,aim:b.aim};
+ }else{
+  const keeper=p.cards.find(c=>c.id===b.keeper&&c.category==='G');
+  if(!keeper)throw Error('Choose your goalkeeper.');
+  if(!['left','center','right'].includes(b.dive))throw Error('Choose a dive direction.');
+  p.penalty={keeper,dive:b.dive};
+ }
+ if(!r.players.every(x=>x.penalty))return;
+ const a=r.players[shooter].penalty,d=r.players[1-shooter].penalty;
+ const quality=.55*a.taker.stats.finishing+.45*a.taker.stats.composure,save=.55*d.keeper.stats.reflexes+.45*d.keeper.stats.gk_positioning;
+ const chance=clamp(.76+(quality-save)/200-(a.aim===d.dive?.32:0),.25,.95),goal=random()<chance;
+ if(goal)s.scores[shooter]++;
+ s.attempts[shooter]++;s.used[shooter].push(a.taker.id);
+ s.history.push({number:s.history.length+1,player:shooter,taker:a.taker.name,keeper:d.keeper.name,takerId:a.taker.id,keeperId:d.keeper.id,aim:a.aim,dive:d.dive,chance,goal});
+ if(s.used[shooter].length===6)s.used[shooter]=[];
+ r.players.forEach(x=>{x.penalty=null;x.ready=false});r.phase='penalty-result';
+ const remaining=s.attempts.map(n=>Math.max(0,5-n));
+ const early=Math.max(...s.attempts)<=5&&(s.scores[0]>s.scores[1]+remaining[1]||s.scores[1]>s.scores[0]+remaining[0]);
+ const sudden=s.attempts[0]>=5&&s.attempts[0]===s.attempts[1]&&s.scores[0]!==s.scores[1];
+ if(early||sudden){r.stage='ended';r.phase='ended';r.winner=s.scores[0]>s.scores[1]?0:1}
+}
+export function nextPenalty(r,idx){
+ if(r.stage!=='shootout'||r.phase!=='penalty-result')throw Error('No penalty result to continue from.');
+ r.players[idx].ready=true;
+ if(r.players.every(p=>p.ready)){r.phase='penalty';r.players.forEach(p=>p.ready=false)}
 }
 export function runBot(r){
  const idx=r.players.findIndex(p=>p?.bot);if(idx<0)return;const p=r.players[idx];
@@ -112,9 +134,16 @@ export function runBot(r){
   }
   if(r.phase==='result')p.ready=true;
  }
- if(r.stage==='shootout'&&!p.penalty){
-  const candidates=p.cards.filter(c=>['F','M'].includes(c.category)&&!r.shootout.used[idx].includes(c.id)).sort((a,b)=>b.stats.finishing-a.stats.finishing);
-  penalty(r,idx,{taker:candidates[0].id,keeper:p.cards.find(c=>c.category==='G').id,aim:['left','center','right'][randomInt(3)],dive:['left','center','right'][randomInt(3)]});
+ if(r.stage==='shootout'){
+  if(r.phase==='penalty-result')p.ready=true;
+  else if(r.phase==='penalty'&&!p.penalty){
+   const shooter=(r.shootout.first+r.shootout.history.length)%2;
+   if(idx===shooter){
+    const candidates=p.cards.filter(c=>['F','M'].includes(c.category)&&!r.shootout.used[idx].includes(c.id)).sort((a,b)=>b.stats.finishing-a.stats.finishing);
+    penalty(r,idx,{taker:candidates[0].id,aim:['left','center','right'][randomInt(3)]});
+   }else penalty(r,idx,{keeper:p.cards.find(c=>c.category==='G').id,dive:['left','center','right'][randomInt(3)]});
+   if(r.phase==='penalty-result')p.ready=true;
+  }
  }
 }
 export function createApp(){
@@ -127,7 +156,7 @@ export function createApp(){
   res.setHeader('Content-Security-Policy',"default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
   try{
    const path=new URL(req.url,'http://localhost').pathname;
-   if(path==='/health')return json(res,200,{ok:true,version:2,cards:db.cards.length,rooms:rooms.size});
+   if(path==='/health')return json(res,200,{ok:true,version:'2.1',cards:db.cards.length,rooms:rooms.size});
    if(path==='/api/cards'&&req.method==='GET')return json(res,200,db);
    if(path.startsWith('/api/')){
     if(req.method!=='POST')return json(res,405,{error:'Use POST.'});
@@ -137,13 +166,13 @@ export function createApp(){
      const ip=req.socket.remoteAddress,now=Date.now();let limit=limits.get(ip);
      if(!limit||now-limit.start>60000){limit={start:now,count:0};limits.set(ip,limit)}
      if(++limit.count>30||rooms.size>=1000)return json(res,429,{error:'Room limit reached. Try again shortly.'});
-     const r=newRoom(b.name,b.practice===true);while(rooms.has(r.code))r.code=randomBytes(3).toString('hex').toUpperCase();rooms.set(r.code,r);runBot(r);
+     const r=newRoom(b.name,b.practice===true,b.mode||'full');while(rooms.has(r.code))r.code=randomBytes(3).toString('hex').toUpperCase();rooms.set(r.code,r);runBot(r);
      return json(res,200,{code:r.code,token:r.players[0].token,state:snapshot(r,0)});
     }
     const r=rooms.get(String(b.code||'').trim().toUpperCase());if(!r)return json(res,404,{error:'Room expired or server restarted. Create a new match.'});
     if(path==='/api/join'){
      if(r.players[1])return json(res,409,{error:'This room already has two players.'});
-     const p=player(b.name);p.cards=r.reserve;r.players[1]=p;r.stage='playing';r.lastSeen=Date.now();return json(res,200,{code:r.code,token:p.token,state:snapshot(r,1)});
+     const p=player(b.name);p.cards=r.reserve;r.players[1]=p;if(r.mode==='penalties')startShootout(r);else r.stage='playing';r.lastSeen=Date.now();return json(res,200,{code:r.code,token:p.token,state:snapshot(r,1)});
     }
     const idx=r.players.findIndex(p=>p&&!p.bot&&p.token===b.token);if(idx<0)return json(res,403,{error:'Invalid room session.'});r.lastSeen=Date.now();
     if(path==='/api/state')return json(res,200,snapshot(r,idx));
@@ -153,19 +182,22 @@ export function createApp(){
     else if(path==='/api/next'){
      if(r.phase!=='result')throw Error('No result to continue from.');r.players[idx].ready=true;if(r.players.every(p=>p.ready))advance(r);
     }else if(path==='/api/penalty'){
-     if(b.round!==r.shootout?.history.length+1)throw Error('That shootout round has ended.');penalty(r,idx,b);
+     if(b.kick!==r.shootout?.history.length+1)throw Error('That penalty has ended.');penalty(r,idx,b);
+    }else if(path==='/api/penalty-next'){
+     if(b.kick!==r.shootout?.history.length)throw Error('That penalty result has ended.');nextPenalty(r,idx);
     }else if(path==='/api/rematch'){
      if(r.stage!=='ended')throw Error('Finish the match first.');r.players[idx].rematch=true;r.players.filter(p=>p.bot).forEach(p=>p.rematch=true);
      if(r.players.every(p=>p.rematch)){
       const squads=draft();r.match=token();r.first=1-r.first;r.turn=0;r.stage='playing';r.phase='select';r.history=[];r.last=null;r.winner=null;r.shootout=null;
       r.players=r.players.map((p,i)=>({...player(p.name,p.bot),token:p.token,cards:squads[i]}));
+      if(r.mode==='penalties')startShootout(r);
      }
     }else return json(res,404,{error:'Unknown action.'});
     runBot(r);return json(res,200,snapshot(r,idx));
    }
    if(req.method!=='GET'&&req.method!=='HEAD')return json(res,405,{error:'Method not allowed.'});
-   const file=path==='/'?'index.html':path.slice(1);if(!['index.html','app.js','engine.js','styles.css'].includes(file))return json(res,404,{error:'Not found.'});
-   const bytes=await readFile(join(root,'public',file));res.writeHead(200,{'Content-Type':file.endsWith('.js')?'text/javascript; charset=utf-8':file.endsWith('.css')?'text/css; charset=utf-8':'text/html; charset=utf-8','Cache-Control':'no-cache'});res.end(req.method==='HEAD'?undefined:bytes);
+   const file=path==='/'?'index.html':path.slice(1);const photo=/^players\/[A-Z][0-9]{2}\.webp$/.test(file);if(!photo&&!['index.html','app.js','engine.js','replay.js','styles.css'].includes(file))return json(res,404,{error:'Not found.'});
+   const bytes=await readFile(join(root,'public',file));res.writeHead(200,{'Content-Type':file.endsWith('.webp')?'image/webp':file.endsWith('.js')?'text/javascript; charset=utf-8':file.endsWith('.css')?'text/css; charset=utf-8':'text/html; charset=utf-8','Cache-Control':photo?'public, max-age=86400':'no-cache'});res.end(req.method==='HEAD'?undefined:bytes);
   }catch(e){if(!res.headersSent)json(res,400,{error:e instanceof SyntaxError?'Invalid JSON.':e.message});else res.end()}
  });server.on('close',()=>clearInterval(cleanup));return server;
 }
