@@ -2,7 +2,7 @@ import test from 'node:test';
 import {readFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import {db,draft,newRoom,player,select,mark,advance,penalty,nextPenalty,startShootout,snapshot,runBot,createApp} from '../game-server.js';
-import {attack,defense,evaluate,roleScore,lineups,requiredCards,validateLineup} from '../public/engine.js';
+import {attack,defense,evaluate,roleScore,lineups,requiredCards,validateLineup,penaltyChance} from '../public/engine.js';
 const card=id=>structuredClone(db.cards.find(c=>c.id===id));
 const sum=cs=>cs.reduce((s,c)=>s+c.ovr,0);
 function two(){const r=newRoom('A',true);r.players[1].bot=false;return r}
@@ -86,6 +86,49 @@ function shotChoices(r,idx){
 }
 function kick(r,goal){penalty(r,0,shotChoices(r,0));penalty(r,1,shotChoices(r,1),()=>goal?0:1)}
 function nextKick(r){nextPenalty(r,0);nextPenalty(r,1)}
+
+test('correct penalty dives give 75–95% save odds across all card matchups and directions',()=>{
+ const directions=['left','center','right'];
+ for(const taker of db.cards.filter(c=>['F','M'].includes(c.category)))for(const keeper of db.cards.filter(c=>c.category==='G')){
+  for(const aim of directions)for(const dive of directions){
+   const chance=penaltyChance(taker,keeper,aim,dive);
+   if(aim===dive){
+    assert.ok(chance>=.05&&chance<=.25);
+    assert.ok(chance<penaltyChance(taker,keeper,aim,directions.find(x=>x!==aim)));
+   }else assert.ok(chance>=.25&&chance<=.95);
+  }
+ }
+});
+
+test('penalty stats affect odds in the right direction and remain bounded at extreme values',()=>{
+ const taker={stats:{finishing:90,composure:90}},keeper={stats:{reflexes:90,gk_positioning:90}};
+ assert.equal(penaltyChance(taker,keeper,'left','left'),.15);
+ assert.equal(penaltyChance(taker,keeper,'left','right'),.76);
+ for(const aim of ['left','center','right'])for(const dive of ['left','center','right']){
+  const base=penaltyChance(taker,keeper,aim,dive);
+  for(const stat of ['finishing','composure'])assert.ok(penaltyChance({stats:{...taker.stats,[stat]:100}},keeper,aim,dive)>base);
+  for(const stat of ['reflexes','gk_positioning'])assert.ok(penaltyChance(taker,{stats:{...keeper.stats,[stat]:100}},aim,dive)<base);
+ }
+ for(const strength of [0,100]){
+  const t={stats:{finishing:strength,composure:strength}},k={stats:{reflexes:100-strength,gk_positioning:100-strength}};
+  assert.equal(penaltyChance(t,k,'center','center'),strength===0?.05:.25);
+ }
+});
+
+test('server uses the stronger correct-dive odds for either shooter and submission order',()=>{
+ for(const shooter of [0,1])for(const direction of ['left','center','right'])for(const [roll,goal] of [[.1,true],[.15,false],[.2,false]]){
+  const r=shootoutRoom();r.shootout.first=shooter;
+  const taker=structuredClone(r.players[shooter].cards.find(c=>c.category==='F'));
+  const keeper=structuredClone(r.players[1-shooter].cards.find(c=>c.category==='G'));
+  taker.stats.finishing=taker.stats.composure=keeper.stats.reflexes=keeper.stats.gk_positioning=90;
+  r.players[shooter].cards=[taker];r.players[1-shooter].cards=[keeper];
+  const choices=[{},{}];choices[shooter]={taker:taker.id,aim:direction};choices[1-shooter]={keeper:keeper.id,dive:direction};
+  penalty(r,0,choices[0],()=>roll);penalty(r,1,choices[1],()=>roll);
+  const shot=snapshot(r,shooter).shootout.history[0];
+  assert.equal(shot.chance,.15);assert.equal(shot.goal,goal);
+  assert.equal(r.shootout.scores[shooter],Number(goal));assert.equal(r.phase,'penalty-result');
+ }
+});
 
 test('penalties resolve one kick, keep choices hidden and swap shooter after result acknowledgement',()=>{
  const r=shootoutRoom();

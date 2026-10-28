@@ -36,7 +36,7 @@ Role stat weights and natural-position modifiers are displayed in the in-game pl
 
 Margin = attack − defence + matchup, rounded to three decimal places to remove floating-point tie noise. A positive margin scores; zero favours defence. No bonus is counted twice. UI scores round to one decimal; the journal/API retains three decimals.
 
-Penalty goal chance = clamp(0.76 + (0.55 FIN + 0.45 COM − 0.55 REF − 0.45 GK_POS)/200 − matching-dive penalty 0.32, 0.25, 0.95). The server uses cryptographic randomness. One kick resolves only after the shooter and defender commit their role-specific choice. Both managers acknowledge its result before the next kick; hidden directions are never exposed before resolution.
+Penalty stat advantage = (0.55 FIN + 0.45 COM − 0.55 REF − 0.45 GK_POS)/200. A correct dive gives goal chance clamp(0.15 + advantage, 0.05, 0.25): 85% save chance at equal stats, bounded at 75–95%. A different dive gives goal chance clamp(0.76 + advantage, 0.25, 0.95). The result and kick history show both goal and save probabilities. The server uses cryptographic randomness. One kick resolves only after the shooter and defender commit their role-specific choice. Both managers acknowledge its result before the next kick; hidden directions are never exposed before resolution.
 
 ## Data
 
