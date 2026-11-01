@@ -32,11 +32,23 @@ export function draft(){
  throw Error('Unable to deal a balanced squad. Please retry.');
 }
 export function player(name,bot=false){return {name:String(name||'Manager').trim().slice(0,24)||'Manager',token:token(),bot,cards:[],uses:{},spent:[],lineup:null,activated:[],score:0,ready:false,rematch:false,penalty:null}}
-export function newRoom(name,practice=false,mode='full'){
- if(!['full','penalties'].includes(mode))throw Error('Choose a valid game mode.');
- const squads=draft(),players=[player(name),practice?player('Coach AI',true):null];
+export function newRoom(name,practice=false,mode='full',options={}){
+ if(!['quick','full','ranked','penalties'].includes(mode))throw Error('Choose a valid game mode.');
+ if(mode==='ranked'&&!practice)throw Error('Ranked collection matches are currently played against Coach AI.');
+ const squads=draft(),players=[player(name),practice?player(mode==='ranked'?'Ranked Coach':'Coach AI',true):null];
+ if(mode==='ranked'){
+  const ids=options.squad;
+  if(!Array.isArray(ids)||ids.length!==12||new Set(ids).size!==12)throw Error('Choose exactly 12 different owned players for your ranked squad.');
+  const cards=ids.map(id=>byId.get(id));
+  if(cards.some(c=>!c))throw Error('Your ranked squad contains an unknown player.');
+  const counts=Object.fromEntries(['F','M','D','G'].map(cat=>[cat,cards.filter(c=>c.category===cat).length]));
+  if(counts.F!==3||counts.M!==3||counts.D!==4||counts.G!==2)throw Error('Ranked squads need 3 forwards, 3 midfielders, 4 defenders and 2 goalkeepers.');
+  squads[0]=cards;
+ }
  players[0].cards=squads[0];if(players[1])players[1].cards=squads[1];
- const room={mode,code:randomBytes(3).toString('hex').toUpperCase(),match:token(),players,reserve:squads[1],first:randomInt(2),turn:0,stage:practice?'playing':'lobby',phase:'select',history:[],last:null,winner:null,shootout:null,lastSeen:Date.now()};
+ const quick=mode==='quick';
+ const difficulty=['rookie','pro','legend'].includes(options.difficulty)?options.difficulty:'pro';
+ const room={mode,cap:quick?2:3,turnLimit:quick?6:12,difficulty,code:randomBytes(3).toString('hex').toUpperCase(),match:token(),players,reserve:squads[1],first:randomInt(2),turn:0,stage:practice?'playing':'lobby',phase:'select',history:[],last:null,winner:null,shootout:null,lastSeen:Date.now()};
  if(practice&&mode==='penalties')startShootout(room);
  return room;
 }
@@ -47,10 +59,10 @@ export function startShootout(r){
 const attackingIndex=r=>(r.first+r.turn)%2;
 export function snapshot(r,idx){
  const p=r.players[idx],op=r.players[1-idx],ai=attackingIndex(r),kind=idx===ai?'attack':'defense';
- return {mode:r.mode,code:r.code,match:r.match,you:idx,turn:r.turn,stage:r.stage,phase:r.phase,attacker:ai,first:r.first,
+ return {mode:r.mode,cap:r.cap,turnLimit:r.turnLimit,difficulty:r.difficulty,code:r.code,match:r.match,you:idx,turn:r.turn,stage:r.stage,phase:r.phase,attacker:ai,first:r.first,
   players:r.players.map(x=>x?{name:x.name,score:x.score,ready:x.ready,rematch:x.rematch,bot:x.bot}:null),
   cards:p.cards,uses:p.uses,spent:p.spent,submitted:!!p.lineup,opponentSubmitted:!!op?.lineup,ownLineup:p.lineup,ownActivated:p.activated,
-  required:r.stage==='playing'&&r.phase==='select'?requiredCards(p,kind):[],
+  required:r.stage==='playing'&&r.phase==='select'?requiredCards(p,kind,r.cap):[],
   revealed:r.phase==='marking'?{attack:r.players[ai].lineup.map(id=>byId.get(id)),defense:r.players[1-ai].lineup.map(id=>byId.get(id)),activated:r.players.flatMap(p=>p.activated)}:null,
   history:r.history,last:r.last,winner:r.winner,
   shootout:r.shootout?{round:Math.floor(r.shootout.history.length/2)+1,kick:r.shootout.history.length+(r.phase==='penalty-result'?0:1),shooter:(r.shootout.first+r.shootout.history.length)%2,attempts:r.shootout.attempts,scores:r.shootout.scores,history:r.shootout.history,submitted:!!p.penalty,opponentSubmitted:!!op.penalty,used:r.shootout.used[idx]}:null,
@@ -59,7 +71,7 @@ export function snapshot(r,idx){
 export function select(r,idx,b){
  if(r.stage!=='playing'||r.phase!=='select')throw Error('Card selection is closed.');
  const p=r.players[idx];if(p.lineup)throw Error('Your lineup is already locked.');
- validateLineup(p,b.ids,idx===attackingIndex(r)?'attack':'defense');
+ validateLineup(p,b.ids,idx===attackingIndex(r)?'attack':'defense',r.cap);
  const activated=b.activated||[];
  if(!Array.isArray(activated)||new Set(activated).size!==activated.length||activated.some(id=>!b.ids.includes(id)||p.spent.includes(id)))throw Error('Activate only selected cards with an unused ability.');
  p.lineup=[...b.ids];p.activated=[...activated];if(r.players.every(p=>p.lineup))r.phase='marking';
@@ -71,14 +83,14 @@ export function mark(r,idx,marks){
  const A=a.lineup.map(id=>byId.get(id)),D=d.lineup.map(id=>byId.get(id));
  const result=evaluate(A,D,marks,db.chemistry,[...a.activated,...d.activated]);
  if(result.goal)a.score++;
- for(const p of [a,d]){for(const id of p.lineup)p.uses[id]=(p.uses[id]||0)+1;p.spent.push(...p.activated);p.ready=false}
+ for(const p of [a,d]){for(const id of p.lineup)p.uses[id]=(p.uses[id]||0)+1;p.spent.push(...result.abilities.filter(x=>x.triggered&&p.activated.includes(x.id)).map(x=>x.id));p.ready=false}
  r.last={number:r.turn+1,attacker:ai,...result,attackCards:A,defenseCards:D,marks};
  r.history.push(r.last);r.turn++;r.phase='result';
 }
 export function advance(r){
  r.players.forEach(p=>{p.lineup=null;p.activated=[];p.ready=false});
- if(r.turn===12){
-  if(r.players.some(p=>p.cards.some(c=>p.uses[c.id]!==3)))throw Error('Roster accounting invariant failed.');
+ if(r.turn===r.turnLimit){
+  if(['full','ranked'].includes(r.mode)&&r.players.some(p=>p.cards.some(c=>p.uses[c.id]!==3)))throw Error('Roster accounting invariant failed.');
   if(r.players[0].score===r.players[1].score)startShootout(r);
   else {r.stage='ended';r.phase='ended';r.winner=r.players[0].score>r.players[1].score?0:1}
  }else r.phase='select';
@@ -122,8 +134,10 @@ export function runBot(r){
   if(r.phase==='select'&&!p.lineup){
    const kind=idx===attackingIndex(r)?'attack':'defense';
    // Own squad only: never read the human's hidden lineup.
-   const options=lineups(p,kind).map(cs=>({cs,value:(kind==='attack'?attack:defense)(cs,db.chemistry).value})).sort((a,b)=>b.value-a.value);
-   const ids=options[0].cs.map(c=>c.id);select(r,idx,{ids,activated:ids.filter(id=>!p.spent.includes(id))});
+   const options=lineups(p,kind,r.cap).map(cs=>({cs,value:(kind==='attack'?attack:defense)(cs,db.chemistry).value})).sort((a,b)=>b.value-a.value);
+   const level=r.difficulty;
+   const pick=level==='rookie'?options[Math.floor(Math.random()*Math.max(1,Math.ceil(options.length*.55)))]:level==='pro'?options[Math.floor(Math.random()*Math.min(3,options.length))]:options[0];
+   const ids=pick.cs.map(c=>c.id);select(r,idx,{ids,activated:ids.filter(id=>!p.spent.includes(id))});
   }
   if(r.phase==='marking'&&idx!==attackingIndex(r)){
    const a=r.players[1-idx].lineup.map(id=>byId.get(id)),d=p.lineup.map(id=>byId.get(id)),choices=[];
@@ -155,7 +169,7 @@ export function createApp(){
   res.setHeader('Content-Security-Policy',"default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
   try{
    const path=new URL(req.url,'http://localhost').pathname;
-   if(path==='/health')return json(res,200,{ok:true,version:'2.1',cards:db.cards.length,rooms:rooms.size});
+   if(path==='/health')return json(res,200,{ok:true,version:'2.2',cards:db.cards.length,rooms:rooms.size});
    if(path==='/api/cards'&&req.method==='GET')return json(res,200,db);
    if(path.startsWith('/api/')){
     if(req.method!=='POST')return json(res,405,{error:'Use POST.'});
@@ -165,7 +179,7 @@ export function createApp(){
      const ip=req.socket.remoteAddress,now=Date.now();let limit=limits.get(ip);
      if(!limit||now-limit.start>60000){limit={start:now,count:0};limits.set(ip,limit)}
      if(++limit.count>30||rooms.size>=1000)return json(res,429,{error:'Room limit reached. Try again shortly.'});
-     const r=newRoom(b.name,b.practice===true,b.mode||'full');while(rooms.has(r.code))r.code=randomBytes(3).toString('hex').toUpperCase();rooms.set(r.code,r);runBot(r);
+     const r=newRoom(b.name,b.practice===true,b.mode||'full',{squad:b.squad,difficulty:b.difficulty});while(rooms.has(r.code))r.code=randomBytes(3).toString('hex').toUpperCase();rooms.set(r.code,r);runBot(r);
      return json(res,200,{code:r.code,token:r.players[0].token,state:snapshot(r,0)});
     }
     const r=rooms.get(String(b.code||'').trim().toUpperCase());if(!r)return json(res,404,{error:'Room expired or server restarted. Create a new match.'});
@@ -188,7 +202,7 @@ export function createApp(){
      if(r.stage!=='ended')throw Error('Finish the match first.');r.players[idx].rematch=true;r.players.filter(p=>p.bot).forEach(p=>p.rematch=true);
      if(r.players.every(p=>p.rematch)){
       const squads=draft();r.match=token();r.first=1-r.first;r.turn=0;r.stage='playing';r.phase='select';r.history=[];r.last=null;r.winner=null;r.shootout=null;
-      r.players=r.players.map((p,i)=>({...player(p.name,p.bot),token:p.token,cards:squads[i]}));
+      r.players=r.players.map((p,i)=>({...player(p.name,p.bot),token:p.token,cards:r.mode==='ranked'&&i===0?p.cards:squads[i]}));
       if(r.mode==='penalties')startShootout(r);
      }
     }else return json(res,404,{error:'Unknown action.'});

@@ -72,12 +72,68 @@ test('500 entire matches always finish with every card used three times',()=>{
   assert.ok(['ended','shootout'].includes(r.stage));assert.equal(r.history.length,12);
  }
 });
-test('secrets stay hidden, abilities cannot be reused, marking is defender-only',()=>{
- const r=two(),ai=r.first,di=1-ai,ids=lineups(r.players[ai],'attack')[0].map(c=>c.id);
+test('secrets stay hidden; abilities are consumed only when their triggers succeed',()=>{
+ const r=two();r.first=0;
+ r.players[0].cards=['A03','A01','P02','P09','A04','A05','A07','A09','A10','P17','P24','A12'].map(card);
+ r.players[1].cards=['A02','B01','P01','P10','A06','B04','P16','P18','B07','B08','P23','P25'].map(card);
+ const ai=0,di=1,ids=['P09','A03','P02'],defIds=['P16','P18','P23'];
  select(r,ai,{ids,activated:ids});assert.equal(snapshot(r,di).revealed,null);assert.equal(snapshot(r,di).ownLineup,null);
- assert.throws(()=>select(r,ai,{ids}));select(r,di,{ids:lineups(r.players[di],'defense')[0].map(c=>c.id)});
+ assert.throws(()=>select(r,ai,{ids}));select(r,di,{ids:defIds,activated:defIds});
  assert.throws(()=>mark(r,ai,[0,1]));assert.throws(()=>mark(r,di,[1,1]));mark(r,di,[0,1]);
- ids.forEach(id=>assert.ok(r.players[ai].spent.includes(id)));
+ const events=r.last.abilities;
+ for(const id of ids){const event=events.find(e=>e.id===id);assert.ok(event);assert.equal(r.players[ai].spent.includes(id),event.triggered)}
+ for(const id of defIds){const event=events.find(e=>e.id===id);assert.ok(event);assert.equal(r.players[di].spent.includes(id),event.triggered)}
+ assert.ok(events.some(e=>!e.triggered),'at least one activated ability should demonstrate a failed condition');
+ assert.ok(events.some(e=>e.triggered&&e.value===2),'at least one activated ability should provide visible +2 feedback');
+});
+
+test('quick matches use a 2-use cap without mandatory rotation and finish in six possessions',()=>{
+ const r=newRoom('Quick',true,'quick');r.players[1].bot=false;assert.equal(r.cap,2);assert.equal(r.turnLimit,6);
+ for(let turn=0;turn<6;turn++){
+  const attacker=(r.first+r.turn)%2;
+  for(const idx of [attacker,1-attacker]){
+   const kind=idx===attacker?'attack':'defense',options=lineups(r.players[idx],kind,r.cap);
+   assert.ok(options.length);select(r,idx,{ids:options[(turn+idx)%options.length].map(c=>c.id)});
+  }
+  mark(r,1-attacker,[turn%3,(turn+1)%3]);advance(r);
+ }
+ assert.equal(r.history.length,6);assert.ok(['ended','shootout'].includes(r.stage));
+ for(const p of r.players)for(const uses of Object.values(p.uses))assert.ok(uses<=2);
+});
+
+test('ranked squads contain exactly the owned 3F / 3M / 4D / 2GK roster',()=>{
+ const ids=['F','M','D','G'].flatMap(cat=>db.cards.filter(c=>c.category===cat).slice(0,({F:3,M:3,D:4,G:2})[cat]).map(c=>c.id));
+ const r=newRoom('Ranked',true,'ranked',{squad:ids,difficulty:'rookie'});
+ assert.equal(r.mode,'ranked');assert.equal(r.turnLimit,12);assert.equal(r.difficulty,'rookie');assert.deepEqual(r.players[0].cards.map(c=>c.id),ids);
+ assert.throws(()=>newRoom('Ranked',true,'ranked',{squad:ids.slice(1)}),/exactly 12/);
+ assert.throws(()=>newRoom('Ranked',true,'ranked',{squad:Array(12).fill('A01')}),/12 different owned/);
+ assert.equal(newRoom('Ranked',true,'ranked',{squad:ids,difficulty:'impossible'}).difficulty,'pro');
+});
+
+test('ranked Coach AI match completes with the selected collection squad and preserves it on rematch',()=>{
+ const ids=['F','M','D','G'].flatMap(cat=>db.cards.filter(c=>c.category===cat).slice(0,({F:3,M:3,D:4,G:2})[cat]).map(c=>c.id));
+ const r=newRoom('Ranked',true,'ranked',{squad:ids,difficulty:'rookie'}),human=r.players[0],owned=human.cards.map(c=>c.id);
+ let guard=0;
+ while(r.stage!=='ended'&&guard++<100){
+  if(r.stage==='playing'){
+   runBot(r);const attacker=(r.first+r.turn)%2;
+   if(r.phase==='select'){
+    const kind=attacker===0?'attack':'defense',opts=lineups(human,kind,r.cap);assert.ok(opts.length);
+    select(r,0,{ids:opts[0].map(c=>c.id)});runBot(r);
+   }
+   if(r.phase==='marking'){
+    if(attacker!==0)mark(r,0,[0,1]);runBot(r);
+   }
+   if(r.phase==='result'){advance(r);runBot(r)}
+  }else if(r.stage==='shootout'){
+   runBot(r);
+   if(r.phase==='penalty'&&!human.penalty){penalty(r,0,shotChoices(r,0));runBot(r)}
+   if(r.phase==='penalty-result'){nextPenalty(r,0);runBot(r)}
+  }
+ }
+ assert.ok(guard<100,'ranked match should complete');assert.equal(r.turn,12);
+ if(r.stage==='ended'&&!r.shootout)human.cards.forEach(c=>assert.equal(human.uses[c.id],3));
+ assert.deepEqual(human.cards.map(c=>c.id),owned);
 });
 function shootoutRoom(){const r=two();r.first=0;startShootout(r);return r}
 function shotChoices(r,idx){
@@ -187,6 +243,18 @@ test('practice opponent progresses through a full match',()=>{
  }
  assert.equal(r.turn,12);
 });
+test('HTTP creates Quick and Ranked modes with their server-authoritative rules',async()=>{
+ const server=createApp();await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+ const base='http://127.0.0.1:'+server.address().port;
+ const post=async b=>{const response=await fetch(base+'/api/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});return {status:response.status,body:await response.json()}};
+ try{
+  const quick=await post({name:'Quick',practice:true,mode:'quick',difficulty:'rookie'});assert.equal(quick.status,200);assert.equal(quick.body.state.cap,2);assert.equal(quick.body.state.turnLimit,6);assert.equal(quick.body.state.difficulty,'rookie');
+  const ids=['F','M','D','G'].flatMap(cat=>db.cards.filter(c=>c.category===cat).slice(0,({F:3,M:3,D:4,G:2})[cat]).map(c=>c.id));
+  const ranked=await post({name:'Ranked',practice:true,mode:'ranked',squad:ids});assert.equal(ranked.status,200);assert.equal(ranked.body.state.mode,'ranked');assert.equal(ranked.body.state.cap,3);assert.equal(ranked.body.state.turnLimit,12);assert.deepEqual(ranked.body.state.cards.map(c=>c.id),ids);
+  assert.equal((await post({name:'Invalid ranked',mode:'ranked',squad:ids})).status,400);
+ }finally{await new Promise(resolve=>server.close(resolve))}
+});
+
 test('HTTP room lifecycle, authentication, stale actions, reconnect, and full two-player match',async()=>{
  const server=createApp();await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const base='http://127.0.0.1:'+server.address().port;

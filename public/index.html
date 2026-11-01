@@ -30,14 +30,14 @@
 <h1>Great players.<br>
 <em>Better decisions.</em>
 </h1>
-<p class="lede">Twelve cards. Six chances to score. Build the right trio, read your rival, and make every legend count.</p>
+<p class="lede">Pick three players. Make one smart move. Watch the moment unfold. A football card duel you can learn in a minute.</p>
 <div class="hero-facts">
 <span>
 <b>50</b> peak player cards</span>
 <span>
-<b>3</b> uses per card</span>
+<b>4</b> game modes</span>
 <span>
-<b>1</b> tactical duel</span>
+<b>50</b> players to collect</span>
 </div>
 </div>
 <div class="hero-art" aria-label="A tactical football pitch">
@@ -64,15 +64,17 @@
 <p class="eyebrow">ENTER THE DUGOUT</p>
 <label for="name">Manager name</label>
 <input id="name" maxlength="24" placeholder="Your nickname" value="Manager">
-<label for="gameMode">Game mode</label>
-<select id="gameMode"><option value="full">Full tactical match</option><option value="penalties">Penalties only</option></select>
+<label for="gameMode">Friendly match format</label>
+<select id="gameMode"><option value="quick">Quick match · 6 possessions</option><option value="full">Tactical match · 12 possessions</option><option value="penalties">Penalties only</option></select>
+<label for="difficulty">Coach AI difficulty</label>
+<select id="difficulty"><option value="rookie">Rookie · learn the game</option><option value="pro" selected>Pro · balanced challenge</option><option value="legend">Legend · strongest choices</option></select>
 <small>No account needed. Just football.</small>
 </div>
 <div class="start-option">
 <span class="step">01 / CHALLENGE A FRIEND</span>
 <h2>Make it personal.</h2>
 <p>Create a private room and share the invitation.</p>
-<button class="primary" id="create">Create match <span>↗</span>
+<button class="primary" id="create">Create private match <span>↗</span>
 </button>
 </div>
 <div class="start-option">
@@ -82,8 +84,12 @@
 <input id="joinCode" maxlength="6" placeholder="ABC123" autocomplete="off">
 <button class="primary" id="join">Join →</button>
 </div>
-<button class="text-button" id="practice">Or warm up against Coach AI →</button>
+<button class="primary" id="practice">Play vs Coach AI →</button>
 </div>
+</div>
+<div class="ranked-panel" id="rankedPanel">
+ <div class="ranked-copy"><p class="eyebrow">LOCAL RANKED · BUILD WITH WHAT YOU OWN</p><h2>Ranked season.</h2><p>Build a squad using only players you have unlocked. Take that collection into a 12-possession match against Coach AI. Earn XP, raise your rating and unlock new players. Your ranked profile is saved on this browser.</p><div class="ranked-stats"><div><small>RATING</small><strong id="rankRating">1000</strong></div><div><small>LEVEL · XP PROGRESS</small><strong id="rankLevel">1</strong></div><div><small>RECORD</small><strong id="rankRecord">0–0</strong></div><div><small>COLLECTION</small><strong id="rankCollection">12 / 50</strong></div><div><small>BEST STREAK</small><strong id="rankBestStreak">0</strong></div></div></div>
+ <div class="ranked-actions"><p class="eyebrow">YOUR CLUB</p><div id="rankSquadSummary" class="rank-squad-summary">12-player squad · 3 F / 3 M / 4 D / 2 GK</div><button class="secondary" id="editRankedSquad">Manage ranked squad</button><button class="primary" id="rankedPlay">Play ranked match →</button><div id="dailyMissions" class="daily-missions"></div></div>
 </div>
 <div class="principles">
 <article>
@@ -98,8 +104,8 @@
 </article>
 <article>
 <span>03</span>
-<h3>Legends have limits.</h3>
-<p>Three uses. One special ability. Decide when your best cards can make the difference.</p>
+<h3>Every move matters.</h3>
+<p>Pick your moment, trigger special abilities and see exactly what changed on the pitch.</p>
 </article>
 </div>
 </section>
