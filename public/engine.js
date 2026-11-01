@@ -92,32 +92,35 @@ export function evaluate(a,d,marks,chemistry,activated=[]) {
     duels:duels.map(x=>({...x,value:round(x.value)})),keeperMatchup:round(keeper),abilities:events,
     attackLinks:A.links,defenseLinks:D.links,roleScores:A.scores.map(round),defenseScores:D.scores.map(round)};
 }
-export function turnsLeft(player,kind){
+export function turnsLeft(player,kind,cap=CAP){
   const cats=kind==='attack'?['F','M']:['G'];
-  const remaining=player.cards.filter(c=>cats.includes(c.category)).reduce((s,c)=>s+CAP-(player.uses[c.id]||0),0);
+  const remaining=player.cards.filter(c=>cats.includes(c.category)).reduce((s,c)=>s+cap-(player.uses[c.id]||0),0);
   return remaining/(kind==='attack'?3:1);
 }
-export function requiredCards(player,kind){
-  const turns=turnsLeft(player,kind),cats=kind==='attack'?['F','M']:['D','G'];
-  return player.cards.filter(c=>cats.includes(c.category)&&CAP-(player.uses[c.id]||0)===turns).map(c=>c.id);
+// Full tactical mode uses the original mandatory rotation. Quick mode deliberately
+// has spare card capacity, so players can repeat their favourites without a deadlock.
+export function requiredCards(player,kind,cap=CAP){
+  if(cap<CAP)return [];
+  const turns=turnsLeft(player,kind,cap),cats=kind==='attack'?['F','M']:['D','G'];
+  return player.cards.filter(c=>cats.includes(c.category)&&cap-(player.uses[c.id]||0)===turns).map(c=>c.id);
 }
-export function validateLineup(player,ids,kind){
+export function validateLineup(player,ids,kind,cap=CAP){
   if(!Array.isArray(ids)||ids.length!==3||new Set(ids).size!==3)throw Error('Choose three different cards.');
   const selected=ids.map(id=>player.cards.find(c=>c.id===id));
   selected.forEach((c,i)=>{
     if(!c)throw Error('That card is not in your squad.');
-    if((player.uses[c.id]||0)>=CAP)throw Error(c.name+' is exhausted.');
+    if((player.uses[c.id]||0)>=cap)throw Error(c.name+' is exhausted.');
     if(kind==='attack'?!['F','M'].includes(c.category):(i===2?c.category!=='G':c.category!=='D'))throw Error('Choose the correct card type for each role.');
   });
-  const missing=requiredCards(player,kind).filter(id=>!ids.includes(id));
+  const missing=requiredCards(player,kind,cap).filter(id=>!ids.includes(id));
   if(missing.length)throw Error('Use '+missing.map(id=>player.cards.find(c=>c.id===id).name).join(', ')+' now so every card can finish its three uses.');
   return selected;
 }
-export function lineups(player,kind){
-  const eligible=player.cards.filter(c=>(player.uses[c.id]||0)<CAP);
+export function lineups(player,kind,cap=CAP){
+  const eligible=player.cards.filter(c=>(player.uses[c.id]||0)<cap);
   const pool=eligible.filter(c=>kind==='attack'?['F','M'].includes(c.category):c.category==='D');
   const thirds=kind==='attack'?pool:eligible.filter(c=>c.category==='G');
-  const required=requiredCards(player,kind),result=[];
+  const required=requiredCards(player,kind,cap),result=[];
   for(const a of pool)for(const b of pool)for(const c of thirds){
     if(new Set([a.id,b.id,c.id]).size<3)continue;
     if(kind==='defense'&&a.id>b.id)continue;

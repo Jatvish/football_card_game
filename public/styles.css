@@ -317,3 +317,70 @@ footer{font-size:8px;line-height:1.6;flex-direction:column;gap:8px}
 .replay-at-21-32{--x:21%;--y:32%}.replay-at-32-72{--x:32%;--y:72%}.replay-at-49-50{--x:49%;--y:50%}.replay-at-69-34{--x:69%;--y:34%}.replay-at-69-66{--x:69%;--y:66%}.replay-at-84-50{--x:84%;--y:50%}
 .is-goal{--end-x:94%;--end-y:45%}.is-save{--end-x:84%;--end-y:50%}.is-block{--end-x:69%}.block-0{--end-y:34%}.block-1{--end-y:66%}
 .replay-finisher.ability-glow{animation:shot-kick 4.4s ease-in-out both,ability-pulse 1.8s ease-in-out infinite}.replay-blocker.ability-glow,.replay-keeper.ability-glow{animation:shot-stop 4.4s ease-in-out both,ability-pulse 1.8s ease-in-out infinite}
+
+
+/* Ranked season, collection progression and instant ability feedback. */
+.ranked-panel{display:grid;grid-template-columns:1.2fr .8fr;gap:30px;margin:28px 0;padding:30px;border:1px solid #61764b;border-radius:12px;background:linear-gradient(125deg,#1b2b20,#18231f 72%);box-shadow:0 16px 45px #0002}
+.ranked-copy h2{font-size:32px;color:var(--lime);margin:4px 0 10px}
+.ranked-copy>p:not(.eyebrow){max-width:680px;color:#b8c7ba;font-size:13px;line-height:1.7}
+.ranked-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:22px}
+.ranked-stats>div{padding:12px;background:#0e1913;border:1px solid #354638;border-radius:7px}
+.ranked-stats small,.reward-numbers small{display:block;color:var(--muted);font-size:9px;letter-spacing:1.2px}
+.ranked-stats strong{display:block;margin-top:5px;font-size:18px;color:var(--lime);font-variant-numeric:tabular-nums}
+.ranked-actions{padding:4px 0}
+.ranked-actions .eyebrow{margin-bottom:10px}
+.rank-squad-summary{font-size:12px;line-height:1.6;color:#c2cfbf;margin:10px 0 16px}
+.ranked-actions button{width:100%;margin:5px 0}
+.daily-missions{display:grid;gap:7px;margin-top:14px}
+.mission{display:flex;justify-content:space-between;gap:8px;padding:9px 10px;border:1px solid #334438;border-radius:6px;font-size:10px;color:#c1cebf}
+.mission b{white-space:nowrap;color:var(--lime)}
+.mission.complete{border-color:#6d8a4e;background:#263a25;color:#e4efce}
+.daily-missions>small{font-size:9px}
+.rank-picker{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.rank-picker-group{padding:12px;border:1px solid var(--line);border-radius:8px;background:#111b15}
+.rank-picker-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;font-size:12px}
+.rank-picker-heading span{color:var(--muted);font-size:10px}
+.rank-picker-heading span.complete{color:var(--lime)}
+.rank-picker-heading span.over{color:var(--red)}
+.rank-picker-list{display:grid;gap:6px;max-height:300px;overflow:auto}
+.rank-picker-card{display:flex;align-items:center;gap:10px;padding:7px;border:1px solid #344237;border-radius:6px;margin:0;cursor:pointer}
+.rank-picker-card:has(input:checked){border-color:var(--lime);background:#263323}
+.rank-picker-card input{width:16px;min-height:16px;flex:none}
+.rank-picker-card img{width:38px;height:44px;object-fit:cover;object-position:50% 12%;border-radius:4px}
+.rank-picker-card span{display:grid;gap:3px}
+.rank-picker-card b{font-size:11px}
+.rank-picker-card small{font-size:9px}
+.rank-reward{padding:16px;margin:20px 0;border:1px solid #788e4c;border-radius:8px;background:#18271b}
+.rank-reward>.eyebrow{margin-bottom:12px}
+.reward-numbers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.reward-numbers>div{padding:10px;background:#0e1913;border-radius:6px}
+.reward-numbers b{display:block;color:var(--lime);font-size:22px;margin-top:4px}
+.reward-numbers b.negative{color:var(--red)}
+.reward-numbers b.positive{color:var(--lime)}
+.reward-card{display:flex;align-items:center;animation:card-unlock .65s cubic-bezier(.2,.8,.2,1) both;gap:10px;padding:9px;background:#0e1913;border:1px solid #40523c;border-radius:7px;max-width:310px}
+.reward-card img{width:45px;height:54px;object-fit:cover;object-position:50% 12%;border-radius:4px}
+.reward-card span{display:grid;gap:4px}
+.reward-card b{font-size:12px}
+.reward-card small{font-size:9px;color:var(--lime)}
+.reward-cards{display:flex;flex-wrap:wrap;gap:8px}
+.collection-item{position:relative;min-width:0}
+.collection-status{display:inline-block;position:absolute;right:8px;top:8px;z-index:4;padding:5px 7px;border-radius:4px;font-size:8px;font-weight:800;letter-spacing:1px}
+.collection-status.owned{background:var(--lime);color:#142015}
+.collection-status.locked{background:#111b15e8;color:#c3cdbd;border:1px solid #6a7964}
+.armed-float{position:absolute;z-index:8;top:7px;left:7px;max-width:calc(100% - 14px);padding:6px 8px;border:1px solid #91edff;border-radius:5px;background:#062e40ed;color:#d7faff;font-size:9px;font-weight:900;letter-spacing:.4px;box-shadow:0 0 15px #1abaff77}
+.ability-feedback{display:block;width:max-content;max-width:100%;margin-top:8px;padding:6px 8px;border-radius:5px;font-size:9px;font-weight:900;letter-spacing:.5px}
+.ability-feedback.triggered{background:#d6ef79;color:#162313;border:1px solid #d6ef79;box-shadow:0 0 14px #d6ef7966}
+.ability-feedback.untriggered{background:#343022;color:#e9c880;border:1px solid #817043}
+.replay-abilities .triggered{background:#173b2a;color:#d6ef79;border-color:#91b95b}
+.replay-abilities .untriggered{background:#352d1b;color:#e9c880;border-color:#89723d}
+.slot .ability-feedback{margin-top:7px}
+@keyframes card-unlock{0%{opacity:0;transform:translateY(12px) rotateY(70deg) scale(.94)}70%{opacity:1;transform:translateY(-2px) rotateY(-8deg) scale(1.02)}100%{opacity:1;transform:none}}
+@media(max-width:760px){.ranked-panel{grid-template-columns:1fr;padding:20px;gap:14px}.ranked-copy h2{font-size:27px}.ranked-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.rank-picker{grid-template-columns:1fr}.rank-picker-list{max-height:220px}.reward-numbers b{font-size:18px}}
+@media(prefers-reduced-motion:reduce){.armed-float,.ability-feedback{box-shadow:none!important}}
+
+.slot-player{display:flex;align-items:center;gap:9px;min-width:0;margin:8px 0 4px}
+.slot-player>img{width:42px;height:48px;object-fit:cover;object-position:50% 12%;border-radius:5px;border:1px solid #768a62;flex:none}
+.slot-player>span{display:block;min-width:0}
+.slot-player strong{margin:0 0 5px;line-height:1.2}
+.slot-player .slot-score{display:block;font-size:9px}
+@media(max-width:760px){.slot-player{gap:6px}.slot-player>img{width:32px;height:38px}.slot-player strong{font-size:10px}.slot-player .slot-score{font-size:8px}}
