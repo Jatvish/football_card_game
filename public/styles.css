@@ -19,7 +19,7 @@
 .replay-blocker,.replay-keeper{animation:shot-stop 4.4s ease-in-out both}
 .replay-verdict{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:#0b1c13ee;border:1px solid var(--lime);color:var(--lime);padding:8px 23px;border-radius:30px;font-size:22px;font-weight:900;letter-spacing:4px;animation:verdict 4.4s both;z-index:5}
 .replay-caption{padding:0 14px}.replay-caption small{display:block}
-.replay-abilities{display:flex;flex-wrap:wrap;gap:10px;padding:4px 14px 16px}.replay-abilities>span{padding:9px;border:1px solid #45c8ff;border-radius:6px;font-size:11px;color:#b3eeff}
+.replay-abilities{display:flex;flex-wrap:wrap;gap:10px;padding:4px 14px 16px}.replay-abilities>span{padding:9px;border:1px solid #3a5044;border-radius:6px;font-size:11px;color:#c7d6ca;background:#14221b}.replay-abilities>span.triggered{color:var(--lime)}.replay-abilities>span.untriggered{color:var(--muted)}
 .ability-glow{animation:ability-pulse 1.8s ease-in-out infinite;position:relative}
 .player-card.selected.ability-glow{outline-color:#61d9ff}
 .replay-player.ability-glow{position:absolute}

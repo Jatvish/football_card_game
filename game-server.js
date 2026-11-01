@@ -263,7 +263,14 @@ export function createApp(){
     if(path==='/api/play')select(r,idx,b);
     else if(path==='/api/mark')mark(r,idx,b.marks);
     else if(path==='/api/next'){
-     if(r.phase!=='result')throw Error('No result to continue from.');r.players[idx].ready=true;if(r.players.every(p=>p.ready))advance(r);
+     // The final possession does not increment r.turn. Ignore a duplicate
+     // "Continue to full time" submission after the first one already ended
+     // regulation or opened penalties, rather than showing a misleading error.
+     if(r.phase!=='result'){
+      if(r.turn===r.turnLimit&&['ended','shootout'].includes(r.stage))return json(res,200,snapshot(r,idx));
+      throw Error('No result to continue from.');
+     }
+     r.players[idx].ready=true;if(r.players.every(p=>p.ready))advance(r);
     }else if(path==='/api/penalty'){
      if(b.kick!==r.shootout?.history.length+1)throw Error('That penalty has ended.');penalty(r,idx,b);
     }else if(path==='/api/penalty-next'){

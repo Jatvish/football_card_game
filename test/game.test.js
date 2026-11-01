@@ -5,6 +5,10 @@ import {db,draft,newRoom,player,select,mark,advance,penalty,nextPenalty,startSho
 import {dbInternals} from '../database.js';
 import {attack,defense,evaluate,roleScore,lineups,requiredCards,validateLineup,penaltyChance} from '../public/engine.js';
 const card=id=>structuredClone(db.cards.find(c=>c.id===id));
+test('PostgreSQL DATE values are sent back as ISO calendar dates',()=>{
+ assert.equal(dbInternals.dateKey(new Date('2026-11-01T00:00:00.000Z')),'2026-11-01');
+ assert.equal(dbInternals.dateKey('2026-11-01'),'2026-11-01');
+});
 const sum=cs=>cs.reduce((s,c)=>s+c.ovr,0);
 function two(){const r=newRoom('A',true);r.players[1].bot=false;return r}
 

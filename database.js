@@ -8,7 +8,8 @@ const scrypt=promisify(scryptCallback);
 const root=dirname(fileURLToPath(import.meta.url));
 const sha=value=>createHash('sha256').update(value).digest('hex');
 const APP_TIME_ZONE=process.env.APP_TIME_ZONE||'Asia/Kolkata';
-const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:APP_TIME_ZONE}).format(new Date());
+const today=()=>{const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:APP_TIME_ZONE,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));return `${parts.year}-${parts.month}-${parts.day}`};
+const dateKey=value=>value instanceof Date?value.toISOString().slice(0,10):String(value).slice(0,10);
 const starterPicks={F:[4,8,11],M:[3,7,10],D:[4,7,10,13],G:[2,5]};
 const starterCardIds=cards=>Object.entries(starterPicks).flatMap(([category,indices])=>{
   const pool=cards.filter(c=>c.category===category).sort((a,b)=>b.ovr-a.ovr);
@@ -70,8 +71,8 @@ export async function createDatabase(cards){
   async function grantLevelCards(client,accountId,oldXp,newXp){
     const oldLevel=Math.floor(oldXp/250)+1,newLevel=Math.floor(newXp/250)+1,unlocked=[];
     for(let level=oldLevel+1;level<=newLevel;level++){
-      const result=await client.query(`SELECT id FROM fw_cards WHERE account_id=$1`,[accountId]);
-      const owned=new Set(result.rows.map(x=>x.id));
+      const result=await client.query(`SELECT card_id FROM fw_cards WHERE account_id=$1`,[accountId]);
+      const owned=new Set(result.rows.map(x=>x.card_id));
       const locked=cards.filter(c=>!owned.has(c.id));if(!locked.length)break;
       const pick=locked[Math.floor(Math.random()*locked.length)];
       await client.query(`INSERT INTO fw_cards(account_id,card_id,source) VALUES($1,$2,'manager-level') ON CONFLICT DO NOTHING`,[accountId,pick.id]);
@@ -89,7 +90,7 @@ export async function createDatabase(cards){
     const row=p.rows[0];
     if(!row)throw Error('Ranked profile was not found.');
     const mastery=Object.fromEntries(masteryRows.rows.map(x=>[x.card_id,{xp:x.xp,level:Math.floor(x.xp/100)+1,appearances:x.appearances,goals:x.goals,defensiveStops:x.defensive_stops}]));
-    return {username,owned:ownedRows.rows.map(x=>x.card_id),squad:row.squad||[],mastery,xp:row.xp,rating:row.rating,wins:row.wins,losses:row.losses,streak:row.streak,bestStreak:row.best_streak,packs:row.packs,achievements:row.achievements||[],level:Math.floor(row.xp/250)+1,daily:{date:String(daily.day).slice(0,10),plays:daily.matches,wins:daily.wins,goals:daily.goals,midfielderGoals:daily.midfielder_goals,defensiveStops:daily.defensive_stops,spinClaimed:daily.spin_claimed,spinResult:daily.spin_result,claimed:daily.claimed_missions||[]}};
+    return {username,owned:ownedRows.rows.map(x=>x.card_id),squad:row.squad||[],mastery,xp:row.xp,rating:row.rating,wins:row.wins,losses:row.losses,streak:row.streak,bestStreak:row.best_streak,packs:row.packs,achievements:row.achievements||[],level:Math.floor(row.xp/250)+1,daily:{date:dateKey(daily.day),plays:daily.matches,wins:daily.wins,goals:daily.goals,midfielderGoals:daily.midfielder_goals,defensiveStops:daily.defensive_stops,spinClaimed:daily.spin_claimed,spinResult:daily.spin_result,claimed:daily.claimed_missions||[]}};
   }
   async function register(username,password){
     const clean=String(username||'').trim();
@@ -137,14 +138,14 @@ export async function createDatabase(cards){
       await client.query('UPDATE fw_ranked_profiles SET xp=$2,packs=packs+$3,updated_at=now() WHERE account_id=$1',[account.id,newXp,packs]);
       const unlocked=await grantLevelCards(client,account.id,oldXp,newXp);
       const spinResult={...reward,unlocked};
-      await client.query('UPDATE fw_daily_progress SET spin_claimed=true,spin_result=$2::jsonb WHERE account_id=$1 AND day=$3',[account.id,JSON.stringify(spinResult),String(daily.day).slice(0,10)]);
+      await client.query('UPDATE fw_daily_progress SET spin_claimed=true,spin_result=$2::jsonb WHERE account_id=$1 AND day=$3',[account.id,JSON.stringify(spinResult),dateKey(daily.day)]);
       return {reward:spinResult,profile:await profileWith(client,account.id,account.username)};
     });
   }
   async function openPack(account){
     return transaction(async client=>{
       const p=await client.query('SELECT packs FROM fw_ranked_profiles WHERE account_id=$1 FOR UPDATE',[account.id]);
-      if(!p.rows[0]||p.rows[0].packs<1)throw Error('You do not have a player pack yet. Claim your daily spin or complete missions.');
+      if(!p.rows[0]||p.rows[0].packs<1)throw Error('You do not have a player pack yet. Claim your daily spin; some spins award player packs.');
       const own=await client.query('SELECT card_id FROM fw_cards WHERE account_id=$1',[account.id]);
       const owned=new Set(own.rows.map(x=>x.card_id));
       const locked=cards.filter(c=>!owned.has(c.id));
@@ -193,7 +194,7 @@ export async function createDatabase(cards){
       if(ownCount.rows[0].count>=25)addAchievement('collection_25');if(ownCount.rows[0].count>=50)addAchievement('collection_50');
       if(missions.every(([id,done])=>done||claimed.includes(id)))addAchievement('mission_hero');
       const newClaimed=[...claimed,...newlyCompleted.map(m=>m[0])];
-      await client.query(`UPDATE fw_daily_progress SET matches=$2,wins=$3,goals=$4,midfielder_goals=$5,defensive_stops=$6,claimed_missions=$7::jsonb WHERE account_id=$1 AND day=$8`,[account.id,next.matches,next.wins,next.goals,next.midfielder_goals,next.defensive_stops,JSON.stringify(newClaimed),String(daily.day).slice(0,10)]);
+      await client.query(`UPDATE fw_daily_progress SET matches=$2,wins=$3,goals=$4,midfielder_goals=$5,defensive_stops=$6,claimed_missions=$7::jsonb WHERE account_id=$1 AND day=$8`,[account.id,next.matches,next.wins,next.goals,next.midfielder_goals,next.defensive_stops,JSON.stringify(newClaimed),dateKey(daily.day)]);
       await client.query(`UPDATE fw_ranked_profiles SET xp=$2,rating=greatest(0,rating+$3),wins=$4,losses=$5,streak=$6,best_streak=$7,achievements=$8::jsonb,updated_at=now() WHERE account_id=$1`,[account.id,newXp,ratingDelta,wins,losses,streak,bestStreak,JSON.stringify([...achievements])]);
       await client.query(`INSERT INTO fw_ranked_matches(account_id,match_id,won,score_for,score_against,goals,midfielder_goals,defensive_stops,mvp_card_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)`,[account.id,matchId,won,result.scoreFor,result.scoreAgainst,result.goals,result.midfielderGoals,result.defensiveStops,result.mvpCardId||null]);
       for(const item of result.cardMastery||[]){
@@ -209,4 +210,4 @@ export async function createDatabase(cards){
   return {pool,register,login,session,logout,getProfile,setSquad,claimSpin,openPack,recordRankedResult,leaderboard,close:()=>pool.end()};
 }
 
-export const dbInternals={starterCardIds,validSquad,achievementCatalog};
+export const dbInternals={starterCardIds,validSquad,achievementCatalog,dateKey};
