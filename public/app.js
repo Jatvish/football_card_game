@@ -55,6 +55,7 @@ function renderProfile(){
  $('spinDaily').disabled=!authToken||!!daily.spinClaimed||rewardBusy;
  $('spinDaily').textContent=daily.spinClaimed?'Come back tomorrow':'Spin daily reward';
  $('openPack').disabled=!authToken||!(profile.packs>0)||rewardBusy;
+ $('openPack').textContent=profile.packs>0?'Open a pack':'No packs available';
  if($('spinResult'))$('spinResult').textContent=daily.spinClaimed?(daily.spinResult?.label||'Daily reward claimed. See you tomorrow.'):'One free spin available today.';
  const unlocked=new Set(profile.achievements||[]),achievementCatalog=[
   ['first_win','First Whistle','Win your first ranked match.'],['streak_3','On a Roll','Win three matches in a row.'],['wins_10','Club Regular','Win ten ranked matches.'],['collection_25','Scout Network','Unlock 25 player cards.'],['collection_50','Full Album','Collect all 50 cards.'],['mission_hero','Mission Hero','Complete every daily mission in one day.']
