@@ -139,7 +139,7 @@ export async function createDatabase(cards){
       const unlocked=await grantLevelCards(client,account.id,oldXp,newXp);
       const spinResult={...reward,unlocked};
       await client.query('UPDATE fw_daily_progress SET spin_claimed=true,spin_result=$2::jsonb WHERE account_id=$1 AND day=$3',[account.id,JSON.stringify(spinResult),dateKey(daily.day)]);
-      return {reward:spinResult,profile:await profileWith(client,account.id,account.username)};
+      return {reward:spinResult,profile:await profileWith(client,account.id,account.username),outcomes:outcomes.map(({type,amount,label,weight})=>({type,amount,label,weight}))};
     });
   }
   async function openPack(account){
