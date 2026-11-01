@@ -1,7 +1,8 @@
 import test from 'node:test';
 import {readFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
-import {db,draft,newRoom,player,select,mark,advance,penalty,nextPenalty,startShootout,snapshot,runBot,createApp} from '../game-server.js';
+import {db,draft,newRoom,player,select,mark,advance,penalty,nextPenalty,startShootout,snapshot,runBot,createApp,database,persistRankedResult} from '../game-server.js';
+import {dbInternals} from '../database.js';
 import {attack,defense,evaluate,roleScore,lineups,requiredCards,validateLineup,penaltyChance} from '../public/engine.js';
 const card=id=>structuredClone(db.cards.find(c=>c.id===id));
 const sum=cs=>cs.reduce((s,c)=>s+c.ovr,0);
@@ -108,6 +109,16 @@ test('ranked squads contain exactly the owned 3F / 3M / 4D / 2GK roster',()=>{
  assert.throws(()=>newRoom('Ranked',true,'ranked',{squad:ids.slice(1)}),/exactly 12/);
  assert.throws(()=>newRoom('Ranked',true,'ranked',{squad:Array(12).fill('A01')}),/12 different owned/);
  assert.equal(newRoom('Ranked',true,'ranked',{squad:ids,difficulty:'impossible'}).difficulty,'pro');
+});
+
+test('completed Ranked results persist once and return MVP/reward data to the client',async()=>{
+ const ids=['F','M','D','G'].flatMap(cat=>db.cards.filter(c=>c.category===cat).slice(0,({F:3,M:3,D:4,G:2})[cat]).map(c=>c.id));
+ const r=newRoom('Ranked',true,'ranked',{squad:ids});r.rankAccount={id:42,player:0};r.players[0].accountId=42;r.stage='ended';r.phase='ended';r.winner=0;r.match='ranked-match-once';r.players[0].score=3;r.players[1].score=1;
+ r.history=[{attacker:0,goal:true,attackCards:[r.players[0].cards[0],r.players[0].cards[3],r.players[0].cards[1]],defenseCards:[r.players[1].cards[6],r.players[1].cards[7],r.players[1].cards[10]],abilities:[{id:r.players[0].cards[0].id,triggered:true,value:2}]}];
+ let calls=0,received;
+ const store={recordRankedResult:async(account,match,result)=>{calls++;received={account,match,result};return {profile:{username:'manager',xp:110,rating:1024},reward:{match,xp:110,rating:24,mvpCardId:result.mvpCardId}}}};
+ const first=await persistRankedResult(r,store),second=await persistRankedResult(r,store);
+ assert.equal(calls,1);assert.equal(received.account.id,42);assert.equal(received.match,'ranked-match-once');assert.equal(received.result.won,true);assert.ok(received.result.mvpCardId);assert.ok(received.result.cardMastery.length>=3);assert.equal(received.result.cardMastery.find(x=>x.cardId===r.players[0].cards[0].id).goals,1);assert.equal(first.reward.match,'ranked-match-once');assert.equal(second.reward.match,'ranked-match-once');assert.equal(r.rankResultPersistedMatch,'ranked-match-once');
 });
 
 test('ranked Coach AI match completes with the selected collection squad and preserves it on rematch',()=>{
@@ -243,15 +254,16 @@ test('practice opponent progresses through a full match',()=>{
  }
  assert.equal(r.turn,12);
 });
-test('HTTP creates Quick and Ranked modes with their server-authoritative rules',async()=>{
+test('account starter collection has a valid owned Ranked squad and database routes fail clearly when unconfigured',async()=>{
+ const starter=dbInternals.starterCardIds(db.cards);assert.equal(starter.length,12);assert.equal(new Set(starter).size,12);assert.equal(dbInternals.validSquad(starter,starter,db.cards),true);
+ const bad=[...starter];bad[0]=db.cards.find(c=>c.category==='G').id;assert.equal(dbInternals.validSquad(bad,starter,db.cards),false);
  const server=createApp();await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const base='http://127.0.0.1:'+server.address().port;
- const post=async b=>{const response=await fetch(base+'/api/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});return {status:response.status,body:await response.json()}};
+ const post=async(route,b)=>{const response=await fetch(base+'/api/'+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});return {status:response.status,body:await response.json()}};
  try{
-  const quick=await post({name:'Quick',practice:true,mode:'quick',difficulty:'rookie'});assert.equal(quick.status,200);assert.equal(quick.body.state.cap,2);assert.equal(quick.body.state.turnLimit,6);assert.equal(quick.body.state.difficulty,'rookie');
-  const ids=['F','M','D','G'].flatMap(cat=>db.cards.filter(c=>c.category===cat).slice(0,({F:3,M:3,D:4,G:2})[cat]).map(c=>c.id));
-  const ranked=await post({name:'Ranked',practice:true,mode:'ranked',squad:ids});assert.equal(ranked.status,200);assert.equal(ranked.body.state.mode,'ranked');assert.equal(ranked.body.state.cap,3);assert.equal(ranked.body.state.turnLimit,12);assert.deepEqual(ranked.body.state.cards.map(c=>c.id),ids);
-  assert.equal((await post({name:'Invalid ranked',mode:'ranked',squad:ids})).status,400);
+  const quick=await post('create',{name:'Quick',practice:true,mode:'quick',difficulty:'rookie'});assert.equal(quick.status,200);assert.equal(quick.body.state.cap,2);assert.equal(quick.body.state.turnLimit,6);assert.equal(quick.body.state.difficulty,'rookie');
+  const tactical=await post('create',{name:'Tactical',practice:true,mode:'full'});assert.equal(tactical.status,200);assert.equal(tactical.body.state.cap,3);assert.equal(tactical.body.state.turnLimit,12);
+  if(!database){const ranked=await post('create',{name:'Ranked',practice:true,mode:'ranked',squad:starter});assert.equal(ranked.status,503);assert.match(ranked.body.error,/DATABASE_URL/);assert.equal((await post('auth/register',{username:'test_user',password:'correct-horse-battery'})).status,503)}
  }finally{await new Promise(resolve=>server.close(resolve))}
 });
 
@@ -309,4 +321,14 @@ test('HTTP penalty-only rooms join directly, reject stale kicks and retain mode 
   const image=await fetch(base+db.cards[0].photo.src);assert.equal(image.status,200);assert.equal(image.headers.get('content-type'),'image/webp');
   assert.equal((await fetch(base+'/players/../server.js')).status,404);
  }finally{await new Promise(resolve=>server.close(resolve))}
+});
+
+
+test('home UI includes the daily spin, player packs, missions, leaderboard, achievements and collection account panel',async()=>{
+ const html=await readFile(new URL('../public/index.html',import.meta.url),'utf8');
+ const app=await readFile(new URL('../public/app.js',import.meta.url),'utf8');
+ for(const id of ['dailyWheel','spinDaily','openPack','dailyMissions','weeklyLeaderboard','achievementGrid','rankedPlay','editRankedSquad'])assert.match(html,new RegExp(`id=\"${id}\"`));
+ assert.match(app,/Player of the Match/);assert.match(app,/PACK OPENING/);assert.match(html,/Spin the wheel/);
+ assert.match(app,/data-action=\"slot\"/);assert.match(app,/draggable=\"true\"/);assert.match(app,/tap twice quickly/i);
+ assert.match(app,/lastPoolTap\?\.id===id/);assert.match(app,/is unselected/);assert.match(app,/database-backed/);
 });

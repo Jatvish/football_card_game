@@ -1,8 +1,15 @@
 {
   "name": "football-card-game",
-  "version": "2.2.0",
+  "version": "2.4.0",
   "private": true,
   "type": "module",
-  "scripts": {"start": "node server.js", "test": "node --test", "simulate": "node scripts/simulate.js"},
-  "engines": {"node": ">=20"}
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test",
+    "simulate": "node scripts/simulate.js"
+  },
+  "engines": {"node": ">=20"},
+  "dependencies": {
+    "pg": "^8.16.3"
+  }
 }

@@ -68,7 +68,8 @@
 <select id="gameMode"><option value="quick">Quick match · 6 possessions</option><option value="full">Tactical match · 12 possessions</option><option value="penalties">Penalties only</option></select>
 <label for="difficulty">Coach AI difficulty</label>
 <select id="difficulty"><option value="rookie">Rookie · learn the game</option><option value="pro" selected>Pro · balanced challenge</option><option value="legend">Legend · strongest choices</option></select>
-<small>No account needed. Just football.</small>
+<button class="primary quick-start" id="practice">Play vs Coach AI →</button>
+<small>No account needed for Quick or Tactical friendlies.</small>
 </div>
 <div class="start-option">
 <span class="step">01 / CHALLENGE A FRIEND</span>
@@ -84,12 +85,40 @@
 <input id="joinCode" maxlength="6" placeholder="ABC123" autocomplete="off">
 <button class="primary" id="join">Join →</button>
 </div>
-<button class="primary" id="practice">Play vs Coach AI →</button>
 </div>
 </div>
 <div class="ranked-panel" id="rankedPanel">
- <div class="ranked-copy"><p class="eyebrow">LOCAL RANKED · BUILD WITH WHAT YOU OWN</p><h2>Ranked season.</h2><p>Build a squad using only players you have unlocked. Take that collection into a 12-possession match against Coach AI. Earn XP, raise your rating and unlock new players. Your ranked profile is saved on this browser.</p><div class="ranked-stats"><div><small>RATING</small><strong id="rankRating">1000</strong></div><div><small>LEVEL · XP PROGRESS</small><strong id="rankLevel">1</strong></div><div><small>RECORD</small><strong id="rankRecord">0–0</strong></div><div><small>COLLECTION</small><strong id="rankCollection">12 / 50</strong></div><div><small>BEST STREAK</small><strong id="rankBestStreak">0</strong></div></div></div>
- <div class="ranked-actions"><p class="eyebrow">YOUR CLUB</p><div id="rankSquadSummary" class="rank-squad-summary">12-player squad · 3 F / 3 M / 4 D / 2 GK</div><button class="secondary" id="editRankedSquad">Manage ranked squad</button><button class="primary" id="rankedPlay">Play ranked match →</button><div id="dailyMissions" class="daily-missions"></div></div>
+ <div class="ranked-account">
+  <div id="accountLoggedOut">
+   <div><p class="eyebrow">SAVE YOUR CLUB</p><strong>Sign in to keep your collection and Ranked progress across devices.</strong></div>
+   <label>Manager username<input id="accountUsername" maxlength="18" autocomplete="username" placeholder="3–18 letters, numbers or _"></label>
+   <label>Password<input id="accountPassword" type="password" maxlength="128" autocomplete="current-password" placeholder="At least 10 characters"></label>
+   <div class="account-actions"><button class="secondary" id="signIn">Sign in</button><button class="primary" id="register">Create account</button></div>
+  </div>
+  <div id="accountLoggedIn" hidden><div><p class="eyebrow">YOUR CLUB ACCOUNT</p><strong>Signed in as <span id="accountName"></span></strong><small>Your cards, rewards, Ranked rating and match record are saved to the database.</small></div><button class="secondary" id="signOut">Sign out</button></div>
+  <p class="account-note" id="accountNote">Create an account to enable persistent Ranked play. Friendly matches remain available without an account.</p>
+ </div>
+ <div class="ranked-copy"><p class="eyebrow">RANKED CLUB · BUILD WITH WHAT YOU OWN</p><h2>Ranked season.</h2><p>Build a squad using only players you have unlocked. Take that collection into a 12-possession match against Coach AI. Earn XP, raise your rating, master individual cards and unlock new players. Sign in to keep your club, rewards and ranked record saved across devices.</p><div class="ranked-stats"><div><small>RATING</small><strong id="rankRating">1000</strong></div><div><small>LEVEL · XP PROGRESS</small><strong id="rankLevel">1</strong></div><div><small>RECORD</small><strong id="rankRecord">0–0</strong></div><div><small>COLLECTION</small><strong id="rankCollection">12 / 50</strong></div><div><small>BEST STREAK</small><strong id="rankBestStreak">0</strong></div></div></div>
+ <div class="ranked-actions"><p class="eyebrow">YOUR CLUB</p><div id="rankSquadSummary" class="rank-squad-summary">12-player squad · 3 F / 3 M / 4 D / 2 GK</div><button class="secondary" id="editRankedSquad">Manage ranked squad</button><button class="primary" id="rankedPlay">Play ranked match →</button></div>
+ <div class="ranked-extras">
+  <section class="club-widget daily-reward-widget">
+   <div><p class="eyebrow">DAILY REWARD</p><h3>Spin the wheel.</h3><p>Claim one free reward each day: Manager XP or player packs.</p></div>
+   <div class="spin-area"><div class="spin-wheel" id="dailyWheel" aria-label="Daily reward wheel"><span>FW</span></div><button class="primary" id="spinDaily">Spin daily reward</button><p id="spinResult" class="section-note" aria-live="polite">One spin available each day.</p></div>
+  </section>
+  <section class="club-widget pack-widget">
+   <div><p class="eyebrow">PLAYER PACKS</p><h3>Grow your collection.</h3><p>Open a pack to reveal up to three players you don't own yet. Higher-rated cards are rarer.</p></div>
+   <div class="pack-visual"><div class="pack-art"><b>FW</b><span>PLAYER<br>PACK</span><small>50 CARD COLLECTION</small></div><strong><span id="packCount">0</span> packs available</strong><button class="secondary" id="openPack">Open a pack</button></div>
+  </section>
+  <section class="club-widget missions-widget">
+   <p class="eyebrow">TODAY'S CHALLENGES</p><h3>Daily missions.</h3><div id="dailyMissions" class="daily-missions"><p>Sign in to load today's challenges.</p></div>
+  </section>
+  <section class="club-widget leaderboard-widget">
+   <p class="eyebrow">THIS WEEK</p><h3>Manager leaderboard.</h3><div id="weeklyLeaderboard"><p class="section-note">Sign in and play Ranked to enter the weekly table.</p></div>
+  </section>
+  <section class="club-widget achievements-widget">
+   <p class="eyebrow">CLUB HISTORY</p><h3>Achievements.</h3><div id="achievementGrid" class="achievement-grid"><p class="section-note">Your medals appear here as you hit milestones.</p></div>
+  </section>
+ </div>
 </div>
 <div class="principles">
 <article>

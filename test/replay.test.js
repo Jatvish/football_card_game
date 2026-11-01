@@ -17,6 +17,8 @@ test('six-player replays and two-player penalties work under the strict style po
  assert.ok(!html.includes('style='));
  assert.ok(html.includes('&lt;unsafe&gt;'));
  assert.ok(html.includes('ability-glow'));
+ const feedback=replayHTML({...h,abilities:[{id:'A01',player:'Player A01',name:'Finishing',value:2,target:'attack',triggered:true}]},'match:bonus');
+ assert.ok(feedback.includes('replay-ability-bonus'));assert.ok(feedback.includes('<b class="replay-ability-bonus">+2 ATTACK</b>'));assert.ok(feedback.includes('+2 ATTACK'));
  const penalty=replayHTML({...h,player:0,attackCards:h.attackCards.slice(0,1),defenseCards:h.defenseCards.slice(2)},'penalty:1',true);
  assert.equal((penalty.match(/class="replay-player /g)||[]).length,2);
 });
