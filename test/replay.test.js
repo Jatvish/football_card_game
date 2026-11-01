@@ -20,8 +20,8 @@ test('six-player replays and two-player penalties work under the strict style po
  const feedback=replayHTML({...h,abilities:[{id:'A01',player:'Player A01',name:'Finishing',value:2,target:'attack',triggered:true}]},'match:bonus');
  assert.ok(feedback.includes('replay-ability-bonus'));assert.ok(feedback.includes('<b class="replay-ability-bonus">+2 ATTACK</b>'));assert.ok(feedback.includes('+2 ATTACK'));
  const failed=replayHTML({...h,abilities:[{id:'B01',player:'Player B01',name:'Defensive leader',triggered:false}]},'match:failed');
- assert.ok(/replay-at-69-34\\s+ability-glow/.test(failed),'a player who attempted an ability glows even when its trigger fails');
- const eventStrip=failed.match(/<div class="replay-abilities">([\\s\\S]*?)<\\/div>/)?.[1]||'';
+ assert.ok(/replay-at-69-34\s+ability-glow/.test(failed),'a player who attempted an ability glows even when its trigger fails');
+ const eventStrip=failed.match(/<div class="replay-abilities">([\s\S]*?)<\/div>/)?.[1]||'';
  assert.ok(!eventStrip.includes('ability-glow')&&!eventStrip.includes('ability-energy'),'ability summaries stay clean without electric borders');
  assert.ok(eventStrip.includes('NOT TRIGGERED · NOT CONSUMED'));
  const penalty=replayHTML({...h,player:0,attackCards:h.attackCards.slice(0,1),defenseCards:h.defenseCards.slice(2)},'penalty:1',true);
