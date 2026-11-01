@@ -85,7 +85,7 @@ export function mark(r,idx,marks){
  const A=a.lineup.map(id=>byId.get(id)),D=d.lineup.map(id=>byId.get(id));
  const result=evaluate(A,D,marks,db.chemistry,[...a.activated,...d.activated]);
  if(result.goal)a.score++;
- for(const p of [a,d]){for(const id of p.lineup)p.uses[id]=(p.uses[id]||0)+1;p.spent.push(...result.abilities.filter(x=>x.triggered&&p.activated.includes(x.id)).map(x=>x.id));p.ready=false}
+ for(const p of [a,d]){for(const id of p.lineup)p.uses[id]=(p.uses[id]||0)+1;p.spent.push(...p.activated);p.ready=false}
  r.last={number:r.turn+1,attacker:ai,...result,attackCards:A,defenseCards:D,marks};
  r.history.push(r.last);r.turn++;r.phase='result';
 }

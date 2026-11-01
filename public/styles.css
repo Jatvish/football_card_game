@@ -455,7 +455,7 @@ footer{font-size:8px;line-height:1.6;flex-direction:column;gap:8px}
 .ability-feedback.triggered,.replay-ability-bonus{color:#08140e;background:var(--lime);box-shadow:0 0 12px #d8ec71a6}
 .ability-feedback.untriggered{color:#cfdbd0;background:#334239;border:1px solid #617367}
 .replay-player{position:absolute}
-.replay-ability-bonus{position:absolute;top:-13px;left:50%;transform:translateX(-50%);z-index:8;white-space:nowrap;padding:3px 7px;border-radius:10px;font-size:9px;font-weight:900;box-shadow:0 0 14px #38c8ffb0}
+.replay-ability-bonus{position:static;display:inline-block;max-width:100%;margin:0 auto 4px;transform:none;z-index:8;white-space:normal;padding:3px 5px;border-radius:10px;font-size:8px;line-height:1.2;font-weight:900;overflow-wrap:anywhere;box-shadow:0 0 14px #38c8ffb0}
 .armed-float{z-index:7}
 .slot-help{font-size:10px;color:var(--muted);margin:8px 0 14px}
 .slot.draggable-slot{cursor:grab;touch-action:pan-y}
@@ -482,5 +482,31 @@ footer{font-size:8px;line-height:1.6;flex-direction:column;gap:8px}
 .mastery-badge{display:block;margin-top:4px;color:var(--lime);font-size:8px;letter-spacing:.5px;font-weight:800}
 .rank-picker-card>span{min-width:0;display:grid;gap:3px}
 .replay-ability-bonus{border:1px solid #e9fca5;min-width:50px;text-align:center;letter-spacing:.3px}
-.above-player-bonus{margin:0 0 6px!important;align-self:flex-start;box-shadow:0 0 16px #d8ec71b8}
+.above-player-bonus{position:static;display:inline-flex;margin:0 0 6px!important;align-self:flex-start;max-width:100%;white-space:normal;line-height:1.2;overflow-wrap:anywhere;box-shadow:0 0 16px #d8ec71b8}
 @media(max-width:480px){.armed-float{font-size:8px;max-width:calc(100% - 12px);padding:5px}.replay-ability-bonus{top:-15px;font-size:8px}}
+/* Expanded daily wheel: weighted sectors mirror the reward odds returned by the server. */
+.daily-spin-flow{display:grid;justify-items:center;gap:15px;text-align:center}
+.spin-showcase{display:grid;grid-template-columns:minmax(220px,300px) minmax(190px,1fr);align-items:center;gap:28px;width:100%;max-width:720px;position:relative;padding-top:10px}
+.spin-wheel-large{width:min(300px,68vw);aspect-ratio:1;border:9px solid #dbe98f;border-radius:50%;position:relative;background:conic-gradient(#d7e88b 0 28%,#28563a 28% 53%,#d1a957 53% 69%,#487c56 69% 87%,#9ab8dc 87% 95%,#7965a8 95% 100%);box-shadow:0 0 0 5px #0b130e,0 0 36px #d6e98955;justify-self:center}
+.spin-wheel-large:after{content:"";position:absolute;inset:18%;border:2px solid #dbe98f88;border-radius:50%;pointer-events:none}
+.spin-wheel-center{position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%);width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:#101a14;color:var(--lime);border:3px solid #d9e78d;font-size:22px;font-weight:900;letter-spacing:2px;box-shadow:0 0 0 5px #101a14}
+.spin-pointer{position:absolute;z-index:4;left:150px;top:0;transform:translateX(-50%);color:var(--lime);font-size:32px;line-height:1;text-shadow:0 2px 7px #000}
+.spin-prize-list{display:grid;gap:9px;text-align:left}
+.spin-prize{display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid #384b3a;border-radius:8px;background:#101a14}
+.spin-prize-swatch{width:15px;height:15px;border-radius:50%;border:1px solid #d9edb0;flex:none}.spin-prize-swatch-0{background:#d7e88b}.spin-prize-swatch-1{background:#28563a}.spin-prize-swatch-2{background:#d1a957}.spin-prize-swatch-3{background:#487c56}.spin-prize-swatch-4{background:#9ab8dc}.spin-prize-swatch-5{background:#7965a8}
+.spin-prize b,.spin-prize small{display:block}
+.spin-prize b{font-size:12px;color:var(--text)}
+.spin-prize small{font-size:10px;color:var(--muted);margin-top:2px}
+.spin-status{font-weight:800;color:var(--lime);margin:0}
+.daily-spin-final{width:100%;padding:18px;border-radius:10px;border:1px solid #6c8550;background:#13241a}
+.daily-spin-final h2{margin:5px 0 8px;color:var(--lime)}
+.daily-spin-final p{max-width:620px;margin:0 auto 12px;line-height:1.6;color:#d2dfd0;font-size:13px}
+@media(max-width:620px){
+ .spin-showcase{grid-template-columns:1fr;gap:16px}
+ .spin-wheel-large{width:min(270px,72vw)}
+ .spin-pointer{left:50%;top:-2px}
+ .spin-prize-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .spin-prize{padding:7px}
+ .spin-prize b{font-size:10px}
+ .spin-prize small{font-size:9px}
+}

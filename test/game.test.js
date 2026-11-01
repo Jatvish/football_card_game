@@ -9,6 +9,26 @@ test('PostgreSQL DATE values are sent back as ISO calendar dates',()=>{
  assert.equal(dbInternals.dateKey(new Date('2026-11-01T00:00:00.000Z')),'2026-11-01');
  assert.equal(dbInternals.dateKey('2026-11-01'),'2026-11-01');
 });
+test('chemistry matrix checks every one of the 1,225 card pairs against career-window data',()=>{
+ const parse=s=>{const [y,m]=s.split('-').map(Number);return y*12+m};
+ const expected=new Set();
+ for(let i=0;i<db.cards.length;i++)for(let j=i+1;j<db.cards.length;j++){
+  const a=db.cards[i],b=db.cards[j],overlap=[];
+  for(const x of a.connections)for(const y of b.connections){
+   if(x.type!==y.type||x.team!==y.team)continue;
+   const from=x.from>y.from?x.from:y.from,to=x.to<y.to?x.to:y.to;
+   if(from<=to)overlap.push({from,to,months:parse(to)-parse(from)+1});
+  }
+  const key=[a.id,b.id].sort().join(':');
+  if(overlap.length){
+   expected.add(key);
+   assert.ok(db.chemistry[key],`Missing chemistry for ${a.name} / ${b.name}: ${overlap.map(x=>x.from+'–'+x.to).join(', ')}`);
+   assert.equal(db.chemistry[key].value,Math.max(...overlap.map(x=>x.months))>=18?2:1);
+  }else assert.equal(db.chemistry[key],undefined,`Unsupported chemistry for ${a.name} / ${b.name}`);
+ }
+ assert.equal(db.cards.length*(db.cards.length-1)/2,1225);
+ assert.deepEqual(Object.keys(db.chemistry).sort(),[...expected].sort());
+});
 const sum=cs=>cs.reduce((s,c)=>s+c.ovr,0);
 function two(){const r=newRoom('A',true);r.players[1].bot=false;return r}
 
@@ -17,6 +37,12 @@ test('all 50 cards have distinct identities, bounded complete stats and abilitie
  for(const c of db.cards){assert.ok(c.ability);assert.ok(c.peak);assert.ok(c.nation);for(const n of Object.values(c.stats))assert.ok(Number.isFinite(n)&&n>=0&&n<=100)}
  assert.equal(db.chemistry['B01:P02'],undefined,'Ronaldo and Mbappe do not get a same-club/different-era link');
  assert.equal(db.chemistry['A01:A02'].value,2);
+ assert.equal(db.chemistry['P02:P11'].value,2,'Mbappé and Bellingham shared Real Madrid from summer 2024');
+ assert.ok(db.chemistry['P11:P22'],'Bellingham and Alexander-Arnold share club and international time');
+ assert.ok(db.chemistry['P15:P20'],'Maldini and Pirlo were AC Milan teammates');
+ assert.equal(db.chemistry['B03:P02'].value,1,'Benzema and Mbappé overlap for France only after Benzema returned in 2021');
+ assert.match(db.chemistry['B03:P02'].reason,/May 2021–Jun 2022/);
+ assert.doesNotMatch(db.chemistry['B03:P02'].reason,/2017|2018|2019|2020/);
 });
 test('drafts preserve category counts, unique players and bounded group strength',()=>{
  for(let t=0;t<1000;t++){
@@ -77,7 +103,7 @@ test('500 entire matches always finish with every card used three times',()=>{
   assert.ok(['ended','shootout'].includes(r.stage));assert.equal(r.history.length,12);
  }
 });
-test('secrets stay hidden; abilities are consumed only when their triggers succeed',()=>{
+test('secrets stay hidden; every activated ability is consumed whether its trigger succeeds or fails',()=>{
  const r=two();r.first=0;
  r.players[0].cards=['A03','A01','P02','P09','A04','A05','A07','A09','A10','P17','P24','A12'].map(card);
  r.players[1].cards=['A02','B01','P01','P10','A06','B04','P16','P18','B07','B08','P23','P25'].map(card);
@@ -86,10 +112,12 @@ test('secrets stay hidden; abilities are consumed only when their triggers succe
  assert.throws(()=>select(r,ai,{ids}));select(r,di,{ids:defIds,activated:defIds});
  assert.throws(()=>mark(r,ai,[0,1]));assert.throws(()=>mark(r,di,[1,1]));mark(r,di,[0,1]);
  const events=r.last.abilities;
- for(const id of ids){const event=events.find(e=>e.id===id);assert.ok(event);assert.equal(r.players[ai].spent.includes(id),event.triggered)}
- for(const id of defIds){const event=events.find(e=>e.id===id);assert.ok(event);assert.equal(r.players[di].spent.includes(id),event.triggered)}
+ for(const id of ids){const event=events.find(e=>e.id===id);assert.ok(event);assert.equal(r.players[ai].spent.includes(id),true)}
+ for(const id of defIds){const event=events.find(e=>e.id===id);assert.ok(event);assert.equal(r.players[di].spent.includes(id),true)}
  assert.ok(events.some(e=>!e.triggered),'at least one activated ability should demonstrate a failed condition');
  assert.ok(events.some(e=>e.triggered&&e.value===2),'at least one activated ability should provide visible +2 feedback');
+ advance(r);r.turn=2;r.phase='select';
+ assert.throws(()=>select(r,ai,{ids,activated:['P09']}),/unused ability/,'a failed attempt cannot be activated again later in the match');
 });
 
 test('quick matches use a 2-use cap without mandatory rotation and finish in six possessions',()=>{
@@ -335,4 +363,5 @@ test('home UI includes the daily spin, player packs, missions, leaderboard, achi
  assert.match(app,/Player of the Match/);assert.match(app,/PACK OPENING/);assert.match(html,/Spin the wheel/);
  assert.match(app,/data-action=\"slot\"/);assert.match(app,/draggable=\"true\"/);assert.match(app,/tap twice quickly/i);
  assert.match(app,/lastPoolTap\?\.id===id/);assert.match(app,/is unselected/);assert.match(app,/database-backed/);
+ assert.match(app,/dailyWheelLarge/);assert.match(app,/expectedWeights=\[28,25,16,18,8,5\]/);assert.match(app,/animation\.finished/);assert.match(app,/saved\?\.outcomes/);
 });

@@ -137,9 +137,10 @@ export async function createDatabase(cards){
       const oldXp=p.rows[0].xp,newXp=oldXp+(reward.type==='xp'?reward.amount:0),packs=reward.type==='pack'?reward.amount:0;
       await client.query('UPDATE fw_ranked_profiles SET xp=$2,packs=packs+$3,updated_at=now() WHERE account_id=$1',[account.id,newXp,packs]);
       const unlocked=await grantLevelCards(client,account.id,oldXp,newXp);
-      const spinResult={...reward,unlocked};
+      const wheelOutcomes=outcomes.map(({type,amount,label,weight})=>({type,amount,label,weight}));
+      const spinResult={...reward,unlocked,outcomes:wheelOutcomes};
       await client.query('UPDATE fw_daily_progress SET spin_claimed=true,spin_result=$2::jsonb WHERE account_id=$1 AND day=$3',[account.id,JSON.stringify(spinResult),dateKey(daily.day)]);
-      return {reward:spinResult,profile:await profileWith(client,account.id,account.username)};
+      return {reward:spinResult,profile:await profileWith(client,account.id,account.username),outcomes:wheelOutcomes};
     });
   }
   async function openPack(account){
