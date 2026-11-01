@@ -51,6 +51,7 @@ function renderProfile(){
  $('rankSquadSummary').textContent=`${profile.squad?.length||0}-player squad · ${counts.F} F / ${counts.M} M / ${counts.D} D / ${counts.G} GK`;
  $('dailyMissions').innerHTML=missions.map(([id,name,xp,done])=>`<div class="mission ${claimed.has(id)?'complete':''}"><span>${claimed.has(id)?'✓':done?'◉':'○'} ${name}</span><b>${claimed.has(id)?'CLAIMED':'+'+xp+' XP'}</b></div>`).join('')+'<small>Challenges reset daily. Rewards are added automatically when a match completes.</small>';
  $('packCount').textContent=profile.packs||0;
+ if($('packHint'))$('packHint').textContent=!authToken?'Sign in to connect daily rewards and player packs to your Ranked Club.':profile.packs>0?'Open a pack to add up to three players you do not own to your Ranked collection.':'No packs yet. Claim your daily spin; some spins award one or two packs. Packs you open add new players to your Ranked collection.';
  $('spinDaily').disabled=!authToken||!!daily.spinClaimed||rewardBusy;
  $('spinDaily').textContent=daily.spinClaimed?'Come back tomorrow':'Spin daily reward';
  $('openPack').disabled=!authToken||!(profile.packs>0)||rewardBusy;
