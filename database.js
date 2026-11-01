@@ -72,7 +72,7 @@ export async function createDatabase(cards){
     const oldLevel=Math.floor(oldXp/250)+1,newLevel=Math.floor(newXp/250)+1,unlocked=[];
     for(let level=oldLevel+1;level<=newLevel;level++){
       const result=await client.query(`SELECT card_id FROM fw_cards WHERE account_id=$1`,[accountId]);
-      const owned=new Set(result.rows.map(x=>x.id));
+      const owned=new Set(result.rows.map(x=>x.card_id));
       const locked=cards.filter(c=>!owned.has(c.id));if(!locked.length)break;
       const pick=locked[Math.floor(Math.random()*locked.length)];
       await client.query(`INSERT INTO fw_cards(account_id,card_id,source) VALUES($1,$2,'manager-level') ON CONFLICT DO NOTHING`,[accountId,pick.id]);
