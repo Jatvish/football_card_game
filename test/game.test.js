@@ -363,4 +363,5 @@ test('home UI includes the daily spin, player packs, missions, leaderboard, achi
  assert.match(app,/Player of the Match/);assert.match(app,/PACK OPENING/);assert.match(html,/Spin the wheel/);
  assert.match(app,/data-action=\"slot\"/);assert.match(app,/draggable=\"true\"/);assert.match(app,/tap twice quickly/i);
  assert.match(app,/lastPoolTap\?\.id===id/);assert.match(app,/is unselected/);assert.match(app,/database-backed/);
+ assert.match(app,/dailyWheelLarge/);assert.match(app,/expectedWeights=\[28,25,16,18,8,5\]/);assert.match(app,/animation\.finished/);assert.match(app,/saved\?\.outcomes/);
 });
