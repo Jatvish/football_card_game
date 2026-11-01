@@ -2838,1087 +2838,1087 @@
   "chemistry": {
     "A01:A02": {
       "value": 2,
-      "reason": "Barcelona (Jul 2013–Aug 2017); Paris Saint-Germain (Aug 2021–Jun 2023)"
+      "reason": "Club: Barcelona (Jul 2013–Aug 2017); Club: Paris Saint-Germain (Aug 2021–Jun 2023)"
     },
     "A01:A03": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Sep 2020)"
+      "reason": "Club: Barcelona (Jul 2014–Sep 2020)"
     },
     "A01:A04": {
       "value": 2,
-      "reason": "Barcelona (Oct 2004–Jun 2015)"
+      "reason": "Club: Barcelona (Oct 2004–Jun 2015)"
     },
     "A01:A05": {
       "value": 2,
-      "reason": "Barcelona (Oct 2004–May 2018)"
+      "reason": "Club: Barcelona (Oct 2004–May 2018)"
     },
     "A01:A06": {
       "value": 2,
-      "reason": "Barcelona (Sep 2008–Aug 2021)"
+      "reason": "Club: Barcelona (Sep 2008–Aug 2021)"
     },
     "A01:A07": {
       "value": 2,
-      "reason": "Barcelona (Jul 2008–Aug 2021)"
+      "reason": "Club: Barcelona (Jul 2008–Aug 2021)"
     },
     "A01:A08": {
       "value": 2,
-      "reason": "Argentina (Aug 2005–Jun 2018); Barcelona (Aug 2010–Jan 2018)"
+      "reason": "National team: Argentina (Aug 2005–Jun 2018); Club: Barcelona (Aug 2010–Jan 2018)"
     },
     "A01:A09": {
       "value": 2,
-      "reason": "Barcelona (Jul 2008–Jun 2016)"
+      "reason": "Club: Barcelona (Jul 2008–Jun 2016)"
     },
     "A01:A10": {
       "value": 2,
-      "reason": "Barcelona (Jul 2012–Aug 2021)"
+      "reason": "Club: Barcelona (Jul 2012–Aug 2021)"
     },
     "A01:A11": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Aug 2021)"
+      "reason": "Club: Barcelona (Jul 2014–Aug 2021)"
     },
     "A01:A12": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Aug 2016)"
+      "reason": "Club: Barcelona (Jul 2014–Aug 2016)"
     },
     "A01:B07": {
       "value": 2,
-      "reason": "Paris Saint-Germain (Aug 2021–Jun 2023)"
+      "reason": "Club: Paris Saint-Germain (Aug 2021–Jun 2023)"
     },
     "A01:B11": {
       "value": 2,
-      "reason": "Paris Saint-Germain (Aug 2021–Jun 2023)"
+      "reason": "Club: Paris Saint-Germain (Aug 2021–Jun 2023)"
     },
     "A01:P01": {
       "value": 2,
-      "reason": "Barcelona (Jul 2007–Jul 2010)"
+      "reason": "Club: Barcelona (Jul 2007–Jul 2010)"
     },
     "A01:P02": {
       "value": 2,
-      "reason": "Paris Saint-Germain (Aug 2021–Jun 2023)"
+      "reason": "Club: Paris Saint-Germain (Aug 2021–Jun 2023)"
     },
     "A01:P07": {
       "value": 2,
-      "reason": "Barcelona (Oct 2004–Jul 2008)"
+      "reason": "Club: Barcelona (Oct 2004–Jul 2008)"
     },
     "A01:P08": {
       "value": 1,
-      "reason": "Barcelona (Jul 2009–Aug 2010)"
+      "reason": "Club: Barcelona (Jul 2009–Aug 2010)"
     },
     "A01:P19": {
       "value": 2,
-      "reason": "Paris Saint-Germain (Aug 2021–Jun 2023)"
+      "reason": "Club: Paris Saint-Germain (Aug 2021–Jun 2023)"
     },
     "A01:P21": {
       "value": 2,
-      "reason": "Barcelona (Oct 2004–Jun 2014)"
+      "reason": "Club: Barcelona (Oct 2004–Jun 2014)"
     },
     "A02:A03": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Aug 2017)"
+      "reason": "Club: Barcelona (Jul 2014–Aug 2017)"
     },
     "A02:A04": {
       "value": 2,
-      "reason": "Barcelona (Jul 2013–Jun 2015)"
+      "reason": "Club: Barcelona (Jul 2013–Jun 2015)"
     },
     "A02:A05": {
       "value": 2,
-      "reason": "Barcelona (Jul 2013–Aug 2017)"
+      "reason": "Club: Barcelona (Jul 2013–Aug 2017)"
     },
     "A02:A06": {
       "value": 2,
-      "reason": "Barcelona (Jul 2013–Aug 2017)"
+      "reason": "Club: Barcelona (Jul 2013–Aug 2017)"
     },
     "A02:A07": {
       "value": 2,
-      "reason": "Barcelona (Jul 2013–Aug 2017)"
+      "reason": "Club: Barcelona (Jul 2013–Aug 2017)"
     },
     "A02:A08": {
       "value": 2,
-      "reason": "Barcelona (Jul 2013–Aug 2017)"
+      "reason": "Club: Barcelona (Jul 2013–Aug 2017)"
     },
     "A02:A09": {
       "value": 2,
-      "reason": "Brazil (Aug 2010–Dec 2022); Barcelona (Jul 2013–Jun 2016)"
+      "reason": "National team: Brazil (Aug 2010–Dec 2022); Club: Barcelona (Jul 2013–Jun 2016)"
     },
     "A02:A10": {
       "value": 2,
-      "reason": "Barcelona (Jul 2013–Aug 2017)"
+      "reason": "Club: Barcelona (Jul 2013–Aug 2017)"
     },
     "A02:A11": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Aug 2017)"
+      "reason": "Club: Barcelona (Jul 2014–Aug 2017)"
     },
     "A02:A12": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Aug 2016)"
+      "reason": "Club: Barcelona (Jul 2014–Aug 2016)"
     },
     "A02:B06": {
       "value": 2,
-      "reason": "Brazil (Sep 2011–Nov 2026)"
+      "reason": "National team: Brazil (Sep 2011–Nov 2026)"
     },
     "A02:B07": {
       "value": 2,
-      "reason": "Paris Saint-Germain (Jul 2021–Jun 2023)"
+      "reason": "Club: Paris Saint-Germain (Jul 2021–Jun 2023)"
     },
     "A02:B09": {
       "value": 2,
-      "reason": "Brazil (Aug 2010–Jun 2018)"
+      "reason": "National team: Brazil (Aug 2010–Jun 2018)"
     },
     "A02:B11": {
       "value": 2,
-      "reason": "Paris Saint-Germain (Sep 2019–Jun 2023)"
+      "reason": "Club: Paris Saint-Germain (Sep 2019–Jun 2023)"
     },
     "A02:P02": {
       "value": 2,
-      "reason": "Paris Saint-Germain (Aug 2017–Jun 2023)"
+      "reason": "Club: Paris Saint-Germain (Aug 2017–Jun 2023)"
     },
     "A02:P07": {
       "value": 2,
-      "reason": "Brazil (Aug 2010–Apr 2013)"
+      "reason": "National team: Brazil (Aug 2010–Apr 2013)"
     },
     "A02:P19": {
       "value": 2,
-      "reason": "Paris Saint-Germain (Jul 2021–Jun 2023)"
+      "reason": "Club: Paris Saint-Germain (Jul 2021–Jun 2023)"
     },
     "A02:P21": {
       "value": 1,
-      "reason": "Barcelona (Jul 2013–Jun 2014)"
+      "reason": "Club: Barcelona (Jul 2013–Jun 2014)"
     },
     "A02:P24": {
       "value": 1,
-      "reason": "Paris Saint-Germain (Jul 2018–Jun 2019)"
+      "reason": "Club: Paris Saint-Germain (Jul 2018–Jun 2019)"
     },
     "A02:P26": {
       "value": 2,
-      "reason": "Brazil (Oct 2015–Nov 2026)"
+      "reason": "National team: Brazil (Oct 2015–Nov 2026)"
     },
     "A03:A04": {
       "value": 1,
-      "reason": "Barcelona (Jul 2014–Jun 2015)"
+      "reason": "Club: Barcelona (Jul 2014–Jun 2015)"
     },
     "A03:A05": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–May 2018)"
+      "reason": "Club: Barcelona (Jul 2014–May 2018)"
     },
     "A03:A06": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Sep 2020)"
+      "reason": "Club: Barcelona (Jul 2014–Sep 2020)"
     },
     "A03:A07": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Sep 2020)"
+      "reason": "Club: Barcelona (Jul 2014–Sep 2020)"
     },
     "A03:A08": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Jan 2018)"
+      "reason": "Club: Barcelona (Jul 2014–Jan 2018)"
     },
     "A03:A09": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Jun 2016)"
+      "reason": "Club: Barcelona (Jul 2014–Jun 2016)"
     },
     "A03:A10": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Sep 2020)"
+      "reason": "Club: Barcelona (Jul 2014–Sep 2020)"
     },
     "A03:A11": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Sep 2020)"
+      "reason": "Club: Barcelona (Jul 2014–Sep 2020)"
     },
     "A03:A12": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Aug 2016)"
+      "reason": "Club: Barcelona (Jul 2014–Aug 2016)"
     },
     "A04:A05": {
       "value": 2,
-      "reason": "Barcelona (Jul 2002–Jun 2015); Spain (May 2006–Jun 2014)"
+      "reason": "Club: Barcelona (Jul 2002–Jun 2015); National team: Spain (May 2006–Jun 2014)"
     },
     "A04:A06": {
       "value": 2,
-      "reason": "Barcelona (Sep 2008–Jun 2015); Spain (Apr 2009–Jun 2014)"
+      "reason": "Club: Barcelona (Sep 2008–Jun 2015); National team: Spain (Apr 2009–Jun 2014)"
     },
     "A04:A07": {
       "value": 2,
-      "reason": "Barcelona (Jul 2008–Jun 2015); Spain (Feb 2009–Jun 2014)"
+      "reason": "Club: Barcelona (Jul 2008–Jun 2015); National team: Spain (Feb 2009–Jun 2014)"
     },
     "A04:A08": {
       "value": 2,
-      "reason": "Barcelona (Aug 2010–Jun 2015)"
+      "reason": "Club: Barcelona (Aug 2010–Jun 2015)"
     },
     "A04:A09": {
       "value": 2,
-      "reason": "Barcelona (Jul 2008–Jun 2015)"
+      "reason": "Club: Barcelona (Jul 2008–Jun 2015)"
     },
     "A04:A10": {
       "value": 2,
-      "reason": "Barcelona (Jul 2012–Jun 2015); Spain (Oct 2011–Jun 2014)"
+      "reason": "Club: Barcelona (Jul 2012–Jun 2015); National team: Spain (Oct 2011–Jun 2014)"
     },
     "A04:A11": {
       "value": 1,
-      "reason": "Barcelona (Jul 2014–Jun 2015)"
+      "reason": "Club: Barcelona (Jul 2014–Jun 2015)"
     },
     "A04:A12": {
       "value": 1,
-      "reason": "Barcelona (Jul 2014–Jun 2015)"
+      "reason": "Club: Barcelona (Jul 2014–Jun 2015)"
     },
     "A04:B07": {
       "value": 2,
-      "reason": "Spain (Mar 2005–Jun 2014)"
+      "reason": "National team: Spain (Mar 2005–Jun 2014)"
     },
     "A04:P01": {
       "value": 2,
-      "reason": "Barcelona (Jul 2007–Jul 2010)"
+      "reason": "Club: Barcelona (Jul 2007–Jul 2010)"
     },
     "A04:P07": {
       "value": 2,
-      "reason": "Barcelona (Jul 2003–Jul 2008)"
+      "reason": "Club: Barcelona (Jul 2003–Jul 2008)"
     },
     "A04:P08": {
       "value": 1,
-      "reason": "Barcelona (Jul 2009–Aug 2010)"
+      "reason": "Club: Barcelona (Jul 2009–Aug 2010)"
     },
     "A04:P21": {
       "value": 2,
-      "reason": "Barcelona (Jul 1999–Jun 2014); Spain (Nov 2000–Feb 2013)"
+      "reason": "Club: Barcelona (Jul 1999–Jun 2014); National team: Spain (Nov 2000–Feb 2013)"
     },
     "A05:A06": {
       "value": 2,
-      "reason": "Barcelona (Sep 2008–May 2018); Spain (Apr 2009–Jul 2018)"
+      "reason": "Club: Barcelona (Sep 2008–May 2018); National team: Spain (Apr 2009–Jul 2018)"
     },
     "A05:A07": {
       "value": 2,
-      "reason": "Barcelona (Jul 2008–May 2018); Spain (Feb 2009–Jul 2018)"
+      "reason": "Club: Barcelona (Jul 2008–May 2018); National team: Spain (Feb 2009–Jul 2018)"
     },
     "A05:A08": {
       "value": 2,
-      "reason": "Barcelona (Aug 2010–Jan 2018)"
+      "reason": "Club: Barcelona (Aug 2010–Jan 2018)"
     },
     "A05:A09": {
       "value": 2,
-      "reason": "Barcelona (Jul 2008–Jun 2016)"
+      "reason": "Club: Barcelona (Jul 2008–Jun 2016)"
     },
     "A05:A10": {
       "value": 2,
-      "reason": "Spain (Oct 2011–Jul 2018); Barcelona (Jul 2012–May 2018)"
+      "reason": "National team: Spain (Oct 2011–Jul 2018); Club: Barcelona (Jul 2012–May 2018)"
     },
     "A05:A11": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–May 2018)"
+      "reason": "Club: Barcelona (Jul 2014–May 2018)"
     },
     "A05:A12": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Aug 2016)"
+      "reason": "Club: Barcelona (Jul 2014–Aug 2016)"
     },
     "A05:B07": {
       "value": 2,
-      "reason": "Spain (May 2006–Jul 2018)"
+      "reason": "National team: Spain (May 2006–Jul 2018)"
     },
     "A05:B10": {
       "value": 2,
-      "reason": "Spain (Sep 2014–Jul 2018)"
+      "reason": "National team: Spain (Sep 2014–Jul 2018)"
     },
     "A05:P01": {
       "value": 2,
-      "reason": "Barcelona (Jul 2007–Jul 2010)"
+      "reason": "Club: Barcelona (Jul 2007–Jul 2010)"
     },
     "A05:P07": {
       "value": 2,
-      "reason": "Barcelona (Jul 2003–Jul 2008)"
+      "reason": "Club: Barcelona (Jul 2003–Jul 2008)"
     },
     "A05:P08": {
       "value": 1,
-      "reason": "Barcelona (Jul 2009–Aug 2010)"
+      "reason": "Club: Barcelona (Jul 2009–Aug 2010)"
     },
     "A05:P21": {
       "value": 2,
-      "reason": "Barcelona (Jul 2002–Jun 2014); Spain (May 2006–Feb 2013)"
+      "reason": "Club: Barcelona (Jul 2002–Jun 2014); National team: Spain (May 2006–Feb 2013)"
     },
     "A06:A07": {
       "value": 2,
-      "reason": "Barcelona (Sep 2008–Nov 2022); Spain (Apr 2009–Jul 2018)"
+      "reason": "Club: Barcelona (Sep 2008–Nov 2022); National team: Spain (Apr 2009–Jul 2018)"
     },
     "A06:A08": {
       "value": 2,
-      "reason": "Barcelona (Aug 2010–Jan 2018)"
+      "reason": "Club: Barcelona (Aug 2010–Jan 2018)"
     },
     "A06:A09": {
       "value": 2,
-      "reason": "Barcelona (Sep 2008–Jun 2016); Barcelona (Jan 2022–Jun 2022)"
+      "reason": "Club: Barcelona (Sep 2008–Jun 2016); Club: Barcelona (Jan 2022–Jun 2022)"
     },
     "A06:A10": {
       "value": 2,
-      "reason": "Spain (Oct 2011–Dec 2022); Barcelona (Jul 2012–Jun 2023)"
+      "reason": "National team: Spain (Oct 2011–Dec 2022); Club: Barcelona (Jul 2012–Jun 2023)"
     },
     "A06:A11": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Jun 2023)"
+      "reason": "Club: Barcelona (Jul 2014–Jun 2023)"
     },
     "A06:A12": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Aug 2016)"
+      "reason": "Club: Barcelona (Jul 2014–Aug 2016)"
     },
     "A06:B07": {
       "value": 2,
-      "reason": "Spain (Apr 2009–Mar 2021)"
+      "reason": "National team: Spain (Apr 2009–Mar 2021)"
     },
     "A06:B10": {
       "value": 2,
-      "reason": "Spain (Sep 2014–Dec 2022)"
+      "reason": "National team: Spain (Sep 2014–Dec 2022)"
     },
     "A06:P01": {
       "value": 2,
-      "reason": "Barcelona (Sep 2008–Jul 2010)"
+      "reason": "Club: Barcelona (Sep 2008–Jul 2010)"
     },
     "A06:P05": {
       "value": 1,
-      "reason": "Barcelona (Jul 2022–Jun 2023)"
+      "reason": "Club: Barcelona (Jul 2022–Jun 2023)"
     },
     "A06:P08": {
       "value": 1,
-      "reason": "Barcelona (Jul 2009–Aug 2010)"
+      "reason": "Club: Barcelona (Jul 2009–Aug 2010)"
     },
     "A06:P21": {
       "value": 2,
-      "reason": "Barcelona (Sep 2008–Jun 2014); Spain (Apr 2009–Feb 2013)"
+      "reason": "Club: Barcelona (Sep 2008–Jun 2014); National team: Spain (Apr 2009–Feb 2013)"
     },
     "A07:A08": {
       "value": 2,
-      "reason": "Barcelona (Aug 2010–Jan 2018)"
+      "reason": "Club: Barcelona (Aug 2010–Jan 2018)"
     },
     "A07:A09": {
       "value": 2,
-      "reason": "Barcelona (Jul 2008–Jun 2016); Barcelona (Jan 2022–Jun 2022)"
+      "reason": "Club: Barcelona (Jul 2008–Jun 2016); Club: Barcelona (Jan 2022–Jun 2022)"
     },
     "A07:A10": {
       "value": 2,
-      "reason": "Barcelona (Jul 2012–Nov 2022); Spain (Oct 2011–Jul 2018)"
+      "reason": "Club: Barcelona (Jul 2012–Nov 2022); National team: Spain (Oct 2011–Jul 2018)"
     },
     "A07:A11": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Nov 2022)"
+      "reason": "Club: Barcelona (Jul 2014–Nov 2022)"
     },
     "A07:A12": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Aug 2016)"
+      "reason": "Club: Barcelona (Jul 2014–Aug 2016)"
     },
     "A07:B07": {
       "value": 2,
-      "reason": "Spain (Feb 2009–Jul 2018)"
+      "reason": "National team: Spain (Feb 2009–Jul 2018)"
     },
     "A07:B10": {
       "value": 2,
-      "reason": "Spain (Sep 2014–Jul 2018)"
+      "reason": "National team: Spain (Sep 2014–Jul 2018)"
     },
     "A07:P01": {
       "value": 2,
-      "reason": "Barcelona (Jul 2008–Jul 2010)"
+      "reason": "Club: Barcelona (Jul 2008–Jul 2010)"
     },
     "A07:P05": {
       "value": 1,
-      "reason": "Barcelona (Jul 2022–Nov 2022)"
+      "reason": "Club: Barcelona (Jul 2022–Nov 2022)"
     },
     "A07:P07": {
       "value": 1,
-      "reason": "Barcelona (Jul 2008–Jul 2008)"
+      "reason": "Club: Barcelona (Jul 2008–Jul 2008)"
     },
     "A07:P08": {
       "value": 1,
-      "reason": "Barcelona (Jul 2009–Aug 2010)"
+      "reason": "Club: Barcelona (Jul 2009–Aug 2010)"
     },
     "A07:P21": {
       "value": 2,
-      "reason": "Barcelona (Jul 2008–Jun 2014); Spain (Feb 2009–Feb 2013)"
+      "reason": "Club: Barcelona (Jul 2008–Jun 2014); National team: Spain (Feb 2009–Feb 2013)"
     },
     "A08:A09": {
       "value": 2,
-      "reason": "Barcelona (Aug 2010–Jun 2016)"
+      "reason": "Club: Barcelona (Aug 2010–Jun 2016)"
     },
     "A08:A10": {
       "value": 2,
-      "reason": "Barcelona (Jul 2012–Jan 2018)"
+      "reason": "Club: Barcelona (Jul 2012–Jan 2018)"
     },
     "A08:A11": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Jan 2018)"
+      "reason": "Club: Barcelona (Jul 2014–Jan 2018)"
     },
     "A08:A12": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Aug 2016)"
+      "reason": "Club: Barcelona (Jul 2014–Aug 2016)"
     },
     "A08:P08": {
       "value": 1,
-      "reason": "Barcelona (Aug 2010–Aug 2010)"
+      "reason": "Club: Barcelona (Aug 2010–Aug 2010)"
     },
     "A08:P21": {
       "value": 2,
-      "reason": "Barcelona (Aug 2010–Jun 2014)"
+      "reason": "Club: Barcelona (Aug 2010–Jun 2014)"
     },
     "A09:A10": {
       "value": 2,
-      "reason": "Barcelona (Jul 2012–Jun 2016); Barcelona (Jan 2022–Jun 2022)"
+      "reason": "Club: Barcelona (Jul 2012–Jun 2016); Club: Barcelona (Jan 2022–Jun 2022)"
     },
     "A09:A11": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Jun 2016); Barcelona (Jan 2022–Jun 2022)"
+      "reason": "Club: Barcelona (Jul 2014–Jun 2016); Club: Barcelona (Jan 2022–Jun 2022)"
     },
     "A09:A12": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Jun 2016)"
+      "reason": "Club: Barcelona (Jul 2014–Jun 2016)"
     },
     "A09:B06": {
       "value": 2,
-      "reason": "Brazil (Sep 2011–Dec 2022)"
+      "reason": "National team: Brazil (Sep 2011–Dec 2022)"
     },
     "A09:B09": {
       "value": 2,
-      "reason": "Brazil (Oct 2006–Jun 2018)"
+      "reason": "National team: Brazil (Oct 2006–Jun 2018)"
     },
     "A09:P01": {
       "value": 2,
-      "reason": "Barcelona (Jul 2008–Jul 2010)"
+      "reason": "Club: Barcelona (Jul 2008–Jul 2010)"
     },
     "A09:P07": {
       "value": 2,
-      "reason": "Brazil (Oct 2006–Apr 2013); Barcelona (Jul 2008–Jul 2008)"
+      "reason": "National team: Brazil (Oct 2006–Apr 2013); Club: Barcelona (Jul 2008–Jul 2008)"
     },
     "A09:P08": {
       "value": 1,
-      "reason": "Barcelona (Jul 2009–Aug 2010)"
+      "reason": "Club: Barcelona (Jul 2009–Aug 2010)"
     },
     "A09:P21": {
       "value": 2,
-      "reason": "Barcelona (Jul 2008–Jun 2014)"
+      "reason": "Club: Barcelona (Jul 2008–Jun 2014)"
     },
     "A09:P26": {
       "value": 2,
-      "reason": "Brazil (Oct 2015–Dec 2022)"
+      "reason": "National team: Brazil (Oct 2015–Dec 2022)"
     },
     "A10:A11": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Jun 2023)"
+      "reason": "Club: Barcelona (Jul 2014–Jun 2023)"
     },
     "A10:A12": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Aug 2016)"
+      "reason": "Club: Barcelona (Jul 2014–Aug 2016)"
     },
     "A10:B07": {
       "value": 2,
-      "reason": "Spain (Oct 2011–Mar 2021)"
+      "reason": "National team: Spain (Oct 2011–Mar 2021)"
     },
     "A10:B10": {
       "value": 2,
-      "reason": "Spain (Sep 2014–Jun 2023)"
+      "reason": "National team: Spain (Sep 2014–Jun 2023)"
     },
     "A10:P05": {
       "value": 1,
-      "reason": "Barcelona (Jul 2022–Jun 2023)"
+      "reason": "Club: Barcelona (Jul 2022–Jun 2023)"
     },
     "A10:P21": {
       "value": 2,
-      "reason": "Barcelona (Jul 2012–Jun 2014); Spain (Oct 2011–Feb 2013)"
+      "reason": "Club: Barcelona (Jul 2012–Jun 2014); National team: Spain (Oct 2011–Feb 2013)"
     },
     "A11:A12": {
       "value": 2,
-      "reason": "Barcelona (Jul 2014–Aug 2016)"
+      "reason": "Club: Barcelona (Jul 2014–Aug 2016)"
     },
     "A11:B05": {
       "value": 2,
-      "reason": "Germany (May 2012–Jul 2024)"
+      "reason": "National team: Germany (May 2012–Jul 2024)"
     },
     "A11:P05": {
       "value": 2,
-      "reason": "Barcelona (Jul 2022–Jun 2025)"
+      "reason": "Club: Barcelona (Jul 2022–Jun 2025)"
     },
     "A11:P23": {
       "value": 2,
-      "reason": "Germany (May 2012–Jul 2024)"
+      "reason": "National team: Germany (May 2012–Jul 2024)"
     },
     "B01:B02": {
       "value": 2,
-      "reason": "Real Madrid (Sep 2013–Jul 2018)"
+      "reason": "Club: Real Madrid (Sep 2013–Jul 2018)"
     },
     "B01:B03": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2009–Jul 2018)"
+      "reason": "Club: Real Madrid (Jul 2009–Jul 2018)"
     },
     "B01:B04": {
       "value": 2,
-      "reason": "Real Madrid (Aug 2012–Jul 2018)"
+      "reason": "Club: Real Madrid (Aug 2012–Jul 2018)"
     },
     "B01:B05": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Jul 2018)"
+      "reason": "Club: Real Madrid (Jul 2014–Jul 2018)"
     },
     "B01:B06": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2013–Jul 2018); Manchester United (Aug 2022–Nov 2022)"
+      "reason": "Club: Real Madrid (Jul 2013–Jul 2018); Club: Manchester United (Aug 2022–Nov 2022)"
     },
     "B01:B07": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2009–Jul 2018)"
+      "reason": "Club: Real Madrid (Jul 2009–Jul 2018)"
     },
     "B01:B08": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2011–Jul 2018); Manchester United (Aug 2021–Jul 2022)"
+      "reason": "Club: Real Madrid (Jul 2011–Jul 2018); Club: Manchester United (Aug 2021–Jul 2022)"
     },
     "B01:B09": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2009–Jul 2018)"
+      "reason": "Club: Real Madrid (Jul 2009–Jul 2018)"
     },
     "B01:B10": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2013–Jul 2018)"
+      "reason": "Club: Real Madrid (Jul 2013–Jul 2018)"
     },
     "B01:B11": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Jul 2018)"
+      "reason": "Club: Real Madrid (Jul 2014–Jul 2018)"
     },
     "B01:B12": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2015–Jul 2018)"
+      "reason": "Club: Real Madrid (Jul 2015–Jul 2018)"
     },
     "B01:P06": {
       "value": 2,
-      "reason": "Manchester United (Aug 2004–Jun 2009)"
+      "reason": "Club: Manchester United (Aug 2004–Jun 2009)"
     },
     "B01:P12": {
       "value": 1,
-      "reason": "Manchester United (Aug 2021–Jun 2022)"
+      "reason": "Club: Manchester United (Aug 2021–Jun 2022)"
     },
     "B01:P17": {
       "value": 2,
-      "reason": "Portugal (Sep 2018–Nov 2026)"
+      "reason": "National team: Portugal (Sep 2018–Nov 2026)"
     },
     "B02:B03": {
       "value": 2,
-      "reason": "Real Madrid (Sep 2013–Jun 2022)"
+      "reason": "Club: Real Madrid (Sep 2013–Jun 2022)"
     },
     "B02:B04": {
       "value": 2,
-      "reason": "Real Madrid (Sep 2013–Jun 2022)"
+      "reason": "Club: Real Madrid (Sep 2013–Jun 2022)"
     },
     "B02:B05": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Jun 2022)"
+      "reason": "Club: Real Madrid (Jul 2014–Jun 2022)"
     },
     "B02:B06": {
       "value": 2,
-      "reason": "Real Madrid (Sep 2013–Jun 2022)"
+      "reason": "Club: Real Madrid (Sep 2013–Jun 2022)"
     },
     "B02:B07": {
       "value": 2,
-      "reason": "Real Madrid (Sep 2013–Jun 2021)"
+      "reason": "Club: Real Madrid (Sep 2013–Jun 2021)"
     },
     "B02:B08": {
       "value": 2,
-      "reason": "Real Madrid (Sep 2013–Jul 2021)"
+      "reason": "Club: Real Madrid (Sep 2013–Jul 2021)"
     },
     "B02:B09": {
       "value": 2,
-      "reason": "Real Madrid (Sep 2013–Jun 2022)"
+      "reason": "Club: Real Madrid (Sep 2013–Jun 2022)"
     },
     "B02:B10": {
       "value": 2,
-      "reason": "Real Madrid (Sep 2013–Jun 2022)"
+      "reason": "Club: Real Madrid (Sep 2013–Jun 2022)"
     },
     "B02:B11": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Sep 2019)"
+      "reason": "Club: Real Madrid (Jul 2014–Sep 2019)"
     },
     "B02:B12": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2015–Jan 2019)"
+      "reason": "Club: Real Madrid (Jul 2015–Jan 2019)"
     },
     "B02:P25": {
       "value": 2,
-      "reason": "Real Madrid (Aug 2018–Jun 2022)"
+      "reason": "Club: Real Madrid (Aug 2018–Jun 2022)"
     },
     "B03:B04": {
       "value": 2,
-      "reason": "Real Madrid (Aug 2012–Jun 2023)"
+      "reason": "Club: Real Madrid (Aug 2012–Jun 2023)"
     },
     "B03:B05": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Jun 2023)"
+      "reason": "Club: Real Madrid (Jul 2014–Jun 2023)"
     },
     "B03:B06": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2013–Aug 2022)"
+      "reason": "Club: Real Madrid (Jul 2013–Aug 2022)"
     },
     "B03:B07": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2009–Jun 2021)"
+      "reason": "Club: Real Madrid (Jul 2009–Jun 2021)"
     },
     "B03:B08": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2011–Jul 2021); France (Mar 2013–Oct 2015); France (May 2021–Jun 2022)"
+      "reason": "Club: Real Madrid (Jul 2011–Jul 2021); National team: France (Mar 2013–Oct 2015); National team: France (May 2021–Jun 2022)"
     },
     "B03:B09": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2009–Jun 2022)"
+      "reason": "Club: Real Madrid (Jul 2009–Jun 2022)"
     },
     "B03:B10": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2013–Jun 2023)"
+      "reason": "Club: Real Madrid (Jul 2013–Jun 2023)"
     },
     "B03:B11": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Sep 2019)"
+      "reason": "Club: Real Madrid (Jul 2014–Sep 2019)"
     },
     "B03:B12": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2015–Jan 2019)"
+      "reason": "Club: Real Madrid (Jul 2015–Jan 2019)"
     },
     "B03:P01": {
       "value": 2,
-      "reason": "France (Mar 2007–Jun 2010)"
+      "reason": "National team: France (Mar 2007–Jun 2010)"
     },
     "B03:P02": {
       "value": 1,
-      "reason": "France (May 2021–Jun 2022)"
+      "reason": "National team: France (May 2021–Jun 2022)"
     },
     "B03:P12": {
       "value": 2,
-      "reason": "France (Mar 2013–Oct 2015); France (May 2021–Mar 2022)"
+      "reason": "National team: France (Mar 2013–Oct 2015); National team: France (May 2021–Mar 2022)"
     },
     "B03:P13": {
       "value": 1,
-      "reason": "France (May 2021–Jun 2022)"
+      "reason": "National team: France (May 2021–Jun 2022)"
     },
     "B03:P25": {
       "value": 2,
-      "reason": "Real Madrid (Aug 2018–Jun 2023)"
+      "reason": "Club: Real Madrid (Aug 2018–Jun 2023)"
     },
     "B04:B05": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Jun 2024)"
+      "reason": "Club: Real Madrid (Jul 2014–Jun 2024)"
     },
     "B04:B06": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2013–Aug 2022)"
+      "reason": "Club: Real Madrid (Jul 2013–Aug 2022)"
     },
     "B04:B07": {
       "value": 2,
-      "reason": "Real Madrid (Aug 2012–Jun 2021)"
+      "reason": "Club: Real Madrid (Aug 2012–Jun 2021)"
     },
     "B04:B08": {
       "value": 2,
-      "reason": "Real Madrid (Aug 2012–Jul 2021)"
+      "reason": "Club: Real Madrid (Aug 2012–Jul 2021)"
     },
     "B04:B09": {
       "value": 2,
-      "reason": "Real Madrid (Aug 2012–Jun 2022)"
+      "reason": "Club: Real Madrid (Aug 2012–Jun 2022)"
     },
     "B04:B10": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2013–May 2025)"
+      "reason": "Club: Real Madrid (Jul 2013–May 2025)"
     },
     "B04:B11": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Sep 2019)"
+      "reason": "Club: Real Madrid (Jul 2014–Sep 2019)"
     },
     "B04:B12": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2015–Jan 2019)"
+      "reason": "Club: Real Madrid (Jul 2015–Jan 2019)"
     },
     "B04:P02": {
       "value": 1,
-      "reason": "Real Madrid (Jul 2024–May 2025)"
+      "reason": "Club: Real Madrid (Jul 2024–May 2025)"
     },
     "B04:P11": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2023–May 2025)"
+      "reason": "Club: Real Madrid (Jul 2023–May 2025)"
     },
     "B04:P25": {
       "value": 2,
-      "reason": "Real Madrid (Aug 2018–May 2025)"
+      "reason": "Club: Real Madrid (Aug 2018–May 2025)"
     },
     "B05:B06": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Aug 2022)"
+      "reason": "Club: Real Madrid (Jul 2014–Aug 2022)"
     },
     "B05:B07": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Jun 2021)"
+      "reason": "Club: Real Madrid (Jul 2014–Jun 2021)"
     },
     "B05:B08": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Jul 2021)"
+      "reason": "Club: Real Madrid (Jul 2014–Jul 2021)"
     },
     "B05:B09": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Jun 2022)"
+      "reason": "Club: Real Madrid (Jul 2014–Jun 2022)"
     },
     "B05:B10": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Jun 2024)"
+      "reason": "Club: Real Madrid (Jul 2014–Jun 2024)"
     },
     "B05:B11": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Sep 2019)"
+      "reason": "Club: Real Madrid (Jul 2014–Sep 2019)"
     },
     "B05:B12": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2015–Jan 2019)"
+      "reason": "Club: Real Madrid (Jul 2015–Jan 2019)"
     },
     "B05:P11": {
       "value": 1,
-      "reason": "Real Madrid (Jul 2023–Jun 2024)"
+      "reason": "Club: Real Madrid (Jul 2023–Jun 2024)"
     },
     "B05:P23": {
       "value": 2,
-      "reason": "Germany (Mar 2010–Jul 2024); Bayern Munich (Jul 2011–Jun 2014)"
+      "reason": "National team: Germany (Mar 2010–Jul 2024); Club: Bayern Munich (Jul 2011–Jun 2014)"
     },
     "B05:P25": {
       "value": 2,
-      "reason": "Real Madrid (Aug 2018–Jun 2024)"
+      "reason": "Club: Real Madrid (Aug 2018–Jun 2024)"
     },
     "B06:B07": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2013–Jun 2021)"
+      "reason": "Club: Real Madrid (Jul 2013–Jun 2021)"
     },
     "B06:B08": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2013–Jul 2021)"
+      "reason": "Club: Real Madrid (Jul 2013–Jul 2021)"
     },
     "B06:B09": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2013–Jun 2022); Brazil (Sep 2011–Jun 2018)"
+      "reason": "Club: Real Madrid (Jul 2013–Jun 2022); National team: Brazil (Sep 2011–Jun 2018)"
     },
     "B06:B10": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2013–Aug 2022)"
+      "reason": "Club: Real Madrid (Jul 2013–Aug 2022)"
     },
     "B06:B11": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Sep 2019)"
+      "reason": "Club: Real Madrid (Jul 2014–Sep 2019)"
     },
     "B06:B12": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2015–Jan 2019)"
+      "reason": "Club: Real Madrid (Jul 2015–Jan 2019)"
     },
     "B06:P07": {
       "value": 2,
-      "reason": "Brazil (Sep 2011–Apr 2013)"
+      "reason": "National team: Brazil (Sep 2011–Apr 2013)"
     },
     "B06:P25": {
       "value": 2,
-      "reason": "Real Madrid (Aug 2018–Aug 2022)"
+      "reason": "Club: Real Madrid (Aug 2018–Aug 2022)"
     },
     "B06:P26": {
       "value": 2,
-      "reason": "Brazil (Oct 2015–Nov 2026)"
+      "reason": "National team: Brazil (Oct 2015–Nov 2026)"
     },
     "B07:B08": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2011–Jun 2021)"
+      "reason": "Club: Real Madrid (Jul 2011–Jun 2021)"
     },
     "B07:B09": {
       "value": 2,
-      "reason": "Real Madrid (Jan 2007–Jun 2021)"
+      "reason": "Club: Real Madrid (Jan 2007–Jun 2021)"
     },
     "B07:B10": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2013–Jun 2021); Spain (Sep 2014–Mar 2021)"
+      "reason": "Club: Real Madrid (Jul 2013–Jun 2021); National team: Spain (Sep 2014–Mar 2021)"
     },
     "B07:B11": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Sep 2019); Paris Saint-Germain (Jul 2021–Jun 2023)"
+      "reason": "Club: Real Madrid (Jul 2014–Sep 2019); Club: Paris Saint-Germain (Jul 2021–Jun 2023)"
     },
     "B07:B12": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2015–Jan 2019)"
+      "reason": "Club: Real Madrid (Jul 2015–Jan 2019)"
     },
     "B07:P02": {
       "value": 2,
-      "reason": "Paris Saint-Germain (Jul 2021–Jun 2023)"
+      "reason": "Club: Paris Saint-Germain (Jul 2021–Jun 2023)"
     },
     "B07:P10": {
       "value": 1,
-      "reason": "Real Madrid (Aug 2005–Jun 2006)"
+      "reason": "Club: Real Madrid (Aug 2005–Jun 2006)"
     },
     "B07:P19": {
       "value": 2,
-      "reason": "Paris Saint-Germain (Jul 2021–Jun 2023)"
+      "reason": "Club: Paris Saint-Germain (Jul 2021–Jun 2023)"
     },
     "B07:P21": {
       "value": 2,
-      "reason": "Spain (Mar 2005–Feb 2013)"
+      "reason": "National team: Spain (Mar 2005–Feb 2013)"
     },
     "B07:P25": {
       "value": 2,
-      "reason": "Real Madrid (Aug 2018–Jun 2021)"
+      "reason": "Club: Real Madrid (Aug 2018–Jun 2021)"
     },
     "B08:B09": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2011–Jul 2021)"
+      "reason": "Club: Real Madrid (Jul 2011–Jul 2021)"
     },
     "B08:B10": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2013–Jul 2021)"
+      "reason": "Club: Real Madrid (Jul 2013–Jul 2021)"
     },
     "B08:B11": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Sep 2019)"
+      "reason": "Club: Real Madrid (Jul 2014–Sep 2019)"
     },
     "B08:B12": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2015–Jan 2019)"
+      "reason": "Club: Real Madrid (Jul 2015–Jan 2019)"
     },
     "B08:P02": {
       "value": 2,
-      "reason": "France (Mar 2017–Dec 2022)"
+      "reason": "National team: France (Mar 2017–Dec 2022)"
     },
     "B08:P12": {
       "value": 2,
-      "reason": "France (Mar 2013–Mar 2022); Manchester United (Aug 2021–Jun 2022)"
+      "reason": "National team: France (Mar 2013–Mar 2022); Club: Manchester United (Aug 2021–Jun 2022)"
     },
     "B08:P13": {
       "value": 2,
-      "reason": "France (Mar 2016–Jun 2022)"
+      "reason": "National team: France (Mar 2016–Jun 2022)"
     },
     "B08:P25": {
       "value": 2,
-      "reason": "Real Madrid (Aug 2018–Jul 2021)"
+      "reason": "Club: Real Madrid (Aug 2018–Jul 2021)"
     },
     "B09:B10": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2013–Jun 2022)"
+      "reason": "Club: Real Madrid (Jul 2013–Jun 2022)"
     },
     "B09:B11": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Sep 2019)"
+      "reason": "Club: Real Madrid (Jul 2014–Sep 2019)"
     },
     "B09:B12": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2015–Jan 2019)"
+      "reason": "Club: Real Madrid (Jul 2015–Jan 2019)"
     },
     "B09:P07": {
       "value": 2,
-      "reason": "Brazil (Sep 2006–Apr 2013)"
+      "reason": "National team: Brazil (Sep 2006–Apr 2013)"
     },
     "B09:P25": {
       "value": 2,
-      "reason": "Real Madrid (Aug 2018–Jun 2022)"
+      "reason": "Club: Real Madrid (Aug 2018–Jun 2022)"
     },
     "B09:P26": {
       "value": 2,
-      "reason": "Brazil (Oct 2015–Jun 2018)"
+      "reason": "National team: Brazil (Oct 2015–Jun 2018)"
     },
     "B10:B11": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2014–Sep 2019)"
+      "reason": "Club: Real Madrid (Jul 2014–Sep 2019)"
     },
     "B10:B12": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2015–Jan 2019)"
+      "reason": "Club: Real Madrid (Jul 2015–Jan 2019)"
     },
     "B10:P02": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2024–Nov 2026)"
+      "reason": "Club: Real Madrid (Jul 2024–Nov 2026)"
     },
     "B10:P11": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2023–Nov 2026)"
+      "reason": "Club: Real Madrid (Jul 2023–Nov 2026)"
     },
     "B10:P22": {
       "value": 2,
-      "reason": "Real Madrid (Jun 2025–Nov 2026)"
+      "reason": "Club: Real Madrid (Jun 2025–Nov 2026)"
     },
     "B10:P25": {
       "value": 2,
-      "reason": "Real Madrid (Aug 2018–Nov 2026)"
+      "reason": "Club: Real Madrid (Aug 2018–Nov 2026)"
     },
     "B11:B12": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2015–Jan 2019)"
+      "reason": "Club: Real Madrid (Jul 2015–Jan 2019)"
     },
     "B11:P02": {
       "value": 2,
-      "reason": "Paris Saint-Germain (Sep 2019–Jun 2023)"
+      "reason": "Club: Paris Saint-Germain (Sep 2019–Jun 2023)"
     },
     "B11:P19": {
       "value": 2,
-      "reason": "Paris Saint-Germain (Jul 2021–Jun 2023)"
+      "reason": "Club: Paris Saint-Germain (Jul 2021–Jun 2023)"
     },
     "B11:P25": {
       "value": 1,
-      "reason": "Real Madrid (Aug 2018–Sep 2019)"
+      "reason": "Club: Real Madrid (Aug 2018–Sep 2019)"
     },
     "B12:P25": {
       "value": 1,
-      "reason": "Real Madrid (Aug 2018–Jan 2019)"
+      "reason": "Club: Real Madrid (Aug 2018–Jan 2019)"
     },
     "P01:P07": {
       "value": 1,
-      "reason": "Barcelona (Jul 2007–Jul 2008)"
+      "reason": "Club: Barcelona (Jul 2007–Jul 2008)"
     },
     "P01:P08": {
       "value": 1,
-      "reason": "Barcelona (Jul 2009–Jul 2010)"
+      "reason": "Club: Barcelona (Jul 2009–Jul 2010)"
     },
     "P01:P10": {
       "value": 2,
-      "reason": "France (Oct 1997–Jul 2006)"
+      "reason": "National team: France (Oct 1997–Jul 2006)"
     },
     "P01:P21": {
       "value": 2,
-      "reason": "Barcelona (Jul 2007–Jul 2010)"
+      "reason": "Club: Barcelona (Jul 2007–Jul 2010)"
     },
     "P02:P11": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2024–Nov 2026)"
+      "reason": "Club: Real Madrid (Jul 2024–Nov 2026)"
     },
     "P02:P12": {
       "value": 2,
-      "reason": "France (Mar 2017–Mar 2022)"
+      "reason": "National team: France (Mar 2017–Mar 2022)"
     },
     "P02:P13": {
       "value": 2,
-      "reason": "France (Mar 2017–Jun 2022)"
+      "reason": "National team: France (Mar 2017–Jun 2022)"
     },
     "P02:P19": {
       "value": 2,
-      "reason": "Paris Saint-Germain (Jul 2021–Jun 2024)"
+      "reason": "Club: Paris Saint-Germain (Jul 2021–Jun 2024)"
     },
     "P02:P22": {
       "value": 2,
-      "reason": "Real Madrid (Jun 2025–Nov 2026)"
+      "reason": "Club: Real Madrid (Jun 2025–Nov 2026)"
     },
     "P02:P24": {
       "value": 1,
-      "reason": "Paris Saint-Germain (Jul 2018–Jun 2019)"
+      "reason": "Club: Paris Saint-Germain (Jul 2018–Jun 2019)"
     },
     "P02:P25": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2024–Nov 2026)"
+      "reason": "Club: Real Madrid (Jul 2024–Nov 2026)"
     },
     "P03:P09": {
       "value": 2,
-      "reason": "Manchester City (Jul 2022–Jun 2025)"
+      "reason": "Club: Manchester City (Jul 2022–Jun 2025)"
     },
     "P03:P17": {
       "value": 2,
-      "reason": "Manchester City (Jul 2022–Nov 2026)"
+      "reason": "Club: Manchester City (Jul 2022–Nov 2026)"
     },
     "P03:P18": {
       "value": 2,
-      "reason": "Manchester City (Jul 2022–Jan 2025)"
+      "reason": "Club: Manchester City (Jul 2022–Jan 2025)"
     },
     "P04:P16": {
       "value": 2,
-      "reason": "Liverpool (Jan 2018–Nov 2026)"
+      "reason": "Club: Liverpool (Jan 2018–Nov 2026)"
     },
     "P04:P22": {
       "value": 2,
-      "reason": "Liverpool (Jul 2017–May 2025)"
+      "reason": "Club: Liverpool (Jul 2017–May 2025)"
     },
     "P04:P26": {
       "value": 2,
-      "reason": "Liverpool (Jul 2018–Nov 2026)"
+      "reason": "Club: Liverpool (Jul 2018–Nov 2026)"
     },
     "P05:P23": {
       "value": 2,
-      "reason": "Bayern Munich (Jul 2014–Jun 2022)"
+      "reason": "Club: Bayern Munich (Jul 2014–Jun 2022)"
     },
     "P06:P12": {
       "value": 1,
-      "reason": "Manchester United (Aug 2016–Jun 2017)"
+      "reason": "Club: Manchester United (Aug 2016–Jun 2017)"
     },
     "P06:P14": {
       "value": 2,
-      "reason": "England (Feb 2003–Jun 2014)"
+      "reason": "National team: England (Feb 2003–Jun 2014)"
     },
     "P06:P18": {
       "value": 2,
-      "reason": "England (Nov 2011–Nov 2018)"
+      "reason": "National team: England (Nov 2011–Nov 2018)"
     },
     "P06:P22": {
       "value": 1,
-      "reason": "England (Mar 2018–Nov 2018)"
+      "reason": "National team: England (Mar 2018–Nov 2018)"
     },
     "P07:P21": {
       "value": 2,
-      "reason": "Barcelona (Jul 2003–Jul 2008)"
+      "reason": "Club: Barcelona (Jul 2003–Jul 2008)"
     },
     "P08:P21": {
       "value": 1,
-      "reason": "Barcelona (Jul 2009–Aug 2010)"
+      "reason": "Club: Barcelona (Jul 2009–Aug 2010)"
     },
     "P09:P17": {
       "value": 2,
-      "reason": "Manchester City (Sep 2020–Jun 2025)"
+      "reason": "Club: Manchester City (Sep 2020–Jun 2025)"
     },
     "P09:P18": {
       "value": 2,
-      "reason": "Manchester City (Jul 2017–Jan 2025)"
+      "reason": "Club: Manchester City (Jul 2017–Jan 2025)"
     },
     "P09:P25": {
       "value": 2,
-      "reason": "Belgium (Nov 2011–Nov 2026)"
+      "reason": "National team: Belgium (Nov 2011–Nov 2026)"
     },
     "P11:P18": {
       "value": 2,
-      "reason": "England (Nov 2020–Jun 2025)"
+      "reason": "National team: England (Nov 2020–Jun 2025)"
     },
     "P11:P22": {
       "value": 2,
-      "reason": "England (Nov 2020–Jun 2025); Real Madrid (Jun 2025–Nov 2026)"
+      "reason": "National team: England (Nov 2020–Jun 2025); Club: Real Madrid (Jun 2025–Nov 2026)"
     },
     "P11:P25": {
       "value": 2,
-      "reason": "Real Madrid (Jul 2023–Nov 2026)"
+      "reason": "Club: Real Madrid (Jul 2023–Nov 2026)"
     },
     "P12:P13": {
       "value": 2,
-      "reason": "France (Mar 2016–Mar 2022)"
+      "reason": "National team: France (Mar 2016–Mar 2022)"
     },
     "P12:P15": {
       "value": 2,
-      "reason": "Juventus (Jul 2012–Jun 2015)"
+      "reason": "Club: Juventus (Jul 2012–Jun 2015)"
     },
     "P12:P24": {
       "value": 2,
-      "reason": "Juventus (Jul 2012–Aug 2016)"
+      "reason": "Club: Juventus (Jul 2012–Aug 2016)"
     },
     "P14:P18": {
       "value": 2,
-      "reason": "England (Nov 2011–Jun 2014)"
+      "reason": "National team: England (Nov 2011–Jun 2014)"
     },
     "P15:P20": {
       "value": 2,
-      "reason": "AC Milan (Jul 2001–May 2009)"
+      "reason": "Club: AC Milan (Jul 2001–May 2009)"
     },
     "P15:P24": {
       "value": 2,
-      "reason": "Italy (Sep 2002–Sep 2015); Juventus (Jul 2011–Jun 2015)"
+      "reason": "National team: Italy (Sep 2002–Sep 2015); Club: Juventus (Jul 2011–Jun 2015)"
     },
     "P16:P22": {
       "value": 2,
-      "reason": "Liverpool (Jan 2018–May 2025)"
+      "reason": "Club: Liverpool (Jan 2018–May 2025)"
     },
     "P16:P26": {
       "value": 2,
-      "reason": "Liverpool (Jul 2018–Nov 2026)"
+      "reason": "Club: Liverpool (Jul 2018–Nov 2026)"
     },
     "P17:P18": {
       "value": 2,
-      "reason": "Manchester City (Sep 2020–Jan 2025)"
+      "reason": "Club: Manchester City (Sep 2020–Jan 2025)"
     },
     "P18:P22": {
       "value": 2,
-      "reason": "England (Mar 2018–Jun 2025)"
+      "reason": "National team: England (Mar 2018–Jun 2025)"
     },
     "P20:P24": {
       "value": 2,
-      "reason": "Italy (Oct 1997–Jun 2002)"
+      "reason": "National team: Italy (Oct 1997–Jun 2002)"
     },
     "P22:P25": {
       "value": 2,
-      "reason": "Real Madrid (Jun 2025–Nov 2026)"
+      "reason": "Club: Real Madrid (Jun 2025–Nov 2026)"
     },
     "P22:P26": {
       "value": 2,
-      "reason": "Liverpool (Jul 2018–May 2025)"
+      "reason": "Club: Liverpool (Jul 2018–May 2025)"
     }
   },
   "sources": [
