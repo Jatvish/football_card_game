@@ -40,6 +40,9 @@ test('all 50 cards have distinct identities, bounded complete stats and abilitie
  assert.equal(db.chemistry['P02:P11'].value,2,'Mbappé and Bellingham shared Real Madrid from summer 2024');
  assert.ok(db.chemistry['P11:P22'],'Bellingham and Alexander-Arnold share club and international time');
  assert.ok(db.chemistry['P15:P20'],'Maldini and Pirlo were AC Milan teammates');
+ assert.equal(db.chemistry['B03:P02'].value,1,'Benzema and Mbappé overlap for France only after Benzema returned in 2021');
+ assert.match(db.chemistry['B03:P02'].reason,/May 2021–Jun 2022/);
+ assert.doesNotMatch(db.chemistry['B03:P02'].reason,/2017|2018|2019|2020/);
 });
 test('drafts preserve category counts, unique players and bounded group strength',()=>{
  for(let t=0;t<1000;t++){
@@ -113,6 +116,8 @@ test('secrets stay hidden; every activated ability is consumed whether its trigg
  for(const id of defIds){const event=events.find(e=>e.id===id);assert.ok(event);assert.equal(r.players[di].spent.includes(id),true)}
  assert.ok(events.some(e=>!e.triggered),'at least one activated ability should demonstrate a failed condition');
  assert.ok(events.some(e=>e.triggered&&e.value===2),'at least one activated ability should provide visible +2 feedback');
+ advance(r);r.turn=2;r.phase='select';
+ assert.throws(()=>select(r,ai,{ids,activated:['P09']}),/unused ability/,'a failed attempt cannot be activated again later in the match');
 });
 
 test('quick matches use a 2-use cap without mandatory rotation and finish in six possessions',()=>{
