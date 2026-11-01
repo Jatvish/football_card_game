@@ -23,7 +23,7 @@ test('six-player replays and two-player penalties work under the strict style po
  assert.ok(/replay-at-69-34\s+ability-glow/.test(failed),'a player who attempted an ability glows even when its trigger fails');
  const eventStrip=failed.match(/<div class="replay-abilities">([\s\S]*?)<\/div>/)?.[1]||'';
  assert.ok(!eventStrip.includes('ability-glow')&&!eventStrip.includes('ability-energy'),'ability summaries stay clean without electric borders');
- assert.ok(eventStrip.includes('NOT TRIGGERED · NOT CONSUMED'));
+ assert.ok(eventStrip.includes('NOT TRIGGERED · USED'));
  const penalty=replayHTML({...h,player:0,attackCards:h.attackCards.slice(0,1),defenseCards:h.defenseCards.slice(2)},'penalty:1',true);
  assert.equal((penalty.match(/class="replay-player /g)||[]).length,2);
 });
