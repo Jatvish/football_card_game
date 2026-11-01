@@ -1,6 +1,6 @@
 # Final Whistle
 
-A complete browser-based football strategy card duel, with online private rooms and a solo practice opponent. Built with Node 20+ and vanilla JavaScript; no third-party runtime dependencies or build step.
+A complete browser-based football strategy card duel, with online private rooms, Coach AI practice and a separate database-backed Ranked Club. Built with Node 20+ and vanilla JavaScript; the only runtime dependency is the PostgreSQL driver.
 
 ## Run
 
@@ -18,13 +18,13 @@ Choose **Quick Match** (6 possessions, 2 uses per card and no forced rotation), 
 - 50 distinct peak-version cards. Each squad contains 3 forwards, 3 midfielders, 4 defenders and 2 keepers. No duplicates across squads. Total OVR and each category's OVR gap are at most 8.
 - A server coin toss decides the first attacker. Twelve alternating possessions; six attacks and six defences each.
 - Tactical matches: three uses per card, with a **must-play constraint**: if a card has as many uses left as eligible turns remaining, it must play now. This guarantees all 36 uses per squad can be spent without a deadlocked final turn.
-- Explicit Finisher, Creator and Runner roles; mandatory two defenders plus goalkeeper. Natural-role modifiers, formation bonus, curated teammate chemistry, centre-back/full-back shape, marker matchups and goalkeeper matchup.
+- Explicit Finisher, Creator and Runner roles; mandatory two defenders plus goalkeeper. During lineup selection, drag a pool card onto a role or drag filled role cards to swap positions. On touch screens, tap two filled roles to swap. Double-click / quickly tap a filled role twice to clear it; clicking an assigned pool card again also removes it. Natural-role modifiers, formation bonus, curated teammate chemistry, centre-back/full-back shape, marker matchups and goalkeeper matchup.
 - Quick matches use a two-use cap with no must-play rotation, so players can repeat favourites. Tactical and Ranked matches retain three uses and the original rotation.
 - Each card has a special ability. Managers choose activations before revealing. An ability is consumed only when its trigger succeeds; unsuccessful triggers remain available. Armed cards show an on-card status and expected bonus; resolved lineup slots and the replay show the exact `+2` / `+3` outcome or `NOT TRIGGERED · NOT CONSUMED` beside the player.
 - Both lineups remain secret until committed. The defender then assigns two different markers. One attacker stays unmarked. Both players review the full result before the next possession.
 - Full-time ties and the Penalties only mode use alternating kicks, early clinching, then sudden death. On each kick the shooter commits a taker and aim; the defender commits a keeper and dive. Resolve that single kick, review the result, then swap roles. Five attempts each; sudden-death wins require equal attempts. All six takers must be used before reuse. Normal charges and abilities are suspended. Penalties are probabilistic; normal possessions are deterministic.
-- Three Coach AI difficulties (Rookie, Pro, Legend), simplified match result summaries with expandable calculations, illustrated replays, match journal, searchable collection, attribute/ability inspector, chemistry explanations, lineup suggestions, rematches, mobile layout and reconnect handling.
-- Ranked Season starter collection (12 cards), squad management (3 F / 3 M / 4 D / 2 GK), XP and manager levels, local rating, win/loss record, streak, daily missions and one new card unlocked per level.
+- Three Coach AI difficulties (Rookie, Pro, Legend), simplified match result summaries with expandable calculations, illustrated goal/save/block replays, visible ability bonuses above the player in the replay and result lineup, match journal, searchable collection, attribute/ability inspector, chemistry explanations, lineup suggestions, rematches, mobile layout and reconnect handling.
+- Database-backed Ranked Club: account registration/sign-in, a 12-card starter collection, owned-card squad management (3 F / 3 M / 4 D / 2 GK), XP and manager levels, rating, win/loss record, win streaks, daily missions, daily prize wheel, player packs with animated three-card reveals, collection completion achievements, weekly leaderboard, Player of the Match, and per-card mastery XP/levels from appearances, goals, defensive stops and successful abilities.
 
 ## Scoring contract
 
@@ -48,10 +48,26 @@ Chemistry is a limited curated set of shared senior-team windows, independent of
 
 ## Verification
 
-`npm test` checks formulas, zero-margin outcomes, matchup counters, ability triggers and successful-trigger-only consumption, illegal selections, hidden information, exhaustion, 1,000 balanced drafts, 500 complete tactical matches, six-possession Quick matches, Ranked squad composition, alternating penalty choices, result acknowledgement, early clinching/sudden death, penalty-only rooms/rematches, bot play, all 50 local portraits with credits, and the complete two-client HTTP lifecycle. `scripts/simulate.js` runs legal greedy lineups and best defensive marking to report scoring and first-attacker outcomes. These are regression/balance checks, not a substitute for human playtesting.
+`npm test` checks formulas, zero-margin outcomes, matchup counters, ability triggers and successful-trigger-only consumption, illegal selections, hidden information, exhaustion, 1,000 balanced drafts, 500 complete tactical matches, six-possession Quick matches, Ranked squad composition and result persistence, daily-spin/pack/mission/leaderboard/achievement UI, alternating penalty choices, result acknowledgement, early clinching/sudden death, penalty-only rooms/rematches, bot play, all 50 local portraits with credits, and the complete two-client HTTP lifecycle. `scripts/simulate.js` runs legal greedy lineups and best defensive marking to report scoring and first-attacker outcomes. These are regression/balance checks, not a substitute for human playtesting.
 
-## Render
+## Database-backed Ranked Club
 
-The existing `render.yaml` remains compatible: Node runtime, `npm install`, `npm start`, and `/health`. The server honours `PORT`. Deploy this revision using the connected Render service's branch setting (normally `main`). `/health` returns `version: "2.2"` to distinguish the new deployment.
+The server uses PostgreSQL via the `pg` driver. Set `DATABASE_URL` to enable account registration/sign-in, owned card collections, Ranked squad validation, XP/levels, rating, records/streaks, daily missions, daily reward spins, pack inventory/openings, achievements, weekly leaderboard data, match MVPs and per-card mastery. The server applies `migrations/001_initial.sql` idempotently during startup. Daily spin and mission resets use `APP_TIME_ZONE` (defaults to `Asia/Kolkata`) so the reward day follows the configured product timezone. If `DATABASE_URL` is absent, Quick/Tactical/Penalties friendly modes still work; account and Ranked APIs return a clear 503 instead of pretending progress is persistent.
 
-Use **one server instance**. Rooms are in memory: a restart/deploy clears active matches, and rooms expire after two hours without authenticated activity. Ranked Season XP, rating, collection and daily mission progress are currently stored in browser localStorage for this prototype; they are not account-backed, synced across devices, or included in a global leaderboard. Secure online ranked matchmaking, server-authoritative ownership, persistent accounts, cross-restart room recovery, horizontal scaling and tournaments still require a persistent account/database layer. Session tokens live in sessionStorage per tab and are sent only in POST bodies, never invitation links. Mutations reject stale match/turn identifiers, cross-origin browser requests, oversized bodies, and unauthorized players. Room creation is bounded, but internet-scale abuse protection and persistent storage require separate infrastructure.
+Passwords are stored as salted scrypt hashes. Session tokens are random, 30-day tokens stored hashed in the database. Ranked squads are validated server-side against the account's owned cards. Ranked rewards are written transactionally and are idempotent per match. Card mastery tracks Ranked appearances, goals, defensive stops and activated abilities.
+
+## Deploy on Render with Neon Postgres
+
+Recommended low-cost setup: keep the Node web service on Render and use Neon Postgres for persistent game data. Render's free Postgres databases expire after 30 days, so they are not a good home for a player collection or Ranked profile that should last. Neon Free currently includes 1 GB of Postgres storage per project, 100 CU-hours per project per month and 5 GB of public network transfer per project per month; compute scales to zero after 5 minutes of inactivity. This is a good fit for a small hobby-game prototype, but usage limits apply and the free tier is not a production SLA.
+
+1. Create a free PostgreSQL project in Neon (Singapore is a practical region for players in India).
+2. In Neon, open **Connect** and copy the pooled connection string (the hostname includes `-pooler`). Keep `sslmode=require` in the URL.
+3. In the Render service for Final Whistle, open **Environment** and add `DATABASE_URL` with that connection string. Leave `PG_POOL_MAX` at `5` initially and set `APP_TIME_ZONE=Asia/Kolkata` for the daily reset.
+4. Redeploy the Render service. At startup the app creates/updates the required tables. Check `/health`; it should return `database: true` and `version: "2.4"`.
+5. Create a manager account in Final Whistle. Ranked, spins, packs, missions, achievements, card mastery and the weekly leaderboard are then account-backed across browsers/devices.
+
+`render.yaml` declares `DATABASE_URL` with `sync: false` so the secret is added in Render's Environment UI rather than committed to Git. Never commit `.env` or a live database URL. `.env.example` shows the expected local-development variables. Local development can use the same Neon URL in a private `.env` file.
+
+Use **one Render web-service instance** for now. Live match rooms remain in server memory: a restart/deploy clears active rooms, and rooms expire after two hours without activity. Ranked accounts, cards, XP, rating, rewards, mastery and match history persist in PostgreSQL. Ranked currently plays against Coach AI; online PvP ranked matchmaking is not included yet. The weekly leaderboard ranks managers who have completed Ranked matches.
+
+Session tokens are kept by the browser and sent only in POST bodies, never invitation links. Mutations reject stale match/turn identifiers, cross-origin browser requests, oversized bodies and unauthorized players. The included room-creation rate cap is a basic safeguard; a public competitive launch should add distributed rate limiting, stronger abuse monitoring, automated backups and a proper matchmaking service.

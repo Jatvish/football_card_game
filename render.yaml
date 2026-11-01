@@ -6,3 +6,10 @@ services:
     buildCommand: npm install
     startCommand: npm start
     healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: PG_POOL_MAX
+        value: "5"
+      - key: APP_TIME_ZONE
+        value: Asia/Kolkata
