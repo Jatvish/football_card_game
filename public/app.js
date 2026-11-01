@@ -107,31 +107,21 @@ async function spinDaily(){
  try{
   const result=await api('rewards/spin',{authToken});
   profile=result.profile;profile.latestReward=null;renderProfile();
-  const outcomes=result.outcomes||[],colors=['#d7e88b','#28563a','#d1a957','#487c56','#9ab8dc','#7965a8'];
+  const outcomes=result.outcomes||[],expectedWeights=[28,25,16,18,8,5];
   const wheel=$('dailyWheelLarge');
-  if(!wheel||!outcomes.length)throw Error('The reward wheel could not load its prize segments. Please reload and try again.');
-  let cursor=0;const stops=[],segments=[];
+  if(!wheel||outcomes.length!==expectedWeights.length||outcomes.some((item,i)=>Number(item.weight)!==expectedWeights[i]))throw Error('The reward wheel odds are out of sync with the server. Please reload and try again.');
+  let cursor=0;const segments=[];
   for(let i=0;i<outcomes.length;i++){
-   const item=outcomes[i],start=cursor;cursor+=Number(item.weight)||0;
-   stops.push(`${colors[i%colors.length]} ${start}% ${cursor}%`);
-   segments.push({...item,color:colors[i%colors.length],center:(start+cursor)/2*3.6});
+   const item=outcomes[i];segments.push({...item,center:(cursor+Number(item.weight)/2)*3.6});cursor+=Number(item.weight);
   }
-  wheel.style.background=`conic-gradient(${stops.join(',')})`;
-  $('dailySpinPrizes').innerHTML=segments.map(item=>`<div class="spin-prize"><span class="spin-prize-swatch" style="background:${item.color}"></span><span><b>${esc(item.label)}</b><small>${item.weight}% chance</small></span></div>`).join('');
+  $('dailySpinPrizes').innerHTML=segments.map((item,i)=>`<div class="spin-prize"><span class="spin-prize-swatch spin-prize-swatch-${i}"></span><span><b>${esc(item.label)}</b><small>${item.weight}% chance</small></span></div>`).join('');
   const landedIndex=outcomes.findIndex(x=>x.type===result.reward.type&&x.amount===result.reward.amount);
   if(landedIndex<0)throw Error('The server returned a reward that is not on the displayed wheel.');
   const target=segments[landedIndex],rotation=360*5+(360-target.center);
-  wheel.style.transition='none';wheel.style.transform='rotate(0deg)';void wheel.offsetWidth;
   $('dailySpinStatus').textContent='Spinning… good luck!';
   const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  if(!reduced){
-   const finished=new Promise(resolve=>{
-    let done=false;const finish=()=>{if(done)return;done=true;resolve()};
-    wheel.addEventListener('transitionend',finish,{once:true});setTimeout(finish,4700);
-   });
-   requestAnimationFrame(()=>{wheel.style.transition='transform 4.3s cubic-bezier(.10,.78,.10,1)';wheel.style.transform=`rotate(${rotation}deg)`});
-   await finished;
-  }else wheel.style.transform=`rotate(${rotation}deg)`;
+  const animation=wheel.animate([{transform:'rotate(0deg)'},{transform:`rotate(${rotation}deg)`}],{duration:reduced?0:4300,easing:'cubic-bezier(.10,.78,.10,1)',fill:'forwards'});
+  await animation.finished;
   const unlocked=(result.reward.unlocked||[]).map(id=>db.cards.find(c=>c.id===id)).filter(Boolean);
   const rewardText=result.reward.type==='pack'
    ?`You won ${result.reward.label}. Your pack balance is now ${profile.packs}. Open a pack to add up to three new players to your Ranked collection.`
