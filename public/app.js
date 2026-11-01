@@ -105,7 +105,13 @@ async function spinDaily(){
   <div class="actions"><button class="secondary" id="dailySpinRetry" hidden>Try again</button><button class="primary" id="dailyRewardDone" hidden>Continue →</button></div>
  </div>`);
  try{
-  const result=await api('rewards/spin',{authToken});
+  let result;
+  try{result=await api('rewards/spin',{authToken})}
+  catch(requestError){
+   const recovered=await api('auth/me',{authToken}),saved=recovered.profile?.daily?.spinResult;
+   if(!recovered.profile?.daily?.spinClaimed||!Array.isArray(saved?.outcomes))throw requestError;
+   result={profile:recovered.profile,reward:saved,outcomes:saved.outcomes};
+  }
   profile=result.profile;profile.latestReward=null;renderProfile();
   const outcomes=result.outcomes||[],expectedWeights=[28,25,16,18,8,5];
   const wheel=$('dailyWheelLarge');
